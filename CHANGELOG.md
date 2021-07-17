@@ -1,2 +1,3 @@
-# Change Log
-All notable changes for this project is documented here. This project lightly adhere to [Semantic Versioning](http://semver.org).
+# Changelog
+
+All notable changes will be documented here. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
