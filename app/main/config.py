@@ -2,15 +2,16 @@
 
 import os
 
+# setting the environment
+from dotenv import load_dotenv # Python 3.6+
+
+load_dotenv(verbose = True)
+
 basedir = os.path.abspath(os.path.dirname(__file__))
-DB_NAME = os.getenv("DATABASE_NAME", "InspirigenceWorks")
+DB_NAME = os.getenv("dev_db", "database-name")
 
 # convigure below line(s) to get database from environment variable
-# local_base = os.getenv("DATABASE_URL", f"sqlite:///{basedir}") # uncomment for using SQLite
-username    = "dPramanik"
-password    = "paRam#@123"
-server_addr = "localhost"
-local_base = os.getenv("DATABASE_URL", f"mysql+pymysql://{username}:{password}@{server_addr}") # uncomment for using SQLite
+local_base = os.getenv("DATABASE_URL", 'my-database-url-string')
 
 class Config:
     """Base Configuration Class - Inherited by Others"""
