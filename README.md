@@ -23,6 +23,8 @@
 | dev_db | Development Database Name | pOrgz |
 | test_db | Production Database Name | test |
 
+[SQLAlchemy Engine String](https://docs.sqlalchemy.org/en/14/core/engines.html)
+
 ### Password Security and Encryption
 
 <p align = "justify">As decided earlier, <b>pOrgz</b> is currently set to work in localhost environment, safegurding user informations locally. Though local, there are certain security measures developed, one of which is encrypting the password, and using salting to save the password in the database - making it secure even if you are using a simple database like SQLite.</p>
@@ -56,5 +58,21 @@
 }
 ```
 
+```json
+{
+    "status" : {
+        "type"    : "<str>  JSON Message Type : Generally a String Representing the APIs [`login` or `signup`]",
+        "message" : "<str>  Message Body",
+        "code"    : 200,
+        "error"   : "<bool> `True` : Compilation or Programming Error Message, if Received; else `False`"
+    },
+    "time"     : "<str> Time on which Login/Signup is Requested",
+    "errorMsg" : "<str> Error Traceback as Thrown by Python-Compiler"
+}
+```
+
 ## Dependency for `importlib-resources`
 Python version 3.7 and above supports `importlib.resources` instead of `importlib_resources`. If using a version lower than 3.7, then install required dependency using `pip install importlib-resources`, however apart from this, the code should run in `py36` without a problem. Check `.github/gunicorn-server-py36.yml` to run a dependency check.
+
+## Docker Information
+Setting up docker files for testing and development ease. Use `docker-compose -f dummy-db.yml up` to setup a testing environment which uses `MySQL v5.7`. TODO: create table, schema and default data for testing.

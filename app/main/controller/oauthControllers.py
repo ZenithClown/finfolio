@@ -7,12 +7,13 @@ from flask_restful import Resource, reqparse
 from ... import *
 from ..models import *
 from ..repository import *
-from ..utils import validate
+from ..utils import validate, Mailing
 
 
 class OAuthController(Resource):
     def __init__(self):
         self.oauthRepository = OAuthRepository()
+        self.mailing = Mailing()
 
         # Parse Incoming Data arguments for POST
         self.req_parser = reqparse.RequestParser()
@@ -48,6 +49,11 @@ class OAuthController(Resource):
             help="missing, provide User Role like [ADMIN, MANAGER, USER], etc.",
         )
 
+        # test new addition
+        # just sending a dummy mail on signup
+        # self.req_parser.add_argument("secure_signup", type = bool, required = False,
+        #     help = "use email authentication based signup")
+
     def post(self):
         """POST Request for User Authentication (login and signup)"""
 
@@ -55,6 +61,9 @@ class OAuthController(Resource):
 
         if request.endpoint == "default":  # this is sign-up endpoint
             infoLogger.info(f"{args.username} signup requested.")
+
+            # sending a test mail to localhost:587
+            self.mailing.sendMail(receiver = "user@pOrgz.com", message = f"Signup - {args.username}")
 
             data_message = self.oauthRepository._POST_(args)
 
