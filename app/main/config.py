@@ -5,24 +5,25 @@
 import os
 
 # setting the environment
-from dotenv import load_dotenv # Python 3.6+
+from dotenv import load_dotenv  # Python 3.6+
 
-load_dotenv(verbose = True)
+load_dotenv(verbose=True)
 
-basedir    = os.path.abspath(os.path.dirname(__file__)) # base directory
-local_base = os.getenv('DATABASE_URL', 'my-database-url-string')
+basedir = os.path.abspath(os.path.dirname(__file__))  # base directory
+local_base = os.getenv("DATABASE_URL", "my-database-url-string")
+
 
 class Config:
     """Base Configuration Class - Inherited by Others"""
 
-    DEBUG      = False
+    DEBUG = False
     SECRET_KEY = os.getenv("SECRET_KEY", "my_secret_key")
 
 
 class DevelopmentConfig(Config):
     """Development Configuration: invoke this using config_name = dev"""
 
-    DEBUG = True # This is a development server.
+    DEBUG = True  # This is a development server.
 
     # set database
     SQLALCHEMY_DATABASE_URI = f"{local_base}/{os.getenv('dev_db', 'dev-database')}"
@@ -32,13 +33,13 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     """Testing Environment: invoke this using config_name = test"""
 
-    DEBUG   = True
+    DEBUG = True
     TESTING = True
 
     # set database
     SQLALCHEMY_DATABASE_URI = f"{local_base}/{os.getenv('test_db', 'test-database')}"
 
-    PRESERVE_CONTEXT_ON_EXCEPTION  = False
+    PRESERVE_CONTEXT_ON_EXCEPTION = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
@@ -50,10 +51,7 @@ class ProductionConfig(Config):
     # uncomment the line below to use configure database
     # SQLALCHEMY_DATABASE_URI = local_base
 
-config_by_name = dict(
-        dev  = DevelopmentConfig,
-        test = TestingConfig,
-        prod = ProductionConfig
-    )
+
+config_by_name = dict(dev=DevelopmentConfig, test=TestingConfig, prod=ProductionConfig)
 
 key = Config.SECRET_KEY

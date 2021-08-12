@@ -9,6 +9,7 @@ from ..models import *
 from ..repository import *
 from ..utils import validate, Mailing
 
+
 class OAuthController(Resource):
     def __init__(self):
         self.oauthRepository = OAuthRepository()
@@ -18,18 +19,35 @@ class OAuthController(Resource):
         self.req_parser = reqparse.RequestParser()
 
         # set arguments i.e. the fields (required from User)
-        self.req_parser.add_argument("first_name", type = str, required = False,
-            help = "missing, provide First Name of User")
-        self.req_parser.add_argument("last_name", type = str, required = False,
-            help = "missing, provide Last/Family Name of User")
-        self.req_parser.add_argument("email", type = str, required = False)
-        self.req_parser.add_argument("phone", type = str, required = False)
-        self.req_parser.add_argument("username", type = str, required = False,
-            help = "missing, provide Login Username")
-        self.req_parser.add_argument("password", type = str, required = False,
-            help = "missing, provide Password for Login")
-        self.req_parser.add_argument("user_role", type = str, required = False,
-            help = "missing, provide User Role like [ADMIN, MANAGER, USER], etc.")
+        self.req_parser.add_argument(
+            "first_name",
+            type=str,
+            required=False,
+            help="missing, provide First Name of User",
+        )
+        self.req_parser.add_argument(
+            "last_name",
+            type=str,
+            required=False,
+            help="missing, provide Last/Family Name of User",
+        )
+        self.req_parser.add_argument("email", type=str, required=False)
+        self.req_parser.add_argument("phone", type=str, required=False)
+        self.req_parser.add_argument(
+            "username", type=str, required=False, help="missing, provide Login Username"
+        )
+        self.req_parser.add_argument(
+            "password",
+            type=str,
+            required=False,
+            help="missing, provide Password for Login",
+        )
+        self.req_parser.add_argument(
+            "user_role",
+            type=str,
+            required=False,
+            help="missing, provide User Role like [ADMIN, MANAGER, USER], etc.",
+        )
 
         # test new addition
         # just sending a dummy mail on signup
@@ -38,10 +56,10 @@ class OAuthController(Resource):
 
     def post(self):
         """POST Request for User Authentication (login and signup)"""
-        
+
         args = self.req_parser.parse_args()
 
-        if request.endpoint == "default": # this is sign-up endpoint
+        if request.endpoint == "default":  # this is sign-up endpoint
             infoLogger.info(f"{args.username} signup requested.")
 
             # sending a test mail to localhost:587
@@ -50,27 +68,30 @@ class OAuthController(Resource):
             data_message = self.oauthRepository._POST_(args)
 
             if data_message["status"] == "success":
-                _message_body  = "New User Created Sucessfully"
+                _message_body = "New User Created Sucessfully"
                 _error_message = "False"
             else:
                 warnLogger.warning(f"User : {args.username} - Not Created.")
-                _message_body  = "Unable to Create a New User"
+                _message_body = "Unable to Create a New User"
                 _error_message = "True"
 
-            return {
-                "status" : {
-                    "type"    : "signup",
-                    "message" : _message_body,
-                    "code"    : 200,
-                    "error"   : _error_message
+            return (
+                {
+                    "status": {
+                        "type": "signup",
+                        "message": _message_body,
+                        "code": 200,
+                        "error": _error_message,
+                    },
+                    "data": data_message,
+                    "time": str(time.ctime()),
                 },
-                "data" : data_message,
-                "time" : str(time.ctime())
-            }, 200
-        else: # for endpoint = 'login'
+                200,
+            )
+        else:  # for endpoint = 'login'
             infoLogger.info(f"Login Requested for {args.username}.")
 
-            curTime  = str(time.ctime())
+            curTime = str(time.ctime())
             username = request.args.get("username") or args.username
             password = request.args.get("password") or args.password
 
@@ -78,25 +99,30 @@ class OAuthController(Resource):
 
             if data_message["status"] == "success":
                 __password_hash__ = data_message["user"]["password"]
-                authentication    = validate(password, __password_hash__)
+                authentication = validate(password, __password_hash__)
 
-                if authentication: # TODO update `logins_master` table with login information
-                    _message_body  = "Login Succesful"
+                if (
+                    authentication
+                ):  # TODO update `logins_master` table with login information
+                    _message_body = "Login Succesful"
                     _error_message = "None"
                 else:
-                    _message_body  = "Login Failed"
+                    _message_body = "Login Failed"
                     _error_message = "Wrong Username/Password"
 
             else:
-                _message_body  = "Login Failed"
+                _message_body = "Login Failed"
                 _error_message = "Wrong Username/Password"
 
-            return {
-                "status" : {
-                    "type"    : "login",
-                    "message" : _message_body,
-                    "code"    : 200,
-                    "error"   : _error_message
+            return (
+                {
+                    "status": {
+                        "type": "login",
+                        "message": _message_body,
+                        "code": 200,
+                        "error": _error_message,
+                    },
+                    "time": curTime,
                 },
-                "time" : curTime
-            }, 200
+                200,
+            )

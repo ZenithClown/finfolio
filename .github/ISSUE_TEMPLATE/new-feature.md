@@ -1,7 +1,7 @@
 ---
 name      : New Feature or Enhancement
 about     : Request for a New Feature or Enhancement
-title     : 
+title     :
 labels    : enhancement
 assignees : ''
 
@@ -13,9 +13,9 @@ assignees : ''
 
 ## Details
 [NOTE]: # ( Describe the feature in simple points, or in a paragraph )
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 ## Outcome/Advantage
 [NOTE]: # ( Tell us what you expect to happen )

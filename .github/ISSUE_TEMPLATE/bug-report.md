@@ -1,7 +1,7 @@
 ---
 name      : Bug Report
 about     : Report and Describe a Problem
-title     : 
+title     :
 labels    : bug
 assignees : ''
 
@@ -12,9 +12,9 @@ assignees : ''
 
 ## Steps to Reproduce
 [NOTE]: # ( Provide a simple set of steps to reproduce this bug. )
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 ## Expected Behavior
 [NOTE]: # ( Tell us what you expected to happen )
