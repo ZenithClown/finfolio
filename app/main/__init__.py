@@ -3,16 +3,16 @@
 """Initialization of Flask REST-API Environment"""
 
 from flask import Flask
-from flask_bcrypt import Bcrypt  # Bcrypt hashing for Flask
+from flask_bcrypt import Bcrypt # Bcrypt hashing for Flask
 from flask_sqlalchemy import SQLAlchemy
 
 from .config import config_by_name
 
-db = SQLAlchemy()  # database object
-flask_bcrypt = Bcrypt()  # bcrypt hashing utilities
+db = SQLAlchemy()       # database object
+flask_bcrypt = Bcrypt() # bcrypt hashing utilities
 
 
-def create_app(config_name: str = "dev"):
+def create_app(config_name : str = 'dev'):
     """Initializes the Flask API, by Creating an APP
     with the necessary configurations and parameters which are taken from
     `config`. By default, the environment is intialized, however a
@@ -24,7 +24,7 @@ def create_app(config_name: str = "dev"):
                         Defaults to test, which is mentioned to safekeep
                         production and development environment.
     """
-
+    
     app = Flask(__name__)
     app.config.from_object(config_by_name[config_name])
     db.init_app(app)
