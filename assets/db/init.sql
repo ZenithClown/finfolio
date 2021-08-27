@@ -1,32 +1,59 @@
--- MySQL-Client Initialization Template File
--- Update the file as per Requirement
+CREATE TABLE `UserMaster` (
+	`UUID` VARCHAR(64) NOT NULL,
+	`username` VARCHAR(64) NOT NULL UNIQUE,
+	`FirstName` VARCHAR(128) NOT NULL,
+	`MiddleName` VARCHAR(128),
+	`LastName` VARCHAR(128) NOT NULL,
+	`email` VARCHAR(256) UNIQUE,
+	`password` VARCHAR(1024) NOT NULL,
+	`mobile` VARCHAR(16),
+	`RoleID` VARCHAR(16) NOT NULL,
+	PRIMARY KEY (`UUID`)
+);
 
-CREATE DATABASE IF NOT EXISTS database;
+CREATE TABLE `AccountDetails` (
+	`AccountID` INT NOT NULL,
+	`IFSCCode` VARCHAR(16),
+	`CIFNumber` VARCHAR(16),
+	`OpenDate` TIMESTAMP NOT NULL,
+	`CloseDate` TIMESTAMP,
+	`UUID` VARCHAR(64) NOT NULL,
+	`ACTypeID` VARCHAR(16) NOT NULL,
+	PRIMARY KEY (`AccountID`)
+);
 
--- similarly multiple database can be created as required
--- CREATE DATABASE IF NOT EXISTS template;
+CREATE TABLE `RolesType` (
+	`RoleID` VARCHAR(64) NOT NULL,
+	`RoleName` VARCHAR(16) NOT NULL UNIQUE,
+	PRIMARY KEY (`RoleID`)
+);
 
--- write command below to create dummy tables
-USE database;
+CREATE TABLE `AccountType` (
+	`ACTypeID` VARCHAR(64) NOT NULL,
+	`ACTypeName` VARCHAR(16) NOT NULL UNIQUE,
+	PRIMARY KEY (`ACTypeID`)
+);
 
-DROP TABLE IF EXISTS `table`;
+CREATE TABLE `UserTransactions` (
+	`ID` INT NOT NULL AUTO_INCREMENT,
+	`TransactionDate` TIMESTAMP NOT NULL,
+	`TransactionDetails` VARCHAR(1024) NOT NULL,
+	`TransactionType` VARCHAR(8) NOT NULL,
+	`TransactionAmount` DECIMAL(32) NOT NULL,
+	`AccountID` INT(32) NOT NULL,
+	PRIMARY KEY (`ID`)
+);
 
-CREATE TABLE `table` (
-  `UUID`       varchar(64)  NOT NULL,
-  `FirstName`  varchar(255) NOT NULL,
-  `FamilyName` varchar(255) NOT NULL,
+ALTER TABLE `UserMaster` ADD CONSTRAINT `UserMaster_fk0` FOREIGN KEY (`RoleID`) REFERENCES `RolesType`(`RoleID`);
 
-  PRIMARY KEY (`UUID`),
-  UNIQUE KEY `UUID` (`UUID`)
+ALTER TABLE `AccountDetails` ADD CONSTRAINT `AccountDetails_fk0` FOREIGN KEY (`UUID`) REFERENCES `UserMaster`(`UUID`);
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+ALTER TABLE `AccountDetails` ADD CONSTRAINT `AccountDetails_fk1` FOREIGN KEY (`ACTypeID`) REFERENCES `AccountType`(`ACTypeID`);
 
--- use mysql:8.0.26 for COLLATE=utf8mb4_0900_ai_ci
+ALTER TABLE `UserTransactions` ADD CONSTRAINT `UserTransactions_fk0` FOREIGN KEY (`AccountID`) REFERENCES `AccountDetails`(`AccountID`);
 
-LOCK TABLES `table` WRITE;
 
-INSERT INTO `table` VALUES
-  ('5ffe4050-d959-46ec-a8a5-c1a0040c9186','Debmalya','Pramanik'),
-  ('71c75892-71b0-4381-89ba-b8bf64e38974', 'John', 'Doe');
 
-UNLOCK TABLES;
+
+
+

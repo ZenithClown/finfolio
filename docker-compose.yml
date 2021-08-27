@@ -10,37 +10,40 @@ services:
 
   standalone:
 
-    build: . # build from Dockerfile
+    # build: . # build from Dockerfile
+    image: mysql:8.0.26
 
-    container_name: flask-docker-template
+    container_name: porgz-py
 
     ports:
       # expose ports for flask
-      - "50001:5000"
+      # - "50001:5000"
 
       # expose for mysql
       - "33061:3306"
 
     expose:
       - "3306" # expose MySQL-Client
-      - "5000" # expose flask
+      # - "5000" # expose flask
 
     environment:
       # using root for mysql-client
       # https://github.com/docker-library/mysql
-      MYSQL_ROOT_USER:     root
+      MYSQL_USER: pOrgz
+      MYSQL_PASSWORD: myAdmin
       MYSQL_ROOT_PASSWORD: admin
       # note you can create a new database using MYSQL_DATABASE
       # but, only single database can be created by the same
       # https://stackoverflow.com/a/40336552/6623589
-      # MYSQL_DATABASE: template
+      # or, you can create multiple database from init file
+      MYSQL_DATABASE: financials_dev
 
     volumes:
-      # mount volumes for files below
-      # the init.sql is already present in /usr/src/helloworld/assets/db/
-      # the mount is shown as example
-      - ./assets/db/init.sql:/tmp/init.sql
+      # add, persistent storage (if required)
+      # More Information : https://stackoverflow.com/a/67558967/6623589
+      # mount the schema file with docker-entrypoint
+      - ./assets/db/init.sql:/docker-entrypoint-initdb.d/SCHEMA.sql
 
-    command:
-      # initialize mysql-db
-      -- init-file /usr/src/helloworld/assets/db/init.sql
+    # command:
+    #   # initialize mysql-db
+    #   -- init-file /tmp/init.sql

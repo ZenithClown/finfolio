@@ -22,11 +22,6 @@ api = Api(app)
 # controller moved to application/controller
 from app.main.application import * # import all controllers
 
-# a demo link is provided, delete/uncomment the controller
-# this controller is set from app/main/controller/hello_world.py
-# also remove app/main/controller/__init__.py
-api.add_resource(HelloWorld, "/") # hello-world endpoint
-
 if __name__ == "__main__":
     app.run(
         port = os.getenv("port", 5000), # run the application on default 5000 Port
