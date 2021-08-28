@@ -23,7 +23,7 @@ class UserMaster(db.Model, ModelSchema):
     mobile     = db.Column(db.String(16), nullable = True)
 
     # foreign key(s)
-    RoleID = db.Column(db.String(16), db.ForeignKey(RolesType.RoleID), nullable = False)
+    RoleID = db.Column(db.String(64), db.ForeignKey(RolesType.RoleID), nullable = False)
 
 
     def __init__(self):
@@ -38,8 +38,8 @@ class AccountDetails(db.Model, ModelSchema):
     AccountID = db.Column(db.Integer, primary_key = True, nullable = False)
     IFSCCode  = db.Column(db.String(16), nullable = True)
     CIFNumber = db.Column(db.String(16), nullable = True)
-    OpenDate  = db.Column(db.DateTime, nullable = False)
-    CloseDate = db.Column(db.DateTime, nullable = True)
+    OpenDate  = db.Column(db.Date, nullable = False)
+    CloseDate = db.Column(db.Date, nullable = True)
 
     # foreign key(s)
     UUID    = db.Column(db.String(64), db.ForeignKey(UserMaster.UUID), nullable = False)

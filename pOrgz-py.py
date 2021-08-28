@@ -22,6 +22,8 @@ api = Api(app)
 # controller moved to application/controller
 from app.main.application import * # import all controllers
 
+api.add_resource(UserMasterController, "/master/users")
+
 if __name__ == "__main__":
     app.run(
         port = os.getenv("port", 5000), # run the application on default 5000 Port
