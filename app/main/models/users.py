@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 
 from .. import db
-from ._base_model import ModelSchema
 
 from .references import (
         RolesType,
@@ -26,10 +25,6 @@ class UserMaster(db.Model):
     RoleID = db.Column(db.String(64), db.ForeignKey(RolesType.RoleID), nullable = False)
 
 
-    # def __init__(self):
-    #     ModelSchema().__init__()
-
-
 class AccountDetails(db.Model):
     """Use the Model to Establish a Connection to DB"""
 
@@ -43,8 +38,4 @@ class AccountDetails(db.Model):
 
     # foreign key(s)
     UUID    = db.Column(db.String(64), db.ForeignKey(UserMaster.UUID), nullable = False)
-    ACTypeID = db.Column(db.String(128), db.ForeignKey(AccountType.ACTypeID), nullable = False)
-
-
-    # def __init__(self):
-    #     ModelSchema().__init__()
+    ACTypeID = db.Column(db.String(64), db.ForeignKey(AccountType.ACTypeID), nullable = False)

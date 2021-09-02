@@ -26,18 +26,18 @@ class OpenAccount(BaseResource):
         #         }
         #     )
 
-        self.req_parser.add_argument("username", type = str, required = True, help = "username is required")
-        self.req_parser.add_argument("FirstName", type = str, required = True, help = "FirstName is required")
+        self.req_parser.add_argument("username", type = str, required = True) # does not work >, help = "username is required")
+        self.req_parser.add_argument("FirstName", type = str, required = True) # does not work >, help = "FirstName is required")
         self.req_parser.add_argument("MiddleName", type = str, required = False)
-        self.req_parser.add_argument("LastName", type = str, required = True, help = "LastName is required")
-        self.req_parser.add_argument("email", type = str, required = True, help = "email is required")
-        self.req_parser.add_argument("password", type = str, required = True, help = "password is required")
-        # self.req_parser.add_argument("RoleType", type = str, required = True, help = "RoleType is required")
-        self.req_parser.add_argument("AccountID", type = str, required = True, help = "AccountID is required")
-        self.req_parser.add_argument("IFSCCode", type = str, required = True, help = "IFSCCode is required")
-        self.req_parser.add_argument("CIFNumber", type = str, required = True, help = "CIFNumber is required")
-        self.req_parser.add_argument("OpenDate", type = str, required = True, help = "OpenDate is required")
-        self.req_parser.add_argument("AccountType", type = str, required = True, help = "AccountType is required")
+        self.req_parser.add_argument("LastName", type = str, required = True) # does not work >, help = "LastName is required")
+        self.req_parser.add_argument("email", type = str, required = True) # does not work >, help = "email is required")
+        self.req_parser.add_argument("password", type = str, required = True) # does not work >, help = "password is required")
+        # self.req_parser.add_argument("RoleType", type = str, required = True) # does not work >, help = "RoleType is required")
+        self.req_parser.add_argument("AccountID", type = str, required = True) # does not work >, help = "AccountID is required")
+        self.req_parser.add_argument("IFSCCode", type = str, required = True) # does not work >, help = "IFSCCode is required")
+        self.req_parser.add_argument("CIFNumber", type = str, required = True) # does not work >, help = "CIFNumber is required")
+        self.req_parser.add_argument("OpenDate", type = str, required = True) # does not work >, help = "OpenDate is required")
+        self.req_parser.add_argument("AccountType", type = str, required = True) # does not work >, help = "AccountType is required")
 
 
     def post(self):

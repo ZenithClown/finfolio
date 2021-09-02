@@ -1,10 +1,9 @@
 # -*- encoding: utf-8 -*-
 
 from .. import db
-from ._base_model import ModelSchema
 from .users import AccountDetails
 
-class UserTransactions(db.Model, ModelSchema):
+class UserTransactions(db.Model):
     """Use the Model to Establish a Connection to DB"""
 
     __tablename__ = "UserTransactions"
@@ -17,7 +16,3 @@ class UserTransactions(db.Model, ModelSchema):
 
     # foreign key(s)
     AccountID = db.Column(db.Integer, db.ForeignKey(AccountDetails.AccountID), nullable = False)
-
-
-    # def __init__(self):
-    #     ModelSchema().__init__()
