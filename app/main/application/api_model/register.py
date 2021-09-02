@@ -1,6 +1,11 @@
 # -*- encoding: utf-8 -*-
 
 from flask import request
+from sqlalchemy.exc import (
+        DataError,
+        IntegrityError
+    )
+from werkzeug.exceptions import BadRequest
 
 from .._base_resource import BaseResource
 from ...repository import *
@@ -11,6 +16,15 @@ class OpenAccount(BaseResource):
 
     def __init__(self):
         super().__init__()
+
+        # self.set_args(
+        #         args   = ["username", "FirstName", "MiddleName", "LastName"],
+        #         params = {
+        #             "MiddleName" : {
+        #                 "required" : False
+        #             }
+        #         }
+        #     )
 
         self.req_parser.add_argument("username", type = str, required = True, help = "username is required")
         self.req_parser.add_argument("FirstName", type = str, required = True, help = "FirstName is required")
@@ -32,5 +46,11 @@ class OpenAccount(BaseResource):
             try:
                 newID = OpenAccountRepository().create_user_account(self.args)
                 return self.formatter.post(msg = f"User Account ID {newID} Created")
+            except BadRequest as err:
+                return self.formatter.post(err, 400, "Some Arguments Missing")
+            except DataError as err:
+                return self.formatter.post(err.orig.args[1], 500, "Creating Account Failed")
+            except IntegrityError as err:
+                return self.formatter.post(err.orig.args[1], 409, "Creating Account Failed")
             except Exception as err:
                 return self.formatter.post(err.orig.args[1], err.orig.args[0], "Creating Account Failed")
