@@ -23,6 +23,7 @@ api = Api(app)
 from app.main.application import * # import all controllers
 
 api.add_resource(UserMasterController, "/master/users")
+api.add_resource(OpenAccount, "/register/new/user", endpoint = "NEW_USER_ACCOUNT")
 
 if __name__ == "__main__":
     app.run(

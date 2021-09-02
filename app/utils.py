@@ -39,7 +39,7 @@ class ResponseFormatter(object):
 
 
 
-    def post(self, data : list, err : str = None, code : int = 200, msg : str = None) -> dict:
+    def post(self, err : str = None, code : int = 200, msg : str = None) -> dict:
         """Format O/P of all GET Response"""
 
         return {

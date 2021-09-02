@@ -4,7 +4,7 @@ from flask import request
 
 from .._base_resource import BaseResource
 from ...repository import *
-from ...repository.interface import *
+# from ...repository.interface import *
 
 class OpenAccount(BaseResource):
     """API Model for Opening a New User Account"""
@@ -21,5 +21,16 @@ class OpenAccount(BaseResource):
         # self.req_parser.add_argument("RoleType", type = str, required = True, help = "RoleType is required")
         self.req_parser.add_argument("AccountID", type = str, required = True, help = "AccountID is required")
         self.req_parser.add_argument("IFSCCode", type = str, required = True, help = "IFSCCode is required")
+        self.req_parser.add_argument("CIFNumber", type = str, required = True, help = "CIFNumber is required")
         self.req_parser.add_argument("OpenDate", type = str, required = True, help = "OpenDate is required")
         self.req_parser.add_argument("AccountType", type = str, required = True, help = "AccountType is required")
+
+
+    def post(self):
+
+        if request.endpoint == "NEW_USER_ACCOUNT":
+            try:
+                newID = OpenAccountRepository().create_user_account(self.args)
+                return self.formatter.post(msg = f"User Account ID {newID} Created")
+            except Exception as err:
+                return self.formatter.post(err.orig.args[1], err.orig.args[0], "Creating Account Failed")

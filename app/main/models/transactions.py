@@ -19,5 +19,5 @@ class UserTransactions(db.Model, ModelSchema):
     AccountID = db.Column(db.Integer, db.ForeignKey(AccountDetails.AccountID), nullable = False)
 
 
-    def __init__(self):
-        ModelSchema().__init__()
+    # def __init__(self):
+    #     ModelSchema().__init__()

@@ -8,7 +8,7 @@ from .references import (
         AccountType
     )
 
-class UserMaster(db.Model, ModelSchema):
+class UserMaster(db.Model):
     """Use the Model to Establish a Connection to DB"""
 
     __tablename__ = "UserMaster"
@@ -26,11 +26,11 @@ class UserMaster(db.Model, ModelSchema):
     RoleID = db.Column(db.String(64), db.ForeignKey(RolesType.RoleID), nullable = False)
 
 
-    def __init__(self):
-        ModelSchema().__init__()
+    # def __init__(self):
+    #     ModelSchema().__init__()
 
 
-class AccountDetails(db.Model, ModelSchema):
+class AccountDetails(db.Model):
     """Use the Model to Establish a Connection to DB"""
 
     __tablename__ = "AccountDetails"
@@ -43,8 +43,8 @@ class AccountDetails(db.Model, ModelSchema):
 
     # foreign key(s)
     UUID    = db.Column(db.String(64), db.ForeignKey(UserMaster.UUID), nullable = False)
-    ACTypeID = db.Column(db.String(64), db.ForeignKey(AccountType.ACTypeID), nullable = False)
+    ACTypeID = db.Column(db.String(128), db.ForeignKey(AccountType.ACTypeID), nullable = False)
 
 
-    def __init__(self):
-        ModelSchema().__init__()
+    # def __init__(self):
+    #     ModelSchema().__init__()
