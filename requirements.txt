@@ -13,7 +13,7 @@ Flask-SQLAlchemy==2.5.1
 
 # database and related tools
 PyMySQL==1.0.2
-SQLAlchemy==1.4.22
+SQLAlchemy==1.4.23
 
 # forms handling
 Flask-WTF==0.15.1
