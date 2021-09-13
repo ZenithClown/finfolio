@@ -6,6 +6,7 @@ from datetime import date
 from .. import db
 from ..models import *
 from .interface import *
+from ..security import PasswordEncryption
 
 class OpenAccountRepository(object):
     """Handle Registrations Request"""
@@ -18,6 +19,7 @@ class OpenAccountRepository(object):
         self.account_type_repository = AccountTypeRepository()
         self.roles_type_repository = RolesTypeRepository()
         self.user_master_repository = UserMasterRepository()
+        self.password_encryption = PasswordEncryption()
 
 
     def create_user_account(self, args : dict):
@@ -33,7 +35,7 @@ class OpenAccountRepository(object):
                 MiddleName = None, # args["MiddleName"],
                 LastName   = args["LastName"],
                 email      = args["email"],
-                password   = args["password"],
+                password   = self.password_encryption.encrypt(args["password"]),
                 mobile     = None, # args["mobile"],
                 RoleID     = self.roles_type_repository.get_by_name(RoleName = "USERS")[0]["RoleID"]
             )
