@@ -43,7 +43,7 @@ PyYAML==5.4.1
 # comment to install the specific version, or
 # allow pip to automatically check and download
 # run `pip check`
-alembic==1.6.5
+alembic==1.7.1
 amqp==5.0.6
 aniso8601==9.0.1
 attrs==21.2.0
