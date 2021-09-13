@@ -8,23 +8,19 @@ version: "3.8"
 
 services:
 
-  standalone:
+  database:
 
-    # build: . # build from Dockerfile
     image: mysql:8.0.26
 
-    container_name: porgz-py
+    container_name: backend
 
     ports:
-      # expose ports for flask
-      # - "50001:5000"
-
-      # expose for mysql
+      # MySQL by default runs on 3306
+      # the host is mapped to 33061 from host machine
       - "33061:3306"
 
     expose:
       - "3306" # expose MySQL-Client
-      # - "5000" # expose flask
 
     environment:
       # using root for mysql-client
@@ -38,12 +34,25 @@ services:
       # or, you can create multiple database from init file
       MYSQL_DATABASE: financials_dev
 
-    volumes:
+    # volumes:
       # add, persistent storage (if required)
       # More Information : https://stackoverflow.com/a/67558967/6623589
       # mount the schema file with docker-entrypoint
-      - ./assets/db/init.sql:/docker-entrypoint-initdb.d/SCHEMA.sql
+      # - ./assets/db/init.sql:/docker-entrypoint-initdb.d/SCHEMA.sql
 
-    # command:
-    #   # initialize mysql-db
-    #   -- init-file /tmp/init.sql
+  standalone:
+
+    image: mysql:5.7
+
+    container_name: mail-server
+
+    # using hMailServer for testing email services
+    # https://www.hmailserver.com/
+    # the application is available ONLY for MySQL=5.7
+
+    ports:
+      - "33062:3306"
+
+    environment:
+      # database is created by hMailServer
+      MYSQL_ROOT_PASSWORD: admin

@@ -53,4 +53,4 @@ class OpenAccount(BaseResource):
             except IntegrityError as err:
                 return self.formatter.post(err.orig.args[1], 409, "Creating Account Failed")
             except Exception as err:
-                return self.formatter.post(err.orig.args[1], err.orig.args[0], "Creating Account Failed")
+                return self.formatter.post(err, 502, "Creating Account Failed")

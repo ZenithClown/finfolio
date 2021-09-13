@@ -30,7 +30,7 @@ class AccountDetails(db.Model):
 
     __tablename__ = "AccountDetails"
 
-    AccountID = db.Column(db.Integer, primary_key = True, nullable = False)
+    AccountID = db.Column(db.BigInteger, primary_key = True, nullable = False)
     IFSCCode  = db.Column(db.String(16), nullable = True)
     CIFNumber = db.Column(db.String(16), nullable = True)
     OpenDate  = db.Column(db.Date, nullable = False)

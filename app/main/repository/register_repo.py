@@ -35,10 +35,8 @@ class OpenAccountRepository(object):
                 email      = args["email"],
                 password   = args["password"],
                 mobile     = None, # args["mobile"],
-                RoleID     = RolesTypeRepository().get_by_name(RoleName = "USERS")[0]["RoleID"]
+                RoleID     = self.roles_type_repository.get_by_name(RoleName = "USERS")[0]["RoleID"]
             )
-
-        db.session.add(user_master_record)
 
         account_details_record = AccountDetails(
                 AccountID = args["AccountID"],
@@ -47,12 +45,12 @@ class OpenAccountRepository(object):
                 OpenDate  = date(*list(map(int, args["OpenDate"].split("-")[::-1]))),
                 CloseDate = None,
                 UUID      = UUID,
-                ACTypeID  = AccountTypeRepository().get_by_name(ACTypeName = args["AccountType"])[0]["ACTypeID"],
+                ACTypeID  = self.account_type_repository.get_by_name(ACTypeName = args["AccountType"])[0]["ACTypeID"],
             )
 
         # add new records to the table
         # in order of PK-FK constraints
-        # db.session.add(user_master_record)
+        db.session.add(user_master_record)
         db.session.add(account_details_record)
 
         db.session.commit()

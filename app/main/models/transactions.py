@@ -15,4 +15,4 @@ class UserTransactions(db.Model):
     TransactionAmount = db.Column(db.Float(precision = 2), nullable = False)
 
     # foreign key(s)
-    AccountID = db.Column(db.Integer, db.ForeignKey(AccountDetails.AccountID), nullable = False)
+    AccountID = db.Column(db.BigInteger, db.ForeignKey(AccountDetails.AccountID), nullable = False)
