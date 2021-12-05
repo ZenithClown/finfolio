@@ -24,15 +24,6 @@ updates:
       include: "scope"
     # increase pull request limit to 10 for pip dependencies
     open-pull-requests-limit: 10
-    ignore:
-      # ignore all version check for celery & click as:
-      # celery 5.1.2 depends on click<8.0 and >=7.0
-      - dependency-name: "click"
-      - dependency-name: "celery"
-      # ignore all version check for packaging & pyparsing
-      # packaging 21.2 depends on pyparsing<3 and >=2.0.2
-      - dependency-name: "packaging"
-      - dependency-name: "pyparsing"
       
   # maintain dependecies for github-actions
   - package-ecosystem: "github-actions"
