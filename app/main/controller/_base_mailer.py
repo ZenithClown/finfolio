@@ -7,6 +7,11 @@ from email.mime.text import MIMEText
 from email.message import EmailMessage
 from email.mime.multipart import MIMEMultipart
 
+# setting the environment
+from dotenv import load_dotenv # Python 3.6+
+
+load_dotenv(verbose = True)
+
 class BaseMailer(object):
     """Base Class for Mailing"""
     
