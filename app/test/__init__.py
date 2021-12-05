@@ -20,7 +20,5 @@ app = create_app(config_name = "test") # check config.py
 api = Api(app, prefix = "/testing")
 
 # import all controller and api endpoints
-from app.main.application import *
 
 # redefine all resources for testing, as per requirement, as below
-api.add_resource(HelloWorld, "/") # hello-world endpoint
