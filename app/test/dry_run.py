@@ -44,8 +44,8 @@ if __name__ == "__main__":
         print(f"  >> {time.ctime()} [INFO] Email with TEXT is Sent Sucessfully.")
 
     # * adding HTML template with jinja2
-    env = Environment(loader = FileSystemLoader(dirname(__file__)))
-    template = env.get_template("template.html")
+    env = Environment(loader = FileSystemLoader(join(dirname(__file__), "..", "..", "template")))
+    template = env.get_template("test-mail.html")
 
     try:
         mailer.sendMail(
