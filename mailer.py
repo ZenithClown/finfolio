@@ -36,6 +36,10 @@ def favicon():
 api = Api(app)
 
 ### --- List of all Resources --- ###
+from app.main.controller import * # noqa: F401, F403
+
+api.add_resource(Mailer, "/api/v1/mailer")
+
 
 if __name__ == "__main__":
     app.run(
