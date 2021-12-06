@@ -73,25 +73,15 @@ class BaseMailer(object):
     def sendMail(self, receiver : str, message : str, subject : str) -> bool:
         """Defination of Function for Sending Emails"""
 
-        if type(message) == str:
-            email_message = EmailMessage()
-            email_message.set_content(message)
+        email_message = MIMEMultipart('alternative')
 
-            email_message["Subject"] = subject
-            email_message["From"]    = self.sender
-            email_message["To"]      = receiver
+        email_message["Subject"] = subject + "(in HTML)"
+        email_message["From"]    = self.sender
+        email_message["To"]      = receiver
 
-            self.mail_server.send_message(email_message)
-        else: # ? type: _io.TextIOWrapper
-            email_message = MIMEMultipart('alternative')
+        email_message.attach(MIMEText(message, 'html'))
 
-            email_message["Subject"] = subject + "(in HTML)"
-            email_message["From"]    = self.sender
-            email_message["To"]      = receiver
-
-            email_message.attach(MIMEText(message, 'html'))
-
-            self.mail_server.sendmail(self.sender, receiver, email_message.as_string())
+        self.mail_server.sendmail(self.sender, receiver, email_message.as_string())
         return True
 
 
