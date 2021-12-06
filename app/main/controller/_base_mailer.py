@@ -36,10 +36,6 @@ class BaseMailer(object):
             port = self._port
         )
 
-        # * auto-login when object is created
-        # ? can `__login__()` be wrapped in other way?
-        self.__login__(**kwargs)
-
 
     def __login__(self, **kwargs) -> bool:
         """Check if the Mail Server be logged in for Sending Emails"""
