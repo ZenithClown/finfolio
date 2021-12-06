@@ -75,7 +75,7 @@ class BaseMailer(object):
 
         email_message = MIMEMultipart('alternative')
 
-        email_message["Subject"] = subject + "(in HTML)"
+        email_message["Subject"] = subject
         email_message["From"]    = self.sender
         email_message["To"]      = receiver
 
