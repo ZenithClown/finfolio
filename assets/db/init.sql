@@ -1,32 +1,54 @@
--- MySQL-Client Initialization Template File
--- Update the file as per Requirement
+-- MySQL DB Initialization Commands - initialize docker image with `init`-parameters
 
-CREATE DATABASE IF NOT EXISTS database;
+CREATE DATABASE IF NOT EXISTS mails;
 
--- similarly multiple database can be created as required
--- CREATE DATABASE IF NOT EXISTS template;
+-- use a database names `mails` for storing all informations
+USE mails;
 
--- write command below to create dummy tables
-USE database;
+CREATE TABLE `emailMaster` (
+	`GUID` varchar(36) NOT NULL,
+	`typeID` varchar(64) NOT NULL UNIQUE,
+	`address` varchar(255) NOT NULL UNIQUE,
+	PRIMARY KEY (`GUID`,`address`)
+);
 
-DROP TABLE IF EXISTS `table`;
+CREATE TABLE `emailTypeMaster` (
+	`typeID` varchar(8) NOT NULL,
+	`acronym` varchar(64),
+	`description` varchar(128),
+	PRIMARY KEY (`typeID`)
+);
 
-CREATE TABLE `table` (
-  `UUID`       varchar(64)  NOT NULL,
-  `FirstName`  varchar(255) NOT NULL,
-  `FamilyName` varchar(255) NOT NULL,
+CREATE TABLE `history` (
+	`ID` INT NOT NULL AUTO_INCREMENT,
+	`datetime` DATETIME(64) NOT NULL,
+	`sender` varchar(36) NOT NULL,
+	`receiver` varchar(36) NOT NULL,
+	`remarks` varchar(255),
+	PRIMARY KEY (`ID`)
+);
 
-  PRIMARY KEY (`UUID`),
-  UNIQUE KEY `UUID` (`UUID`)
+CREATE TABLE `subscribers` (
+	`ID` INT NOT NULL AUTO_INCREMENT,
+	`subscriber` varchar(255) NOT NULL,
+	`preferences` varchar(255) NOT NULL,
+	`isActive` BOOLEAN NOT NULL,
+	PRIMARY KEY (`ID`)
+);
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `preferenceMaster` (
+	`ID` INT NOT NULL AUTO_INCREMENT,
+	`type` varchar(64) NOT NULL UNIQUE,
+	`remarks` varchar(255) UNIQUE,
+	PRIMARY KEY (`ID`)
+);
 
--- use mysql:8.0.26 for COLLATE=utf8mb4_0900_ai_ci
+ALTER TABLE `emailMaster` ADD CONSTRAINT `emailMaster_fk0` FOREIGN KEY (`typeID`) REFERENCES `emailTypeMaster`(`typeID`);
 
-LOCK TABLES `table` WRITE;
+ALTER TABLE `history` ADD CONSTRAINT `history_fk0` FOREIGN KEY (`sender`) REFERENCES `emailMaster`(`GUID`);
 
-INSERT INTO `table` VALUES
-  ('5ffe4050-d959-46ec-a8a5-c1a0040c9186','Debmalya','Pramanik'),
-  ('71c75892-71b0-4381-89ba-b8bf64e38974', 'John', 'Doe');
+ALTER TABLE `history` ADD CONSTRAINT `history_fk1` FOREIGN KEY (`receiver`) REFERENCES `emailMaster`(`GUID`);
 
-UNLOCK TABLES;
+ALTER TABLE `subscribers` ADD CONSTRAINT `subscribers_fk0` FOREIGN KEY (`subscriber`) REFERENCES `emailMaster`(`GUID`);
+
+ALTER TABLE `subscribers` ADD CONSTRAINT `subscribers_fk1` FOREIGN KEY (`preferences`) REFERENCES `preferenceMaster`(`ID`);
