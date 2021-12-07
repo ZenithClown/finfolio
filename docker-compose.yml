@@ -12,7 +12,7 @@ services:
 
     build: . # build from Dockerfile
 
-    container_name: flask-docker-template
+    container_name: xautonemo
 
     ports:
       # expose ports for flask
