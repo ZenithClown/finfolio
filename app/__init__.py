@@ -1,12 +1,14 @@
 # -*- encoding: utf-8 -*-
 
+from os.path import abspath, join, dirname
+
 __author__       = "Debmalya Pramanik"
 __author_email__ = "pOrgz@tuta.io"
 
 __credits__      = None
 
 __status__       = "Development"
-__version__      = open("VERSION", "r").read()
+__version__      = open(join(abspath(dirname(__file__)), "VERSION"), "r").read()
 __docformat__    = "camelCasing"
 
 __copyright__    = "Copyright (c) 2020 Debmalya Pramanik"

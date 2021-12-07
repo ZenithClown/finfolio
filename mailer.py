@@ -39,6 +39,7 @@ api = Api(app)
 from app.main.controller import * # noqa: F401, F403
 
 api.add_resource(Mailer, "/api/v1/mailer")
+api.add_resource(StatusCheck, "/api/v1/status")
 
 
 if __name__ == "__main__":
