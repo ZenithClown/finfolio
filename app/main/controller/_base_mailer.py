@@ -2,6 +2,7 @@
 
 import os
 import smtplib
+import warnings
 
 from email.mime.text import MIMEText
 from email.message import EmailMessage
@@ -15,17 +16,26 @@ load_dotenv(verbose = True)
 class BaseMailer(object):
     """Base Class for Mailing"""
     
-    def __init__(self, protocol : str = "SMTP", **kwargs) -> None:
+    def __init__(self, protocol : str = "SMTP", secure_connection : bool = True, **kwargs) -> None:
         """default constructor"""
 
         # TODO defination and configuration of all email protocols
         # * currently only SMTP protocol is supported and configured
         self.protocol = protocol
         
+        # * secure connection enforces `.starttls()` connection protocol
+        # more information - https://stackoverflow.com/a/33891521/6623589
+        self.secure_connection = secure_connection
+        
         # * connection parameters for SMTP Server
         # ? should `_host` and `_port` be allowed to define directly
         self._host = os.getenv("MAIL_SMTP_SERVER", kwargs.get("MAIL_SMTP_SERVER"))
         self._port = os.getenv("MAIL_SMTP_SERVER_PORT", kwargs.get("MAIL_SMTP_SERVER_PORT"))
+        
+        # * gmail and other providers uses secure-connection
+        # * thus, check if `_host` and `secure_connection` matches
+        if self._host == 587 and not self.secure_connection:
+            warnings.warn("For port 587, you should enable a `secure_connection`")
 
         # * defination of admin/sender email address
         # ? should `_email` be allowed to define directly
@@ -42,6 +52,11 @@ class BaseMailer(object):
 
         try:
             self.mail_server.connect(self._host, self._port)
+                          
+            if self.secure_connection:
+                self.mail_server.ehlo()
+                self.mail_server.starttls()
+                self.mail_server.ehlo()
 
             # * try logging into the server with the credentials provided
             # ? should `_password` be allowed to define directly
