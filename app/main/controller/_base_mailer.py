@@ -24,12 +24,12 @@ class BaseMailer(object):
         
         # * connection parameters for SMTP Server
         # ? should `_host` and `_port` be allowed to define directly
-        self._host = os.getenv("MAIL_SMTP_SERVER", kwargs.get("_host"))
-        self._port = os.getenv("MAIL_SMTP_SERVER_PORT", kwargs.get("_port"))
+        self._host = os.getenv("MAIL_SMTP_SERVER", kwargs.get("MAIL_SMTP_SERVER"))
+        self._port = os.getenv("MAIL_SMTP_SERVER_PORT", kwargs.get("MAIL_SMTP_SERVER_PORT"))
 
         # * defination of admin/sender email address
         # ? should `_email` be allowed to define directly
-        self.sender = os.getenv("ADMIN_EMAIL", kwargs.get("_email"))
+        self.sender = os.getenv("ADMIN_EMAIL", kwargs.get("ADMIN_EMAIL"))
 
         self.mail_server = smtplib.SMTP(
             host = self._host,
@@ -47,7 +47,7 @@ class BaseMailer(object):
             # ? should `_password` be allowed to define directly
             self.mail_server.login(
                 user     = self.sender,
-                password = os.getenv("ADMIN_EMAIL_PASSWORD", kwargs.get("_password")),
+                password = os.getenv("ADMIN_EMAIL_PASSWORD", kwargs.get("ADMIN_EMAIL_PASSWORD")),
             )
         except ConnectionRefusedError as err:
             raise ConnectionRefusedError(f"Active Machine: <{self._host} -p {self._port}> | {err}")
@@ -75,7 +75,7 @@ class BaseMailer(object):
 
         email_message = MIMEMultipart('alternative')
 
-        email_message["Subject"] = subject + "(in HTML)"
+        email_message["Subject"] = subject
         email_message["From"]    = self.sender
         email_message["To"]      = receiver
 
