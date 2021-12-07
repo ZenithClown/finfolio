@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
     try:
         mailer.sendMail(
-            receiver = "dPramanik.INSW@gmail.com",
+            receiver = "ayushsinghpaliwal77@gmail.com",
             message  = "Hello World! This is a test email. Please do not reply to this email.",
             subject  = "Testing Email Service #2"
         )

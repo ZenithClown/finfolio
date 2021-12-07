@@ -42,6 +42,9 @@ class BaseMailer(object):
 
         try:
             self.mail_server.connect(self._host, self._port)
+            self.mail_server.ehlo()
+            self.mail_server.starttls()
+            self.mail_server.ehlo()
 
             # * try logging into the server with the credentials provided
             # ? should `_password` be allowed to define directly
