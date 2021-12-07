@@ -35,7 +35,7 @@ class BaseMailer(object):
         # * gmail and other providers uses secure-connection
         # * thus, check if `_host` and `secure_connection` matches
         if self._host == 587 and not self.secure_connection:
-            warnings.warn("For port 587, you should enable a `secure_connection`)
+            warnings.warn("For port 587, you should enable a `secure_connection`")
 
         # * defination of admin/sender email address
         # ? should `_email` be allowed to define directly
