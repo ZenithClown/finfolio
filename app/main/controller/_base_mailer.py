@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 import os
+import socket
 import smtplib
 import warnings
 
@@ -12,6 +13,9 @@ from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv # Python 3.6+
 
 load_dotenv(verbose = True)
+
+# import loggers from app
+from ..._loggers import *
 
 class BaseMailer(object):
     """Base Class for Mailing"""
@@ -46,17 +50,24 @@ class BaseMailer(object):
             port = self._port
         )
 
+        # * define connecting machine identifiers
+        self.__host_name__ = socket.gethostname()
+        self.__ip_address__ = socket.gethostbyname(self.__host_name__)
+
 
     def __login__(self, **kwargs) -> bool:
         """Check if the Mail Server be logged in for Sending Emails"""
 
         try:
+            infoLogger.info(f"Logging Requested from {self.__host_name__} <{self.__ip_address__}>")
             self.mail_server.connect(self._host, self._port)
                           
             if self.secure_connection:
+                infoLogger.debug("secure connection enabled")
                 self.mail_server.ehlo()
                 self.mail_server.starttls()
                 self.mail_server.ehlo()
+                infoLogger.debug("secure connection established")
 
             # * try logging into the server with the credentials provided
             # ? should `_password` be allowed to define directly
@@ -65,8 +76,13 @@ class BaseMailer(object):
                 password = os.getenv("ADMIN_EMAIL_PASSWORD", kwargs.get("ADMIN_EMAIL_PASSWORD")),
             )
         except ConnectionRefusedError as err:
+            warnLogger.warn(f"authentication warning - {err}")
             raise ConnectionRefusedError(f"Active Machine: <{self._host} -p {self._port}> | {err}")
         except smtplib.SMTPAuthenticationError as err:
+            criticalLogger.critical(err)
+            return False
+        except Exception as err:
+            errorLogger.error(err)
             return False
 
         return True

@@ -8,11 +8,11 @@ import yaml
 import logging
 import logging.config
 
-try:
-    import importlib.resources as pkg_resources
-except ImportError:
-    # Try backported to PY<37 `importlib_resources`.
-    import importlib_resources as pkg_resources
+from os.path import (
+    join,
+    abspath,
+    dirname
+)
 
 
 def __getLoggerName__(logLevel : int):
@@ -30,20 +30,17 @@ def __getLoggerName__(logLevel : int):
 def __getLogger__(logLevel : int = logging.INFO):
     """Defination of a Logger-Functionality - can be used to Track User Sessions and Login Information"""
 
-
-    # https://stackoverflow.com/questions/6028000/
-    # https://stackoverflow.com/questions/56688232/
-    loggerFile = pkg_resources.open_text('logger.yaml')
-
     # define logger using PyYAML
-    config = yaml.safe_load(loggerFile.read())
+    with open(join(abspath(dirname(__file__)), "logger.yaml"), "r") as stream:
+        config = yaml.safe_load(stream)
+    
     logging.config.dictConfig(config)
 
     return logging.getLogger(__getLoggerName__(logLevel))
 
 
-infoLogger     = __getLogger__(logLevel=logging.INFO)
-errorLogger    = __getLogger__(logLevel=logging.ERROR)
-debugLogger    = __getLogger__(logLevel=logging.DEBUG)
-criticalLogger = __getLogger__(logLevel=logging.CRITICAL)
-warnLogger     = __getLogger__(logLevel=logging.WARNING)
+infoLogger     = __getLogger__(logLevel=logging.INFO)     # noqa: E203
+errorLogger    = __getLogger__(logLevel=logging.ERROR)    # noqa: E203
+debugLogger    = __getLogger__(logLevel=logging.DEBUG)    # noqa: E203
+criticalLogger = __getLogger__(logLevel=logging.CRITICAL) # noqa: E203
+warnLogger     = __getLogger__(logLevel=logging.WARNING)  # noqa: E203
