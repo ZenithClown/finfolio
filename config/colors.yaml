@@ -1,0 +1,11 @@
+about:
+  description:
+    A simple configuration file written in `YAML` language (as it supports comments) is defined to
+    configure colors that can be used widely in the application, i.e., in HTML/CSS components.
+
+colors:
+  # call the `colors.key` for each color category
+  graph:
+    # colors associated with `graph` objects
+    line: "#007ACE"
+    background: "#082255"
