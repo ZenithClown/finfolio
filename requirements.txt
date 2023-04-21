@@ -32,7 +32,6 @@ Jinja2==3.1.2
 Werkzeug==2.2.3
 
 # utilities
-python-dotenv==0.19.2
 PyYAML==6.0
 
 # additional dependencies

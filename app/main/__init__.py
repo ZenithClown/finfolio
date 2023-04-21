@@ -6,8 +6,8 @@ from flask import Flask
 from flask_bcrypt import Bcrypt # Bcrypt hashing for Flask
 from flask_sqlalchemy import SQLAlchemy
 
-from .config import config_by_name
-from ._base_model_class import ModelClass
+from app.config import config_by_name
+from app._base_model_class import ModelClass
 
 db = SQLAlchemy(model_class = ModelClass)
 flask_bcrypt = Bcrypt() # bcrypt hashing utilities

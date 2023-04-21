@@ -2,7 +2,7 @@
 
 from flask_restful import reqparse, Resource
 
-from ...utils import ResponseFormatter
+from app.utils import ResponseFormatter
 
 class BaseResource(Resource):
     """Base Class for Master Tables"""

@@ -10,28 +10,25 @@ all the endpoints can now be defined at one point and can be accessed
 from the total module.
 """
 
-from os import getenv
-from os.path import join
-from dotenv import load_dotenv # Python 3.6+
+import os
 
 from flask_restful import Api
 from flask import send_from_directory
 
-from .main import create_app # controlling application
+from app.main import create_app # controlling application
 
-# setting the environment using `dotenv`
-# for `production` recommended to define all under `$PATH`
-# and to control code leakage, comment/delete loadenv modules
-load_dotenv(verbose = True) # configure .env File or set Environment Variables
+# * define `APP_ROOT_DIR` & `PROJECT_ROOT_DIR` - for global usage
+APP_ROOT_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)))
+PROJECT_ROOT_DIR = os.path.join(APP_ROOT_DIR, "..") # `manage.py` file location
 
 # define api version, is also sent for identification
-__version__ = open(join(abspath(dirname(__file__)), "VERSION"), "r").read()
+__version__ = open(os.path.join(APP_ROOT_DIR, "VERSION"), "r").read()
 
 # define project type from `config.py` or `.env` file or `$PATH`
 # configure different environment under `PROJECT_ENV_NAME` like:
 #   > `test`  : run `unittest` for code checking and compatibility
 #   > `debug` : run the project under degubbing mode, and for testing
-PROJECT_ENVIRON = getenv("PROJECT_ENV_NAME") or "dev"
+PROJECT_ENVIRON = os.getenv("PROJECT_ENV_NAME") or "dev"
 app = create_app(PROJECT_ENVIRON) # check config.py
 
 # adding favicon to flask-docker-template
@@ -48,7 +45,7 @@ app = create_app(PROJECT_ENVIRON) # check config.py
 def favicon():
     # use os.path.join() syntax if not using static directory
     # like os.path.join(".", "static")
-    __ICO_PATH__ = join("..", "assets", "logo", "favicon.ico")
+    __ICO_PATH__ = os.path.join(PROJECT_ROOT_DIR, "assets", "logo", "favicon.ico")
     return send_from_directory(__ICO_PATH__, mimetype = "image/vnd.microsoft.icon")
 
 # create `api` object using `Api` and define all endpoints

@@ -2,11 +2,6 @@
 
 import os
 
-# setting the environment
-from dotenv import load_dotenv # Python 3.6+
-
-load_dotenv(verbose = True)
-
 basedir    = os.path.abspath(os.path.dirname(__file__)) # base directory
 local_base = os.getenv("DATABASE_URL", "my-database-url-string")
 
