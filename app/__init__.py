@@ -24,6 +24,9 @@ from .main import create_app # controlling application
 # and to control code leakage, comment/delete loadenv modules
 load_dotenv(verbose = True) # configure .env File or set Environment Variables
 
+# define api version, is also sent for identification
+__version__ = open(join(abspath(dirname(__file__)), "VERSION"), "r").read()
+
 # define project type from `config.py` or `.env` file or `$PATH`
 # configure different environment under `PROJECT_ENV_NAME` like:
 #   > `test`  : run `unittest` for code checking and compatibility
@@ -61,12 +64,5 @@ else:
 api = Api(app, prefix = prefix)
 
 ### --- List of all Resources --- ###
-# included application layer
-# controller moved to application/controller
-from app.main.application import * # import all controllers
 
-# a demo link is provided, delete/uncomment the controller
-# this controller is set from app/main/controller/hello_world.py
-# also remove app/main/controller/__init__.py
-# TODO: implement blueprint design such that endpoints are more organized
-api.add_resource(HelloWorld, "/") # hello-world endpoint
+### --- List of all Added Resources to API --- ###
