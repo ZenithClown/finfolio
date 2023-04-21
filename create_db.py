@@ -10,8 +10,8 @@ from app.main import (
     )
 from app.main.models import * # noqa: F401, F403
 
-app = create_app(os.getenv("PROJECT_ENV_NAME") or "demo")
+app = create_app(os.getenv("PROJECT_ENV_NAME") or "dev")
 
 with app.app_context():
-    db.init_app(app)
+    # db.init_app(app)
     db.create_all()
