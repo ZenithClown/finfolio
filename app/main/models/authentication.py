@@ -17,7 +17,7 @@ from app.main import db
 class UserAuthentication(db.Model):
     __tablename__ = "authentication"
 
-    id_ = db.Column(sa.Integer, primary_key = True, auto_increment = True)
+    id_ = db.Column(sa.Integer, primary_key = True, autoincrement = True)
     username = db.Column(sa.String(25), db.ForeignKey('users.username', ondelete = "CASCADE"), nullable = False)
 
     # check details for `email_address`
@@ -36,7 +36,7 @@ class UserAuthentication(db.Model):
 class LastPassword(db.Model):
     __tablename__ = "last_password"
 
-    id_ = db.Column(sa.Integer, primary_key = True, auto_increment = True)
+    id_ = db.Column(sa.Integer, primary_key = True, autoincrement = True)
     username = db.Column(sa.String(25), db.ForeignKey('users.username', ondelete = "CASCADE"), nullable = False)
 
     # last password hash is stored, such that user does not repeat last password
