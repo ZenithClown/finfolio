@@ -61,5 +61,8 @@ else:
 api = Api(app, prefix = prefix)
 
 ### --- List of all Resources --- ###
+from app.main.application.api import * # noqa: F401, F403
+from app.main.application.controller import * # noqa: F401, F403
 
 ### --- List of all Added Resources to API --- ###
+api.add_resource(AdminAPI, "/admin/hello")
