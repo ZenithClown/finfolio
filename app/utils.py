@@ -2,6 +2,12 @@
 
 import time
 
+from app import (
+    # for info block logging
+    __version__,
+    PROJECT_ENVIRON
+)
+
 class ResponseFormatter(object):
     """Format any CRUD Operation to a Standard API Response"""
 
@@ -33,7 +39,7 @@ class ResponseFormatter(object):
         }.get(code_, "NONE: UNDEFINED: API Utility Error")
     
 
-    def _message_defination_(self, code : int = 200, err : str = None, msg_desc : str = None) -> dict:
+    def _message_defination_(self, code : int, err : str, msg_desc : str, request_type : str = "get") -> dict:
         """
         The Message Format for any Outbound APIs
 
@@ -60,6 +66,19 @@ class ResponseFormatter(object):
                 # the next two is an optional block for error message
                 "error" : str(err) if err else err, # this error can be logged
                 "message" : msg_desc # long message description (for UI/UX)
+            },
+
+            "info" : {
+                # provide information about api, call request
+                # this block can be typically used for logging and dev-ops
+                "api_version" : __version__,
+                "project_env" : PROJECT_ENVIRON,
+
+                "request_summary" : {
+                    # summarizes the request information
+                    "type" : request_type,
+                    "time" : time.ctime()
+                }
             }
         }
 
@@ -67,30 +86,10 @@ class ResponseFormatter(object):
     def get(self, data : list, err : str = None, code : int = 200, msg_desc : str = None) -> dict:
         """Format O/P of all GET Response"""
 
-        return {
-            "status" : {
-                "code"          : code,
-                "reference"     : self.get_small_message(code), # reference TAG (derived from code)
-                "error message"       : str(err) if err else err, # this error to be logged, for DevOps
-                "message description" : msg_desc # Long Message Description - for UI/UX
-            },
-
-            "data" : data,
-
-            "time" : time.ctime()
-        }
+        return self._message_defination_(code, err, msg_desc) | {"data" : data}
 
 
     def post(self, data : list, err : str = None, code : int = 200, msg_desc : str = None) -> dict:
         """Format O/P of all GET Response"""
 
-        return {
-            "status" : {
-                "code"    : code, # https://www.restapitutorial.com/httpstatuscodes.html
-                "reference"   : self.get_small_message(code), # reference TAG (derived from code)
-                "error message"   : str(err) if err else err, # this error to be logged, for DevOps
-                "message" : msg_desc # Long Message Description - for UI/UX
-            },
-
-            "time" : time.ctime()
-        }
+        return self._message_defination_(code, err, msg_desc, request_type = "post")
