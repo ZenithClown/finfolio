@@ -57,17 +57,19 @@ class AdminAPI(BaseResource):
         """
 
         if request.authorization:
-            # authorization received
-            admin_username = request.authorization.username
-            admin_password = request.authorization.password
-            print(admin_username, admin_password, )
-            match_password = {"admin" : "password", "dev" : "password"}
-            if admin_password == match_password.get(admin_username, None):
+            # authorization is received, user can get all information
+            __auth_username__ = request.authorization.username
+            __auth_password__ = request.authorization.password
+
+            # ! password is hard-coded in developer environment
+            __passwords__ = {"admin" : "password", "dev" : "password"}
+            if __auth_password__ == __passwords__.get(__auth_username__, None):
                 authorized = True
+            else:
+                authorized = False
         else:
             authorized = False
 
-        
         if authorized:
             if request.endpoint == "users/all":
                 return self.formatter.get(self.users_tbl_interface.get_all())
