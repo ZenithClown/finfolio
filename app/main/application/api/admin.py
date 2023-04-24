@@ -9,6 +9,8 @@ users in the database, or getting details of a user based on
 username.
 """
 
+from flask import request
+
 from app.main.application._base_resource import BaseResource
 from app.main.repository.interface import * # noqa: F401, F403
 
@@ -43,4 +45,31 @@ class AdminAPI(BaseResource):
         self.users_tbl_interface = UsersTableInterface()
 
     def get(self):
-        return self.formatter.get(self.users_tbl_interface.get_all(), code = 200)
+        """
+        GET Request for ADMIN Level Users
+
+        A set of spicific functionalities is added for administrators
+        and developers to query the database and fetch various data.
+        All the `get()` request for `AdminAPI` is configured using
+        "Basic Auth" which accepts usersnames and password.
+
+        ! DEV Mode: username and password for authentication is coded
+        """
+
+        if request.authorization:
+            # authorization received
+            admin_username = request.authorization.username
+            admin_password = request.authorization.password
+            print(admin_username, admin_password, )
+            match_password = {"admin" : "password", "dev" : "password"}
+            if admin_password == match_password.get(admin_username, None):
+                authorized = True
+        else:
+            authorized = False
+
+        
+        if authorized:
+            if request.endpoint == "users/all":
+                return self.formatter.get(self.users_tbl_interface.get_all())
+        
+        return self.formatter.get(data = [], code = 401, msg_desc = "Wrong Authentication")
