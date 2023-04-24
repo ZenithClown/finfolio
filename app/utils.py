@@ -2,6 +2,8 @@
 
 import time
 
+from flask import request
+
 from app import (
     # for info block logging
     __version__,
@@ -77,7 +79,20 @@ class ResponseFormatter(object):
                 "request_summary" : {
                     # summarizes the request information
                     "type" : request_type,
-                    "time" : time.ctime()
+                    "time" : time.ctime(),
+                    
+                    # in addition return source ip-addr for tracking
+                    "source" : {
+                        # https://stackoverflow.com/a/3760309/6623589
+                        # https://stackoverflow.com/a/12685240/6623589
+                        "host" : request.headers.get("Host", None),
+                        "agent" : request.headers.get("User-Agent", None),
+                    },
+
+                    # api request can be authorized, and the same is obtained as
+                    # https://stackoverflow.com/a/29387151/6623589
+                    "authorization" : request.authorization.username if request.authorization \
+                        else None
                 }
             }
         }
@@ -89,7 +104,7 @@ class ResponseFormatter(object):
         return self._message_defination_(code, err, msg_desc) | {"data" : data}
 
 
-    def post(self, data : list, err : str = None, code : int = 200, msg_desc : str = None) -> dict:
-        """Format O/P of all GET Response"""
+    def post(self, err : str = None, code : int = 200, msg_desc : str = None) -> dict:
+        """Format O/P of all POST Response"""
 
         return self._message_defination_(code, err, msg_desc, request_type = "post")
