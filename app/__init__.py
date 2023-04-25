@@ -66,3 +66,5 @@ from app.main.application.controller import * # noqa: F401, F403
 
 ### --- List of all Added Resources to API --- ###
 api.add_resource(AdminAPI, "/admin/users/all", endpoint = "users/all")
+
+api.add_resource(SignUp, "/signup")

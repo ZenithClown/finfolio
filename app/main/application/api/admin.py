@@ -10,6 +10,7 @@ username.
 """
 
 from flask import request
+from flask import redirect
 
 from app.main.application._base_resource import BaseResource
 from app.main.repository.interface import * # noqa: F401, F403
@@ -29,17 +30,6 @@ class AdminAPI(BaseResource):
 
     def __init__(self):
         super().__init__()
-
-        # ! `AdminAPI` always accepts `username` and `password` for authentication
-        self.req_parser.add_argument("username", type = str, required = True)
-        self.req_parser.add_argument("password", type = str, required = True)
-
-        # additionally, aacept different arguments for users management
-        self.req_parser.add_argument("first_name", type = str, required = False)
-        self.req_parser.add_argument("middle_name", type = str, required = False)
-        self.req_parser.add_argument("family_name", type = str, required = False)
-        self.req_parser.add_argument("email_id", type = str, required = False)
-        self.req_parser.add_argument("mobile_number", type = int, required = False)
 
         # database access repository/interfaces modules
         self.users_tbl_interface = UsersTableInterface()
@@ -73,5 +63,7 @@ class AdminAPI(BaseResource):
         if authorized:
             if request.endpoint == "users/all":
                 return self.formatter.get(self.users_tbl_interface.get_all())
+            else:
+                return redirect("/404")
         
         return self.formatter.get(data = [], code = 401, msg_desc = "Wrong Authentication")
