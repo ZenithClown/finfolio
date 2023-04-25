@@ -7,8 +7,13 @@ An important role in user management system is to add a new user into
 the database. The API is thus defined to create a new user.
 """
 
+from app.utils import encrypt_password
 from app.main.application._base_resource import BaseResource
 from app.main.repository.interface.users import UsersTableInterface
+from app.main.repository.interface.authentication import (
+    LastPasswordInterface,
+    UserAuthenticationInterface
+)
 
 class SignUp(BaseResource):
     """
@@ -42,10 +47,20 @@ class SignUp(BaseResource):
         self.req_parser.add_argument("email_id", type = str, required = True, location = "form")
         self.req_parser.add_argument("mobile_number", type = int, required = True, location = "form")
 
+        # the password in encrypted during initialization and `args` is updated
+        self.args["password"] = encrypt_password(self.args["password"])
+
         # database access repository/interfaces modules
         self.users_tbl_interface = UsersTableInterface()
+        self.last_pass_tbl_interface = LastPasswordInterface()
+        self.users_auth_tbl_interface = UserAuthenticationInterface()
 
     
     def post(self):
+        # ! WRONG IMPLEMENTATION - same variable is overwritten
+        # TODO Fix the same variable name, and possibly create a loop to parse data
         err, msg_desc, success = self.users_tbl_interface.post_user(**self.args)
+        err, msg_desc, success = self.last_pass_tbl_interface.post_record(username = self.args["username"])
+        err, msg_desc, success = self.users_auth_tbl_interface.post_record(username = self.args["username"])
+        
         return self.formatter.post(code = 200 if success else 404, err = err, msg_desc = msg_desc)
