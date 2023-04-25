@@ -9,10 +9,51 @@ the admin interface section.
 """
 
 from app.main import db
-from app.main.models import * # noqa: F401, F403
+from app.main.models.users import UsersTable
 
 
 class UsersTableInterface:
     # ! this code is currently not optimized
     # all the interfaces are added into one function
     get_all = lambda self : [row.__to_dict__() for row in UsersTable.query.all()]
+
+    def post_user(
+            self,
+            username : str,
+            password : str,
+            
+            # accept the name of the user as in database
+            first_name : str,
+            family_name : str,
+
+            # accept email/mobile
+            email_id : str,
+            mobile_number : int,
+
+            # additional arguments with their defaults
+            middle_name : str = None
+    ):
+        """
+        Function to Register a New User into System
+
+        A typical function for users' registration and signup system.
+        The function accepts all the arguments/keyword arguments and
+        create a new user under `users` table.
+        """
+
+        record = UsersTable(
+            username = username,
+            password = password,
+            first_name = first_name,
+            middle_name = middle_name,
+            family_name = family_name,
+            email_id = email_id,
+            mobile_number = mobile_number
+        )
+
+        try:
+            db.session.add(record)
+            db.session.commit()
+            return None, None, True # error, message, success
+        except Exception as err:
+            return err, "Failed to Create a New User", False
