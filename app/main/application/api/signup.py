@@ -47,13 +47,28 @@ class SignUp(BaseResource):
         self.req_parser.add_argument("email_id", type = str, required = True, location = "form")
         self.req_parser.add_argument("mobile_number", type = int, required = True, location = "form")
 
-        # the password in encrypted during initialization and `args` is updated
-        self.args["password"] = encrypt_password(self.args["password"])
-
         # database access repository/interfaces modules
         self.users_tbl_interface = UsersTableInterface()
         self.last_pass_tbl_interface = LastPasswordInterface()
         self.users_auth_tbl_interface = UserAuthenticationInterface()
+
+
+    @property
+    def args(self):
+        """
+        Overwrite Request Parser Arguments of Parent Class
+
+        Parent class `self.args` is over-written since we want to
+        encrypt the password and store it into the database. This set
+        the `self.args` as an dictionary, however the functionalities
+        won't change. This ensures that the "raw password" is also
+        never saved in any attributes/variables and thus safe from
+        any external tampering methods.
+        """
+
+        args_ = dict(self.req_parser.parse_args())
+        args_["password"] = encrypt_password(args_["password"])
+        return args_
 
     
     def post(self):
