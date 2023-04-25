@@ -13,6 +13,23 @@ from app.main import db
 from app.main.models.authentication import * # noqa: F401, F403
 
 class UserAuthenticationInterface:
+    def get_by_username(self, username : str):
+        """
+        GET Authentication and Verification Status for Username
+
+        Provided a username, the interface function queries database
+        to fetch data and provide output.
+        """
+
+        error_ = None
+        try:
+            result = UserAuthentication.query.filter_by(username = username).first().__to_dict__()
+        except AttributeError as err:
+            result = None
+            error_ = str(err)
+
+        return result, error_
+
     def post_record(
             self,
             username : str,
@@ -45,6 +62,24 @@ class UserAuthenticationInterface:
 
 
 class LastPasswordInterface:
+    def get_by_username(self, username : str):
+        """
+        GET Last Password Details based on Username
+
+        Provided a username, the interface function queries database
+        to fetch data and provide output.
+        """
+
+        error_ = None
+        try:
+            result = LastPassword.query.filter_by(username = username).first().__to_dict__()
+        except AttributeError as err:
+            result = None
+            error_ = str(err)
+
+        return result, error_
+
+
     def post_record(self, username : str, last_password_hash : str = None):
         """
         POST a Record in `last_password` Table
