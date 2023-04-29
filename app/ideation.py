@@ -47,35 +47,26 @@ class OptionsChain(BaseResource):
         self.engine = sa.create_engine(f"sqlite:////database/sqlite/nse-options-chain/{today}.db")
 
         # * add argument parser for `symbols`
-        self.req_parser.add_argument(
-            "symbols", type = str, required = True, location = "args",
-            help = "List of Symbols in CSV (example `sym1,sym2`)"
-        )
-
-        self.req_parser.add_argument(
-            "effective_date", type = str, required = False, location = "args",
-            help = "Effective Date in `DD-MM-YYYY` Format"
-        )
-
-        # * parse input arguments into correct format
-        self.symbols = self.args["symbols"].split(",")
-
-        try:
-            self.effective_date = dt.datetime.strptime(self.args["effective_date"], "%d-%m-%Y")
-        except TypeError:
-            self.effective_date = None
+        self.req_parser.add_argument("symbol", type = str, required = False, location = "args")
+        self.req_parser.add_argument("symbols", type = str, required = False, location = "args")
+        self.req_parser.add_argument("effective_date", type = str, required = False, location = "args")
 
     def get(self):
-        options_chain = pd.concat([
-            pd.read_sql(f"SELECT '{symbol}' AS symbol, * FROM {symbol}", self.engine)
-            for symbol in self.symbols
-        ], ignore_index = True)
-        options_chain["expiry_date_dt"] = pd.to_datetime(options_chain["expiry_date"], format = "%Y-%m-%d")
-
         if request.endpoint == "effective_date":
+            options_chain = pd.concat([
+                pd.read_sql(f"SELECT '{symbol}' AS symbol, * FROM {symbol}", self.engine)
+                for symbol in self.args["symbols"].split(",")
+            ], ignore_index = True)
+
+            options_chain["expiry_date_dt"] = pd.to_datetime(options_chain["expiry_date"], format = "%Y-%m-%d")
             json = options_chain.sort_values(["expiry_date_dt"]).groupby("symbol")["expiry_date"].unique().to_dict()
             return self.formatter.get({k : json[k].tolist()[:2] for k in json.keys()})
         elif request.endpoint == "strike_price":
-            pass
+            symbol = self.args["symbol"]
+            strike_prices = pd.read_sql(f"SELECT * FROM strike_prices WHERE symbol = '{symbol}'", self.engine)
+            strike_prices["expiry_date"] = strike_prices[["expiry_date", "time"]].apply(lambda x : f"{x[0]} {x[1]}", axis = 1)
+            strike_prices["expiry_date"] = pd.to_datetime(strike_prices["expiry_date"], format = "%Y-%m-%d %H:%M:%S.%f")
+
+            return self.formatter.get(strike_prices[strike_prices["expiry_date"] == strike_prices["expiry_date"].max()]["strike_prices"].values.tolist())
         else:
             return redirect("/404")
