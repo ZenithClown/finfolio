@@ -69,3 +69,5 @@ from app.main.application.controller import * # noqa: F401, F403
 
 ### --- List of all Added Resources to API --- ###
 api.add_resource(SymbolList, "/symbols")
+api.add_resource(OptionsChain, "/strike_price", endpoint = "strike_price")
+api.add_resource(OptionsChain, "/effective_date", endpoint = "effective_date")
