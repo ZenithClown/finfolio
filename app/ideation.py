@@ -74,7 +74,7 @@ class OptionsChain(BaseResource):
 
         if request.endpoint == "effective_date":
             json = options_chain.sort_values(["expiry_date_dt"]).groupby("symbol")["expiry_date"].unique().to_dict()
-            return self.formatter.get({k : json[k].tolist() for k in json.keys()})
+            return self.formatter.get({k : json[k].tolist()[:2] for k in json.keys()})
         elif request.endpoint == "strike_price":
             pass
         else:
