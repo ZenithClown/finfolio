@@ -2,6 +2,9 @@
 
 # define base model schema for all basic models
 
+import decimal
+import datetime as dt
+
 class ModelClass(object):
     """Base Model Schema
 
@@ -36,6 +39,7 @@ class ModelClass(object):
     this will always return all the columns for any particular table,
     and proper care has to be maintained if anything else is required.
     """
+
 
     def __repr__(self):
         # can be used by developers - for debugging

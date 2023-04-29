@@ -2,13 +2,8 @@
 
 import os
 
-# setting the environment
-from dotenv import load_dotenv # Python 3.6+
-
-load_dotenv(verbose = True)
-
 basedir    = os.path.abspath(os.path.dirname(__file__)) # base directory
-local_base = os.getenv("DATABASE_URL", "my-database-url-string")
+local_base = os.getenv("DATABASE_URL", "sqlite:///")
 
 class Config:
     """Base Configuration Class - Inherited by Others"""
@@ -24,7 +19,7 @@ class DevelopmentConfig(Config):
     DEBUG = True # This is a development server.
 
     # set database
-    SQLALCHEMY_DATABASE_URI = f"{local_base}/{os.getenv('dev_db', 'dev-database')}"
+    SQLALCHEMY_DATABASE_URI = f"{local_base}/{os.getenv('dev_db', 'dev-database.db')}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
@@ -35,7 +30,7 @@ class TestingConfig(Config):
     TESTING = True
 
     # set database
-    SQLALCHEMY_DATABASE_URI = f"{local_base}/{os.getenv('test_db', 'test-database')}"
+    SQLALCHEMY_DATABASE_URI = f"{local_base}/{os.getenv('test_db', 'test-database.db')}"
 
     PRESERVE_CONTEXT_ON_EXCEPTION  = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False

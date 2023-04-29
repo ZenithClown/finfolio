@@ -10,32 +10,25 @@ all the endpoints can now be defined at one point and can be accessed
 from the total module.
 """
 
-from os import getenv
-from os.path import join, abspath, dirname
-from dotenv import load_dotenv # Python 3.6+
+import os
 
 from flask_restful import Api
 from flask import send_from_directory
 
-from .main import create_app # controlling application
-
-# setting the environment using `dotenv`
-# for `production` recommended to define all under `$PATH`
-# and to control code leakage, comment/delete loadenv modules
-load_dotenv(verbose = True) # configure .env File or set Environment Variables
+from app.main import create_app # controlling application
 
 # * define `APP_ROOT_DIR` & `PROJECT_ROOT_DIR` - for global usage
-APP_ROOT_DIR = join(abspath(dirname(__file__)))
-PROJECT_ROOT_DIR = join(APP_ROOT_DIR, "..") # `manage.py` file location
+APP_ROOT_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)))
+PROJECT_ROOT_DIR = os.path.join(APP_ROOT_DIR, "..") # `manage.py` file location
 
 # define api version, is also sent for identification
-__version__ = open(join(APP_ROOT_DIR, "VERSION"), "r").read()
+__version__ = open(os.path.join(APP_ROOT_DIR, "VERSION"), "r").read()
 
 # define project type from `config.py` or `.env` file or `$PATH`
 # configure different environment under `PROJECT_ENV_NAME` like:
 #   > `test`  : run `unittest` for code checking and compatibility
 #   > `debug` : run the project under degubbing mode, and for testing
-PROJECT_ENVIRON = getenv("PROJECT_ENV_NAME") or "dev"
+PROJECT_ENVIRON = os.getenv("PROJECT_ENV_NAME") or "dev"
 app = create_app(PROJECT_ENVIRON) # check config.py
 
 # adding favicon to flask-docker-template
@@ -52,7 +45,7 @@ app = create_app(PROJECT_ENVIRON) # check config.py
 def favicon():
     # use os.path.join() syntax if not using static directory
     # like os.path.join(".", "static")
-    __ICO_PATH__ = join("..", "assets", "logo", "favicon.ico")
+    __ICO_PATH__ = os.path.join(PROJECT_ROOT_DIR, "assets", "logo", "favicon.ico")
     return send_from_directory(__ICO_PATH__, mimetype = "image/vnd.microsoft.icon")
 
 # create `api` object using `Api` and define all endpoints
@@ -62,18 +55,16 @@ def favicon():
 # can be adjusted or removed if need be.
 if PROJECT_ENVIRON == "test":
     prefix = "/testing"
+elif PROJECT_ENVIRON == "dev":
+    prefix = "/dev"
 else:
     prefix = f"/api/{PROJECT_ENVIRON}/"
 
 api = Api(app, prefix = prefix)
 
 ### --- List of all Resources --- ###
-# included application layer
-# controller moved to application/controller
-from app.main.application import * # import all controllers
+from app.main.application.api import * # noqa: F401, F403
+from app.main.application.controller import * # noqa: F401, F403
 
-# a demo link is provided, delete/uncomment the controller
-# this controller is set from app/main/controller/hello_world.py
-# also remove app/main/controller/__init__.py
-# TODO: implement blueprint design such that endpoints are more organized
-api.add_resource(HelloWorld, "/") # hello-world endpoint
+### --- List of all Added Resources to API --- ###
+api.add_resource(HelloWorld, "/hello", endpoint = "hello")
