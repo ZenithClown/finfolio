@@ -70,3 +70,30 @@ class OptionsChain(BaseResource):
             return self.formatter.get(strike_prices[strike_prices["expiry_date"] == strike_prices["expiry_date"].max()]["strike_prices"].values.tolist())
         else:
             return redirect("/404")
+
+
+class PlotController(BaseResource):
+    def __init__(self):
+        super().__init__()
+
+        today = dt.datetime.now().date()
+        self.engine = sa.create_engine(f"sqlite:////database/sqlite/nse-options-chain/{today}.db")
+
+        self.req_parser.add_argument("symbol", type = str, required = True, location = "args")
+        self.req_parser.add_argument("expiry_date", type = str, required = False, location = "args")
+        self.req_parser.add_argument("strike_prices", type = str, required = True, location = "args")
+
+
+    def get(self):
+        date_ = self.args["expiry_date"].split("-")
+        date_ = f"{date_[2]}-{date_[1]}-{date_[0]}"
+        data = pd.read_sql(f"SELECT * FROM NIFTY", self.engine)
+
+        data = data[
+            (data["expiry_date"] == date_) &
+            (data["Strike Price"].isin(list(map(int, self.args["strike_prices"].split(",")))))
+        ]
+        return {
+            strike_price : data[["time", "PE OI Chg", "CE OI Chg"]].to_dict(orient = "list")
+            for strike_price in self.args["strike_prices"].split(",")
+        }
