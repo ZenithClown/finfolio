@@ -87,13 +87,13 @@ class PlotController(BaseResource):
     def get(self):
         date_ = self.args["expiry_date"].split("-")
         date_ = f"{date_[2]}-{date_[1]}-{date_[0]}"
-        data = pd.read_sql(f"SELECT * FROM NIFTY", self.engine)
+        data = pd.read_sql(f"SELECT * FROM NIFTY", self.engine).drop_duplicates()
 
         data = data[
             (data["expiry_date"] == date_) &
             (data["Strike Price"].isin(list(map(int, self.args["strike_prices"].split(",")))))
         ]
-        return {
+        return self.formatter.get({
             strike_price : data[["time", "PE OI Chg", "CE OI Chg"]].to_dict(orient = "list")
             for strike_price in self.args["strike_prices"].split(",")
-        }
+        })
