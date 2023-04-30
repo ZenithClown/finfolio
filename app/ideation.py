@@ -93,7 +93,9 @@ class PlotController(BaseResource):
             (data["expiry_date"] == date_) &
             (data["Strike Price"].isin(list(map(int, self.args["strike_prices"].split(",")))))
         ]
+
+        data.rename(columns = {"PE OI Chg" : "PE_OI_Chg", "CE OI Chg" : "CE_OI_Chg"}, inplace = True)
         return self.formatter.get({
-            strike_price : data[["time", "PE OI Chg", "CE OI Chg"]].to_dict(orient = "list")
+            strike_price : data[data["Strike Price"] == int(strike_price)][["time", "PE OI Chg", "CE OI Chg"]].to_dict(orient = "list")
             for strike_price in self.args["strike_prices"].split(",")
         })
