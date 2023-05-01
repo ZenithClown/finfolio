@@ -12,6 +12,7 @@ from the total module.
 
 import os
 
+from flask_cors import CORS
 from flask_restful import Api
 from flask import send_from_directory
 
@@ -30,6 +31,7 @@ __version__ = open(os.path.join(APP_ROOT_DIR, "VERSION"), "r").read()
 #   > `debug` : run the project under degubbing mode, and for testing
 PROJECT_ENVIRON = os.getenv("PROJECT_ENV_NAME") or "dev"
 app = create_app(PROJECT_ENVIRON) # check config.py
+CORS(app) # enable CORS for cross-application data sharing
 
 # adding favicon to flask-docker-template
 # all application does have a favicon, and flask_restful
