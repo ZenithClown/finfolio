@@ -16,11 +16,11 @@ import pandas as pd
 import datetime as dt
 import sqlalchemy as sa
 
-from flask import jsonify
+# from flask import jsonify
 from flask import request
 from flask import redirect
 
-from app.main.config import local_base
+# from app.main.config import local_base
 from app.main.application._base_resource import BaseResource
 
 class SymbolList(BaseResource):
