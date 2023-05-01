@@ -68,6 +68,13 @@ class OptionsChain(BaseResource):
             strike_prices["date"] = pd.to_datetime(strike_prices["date"], format = "%Y-%m-%d %H:%M:%S.%f")
 
             return self.formatter.get(strike_prices[strike_prices["date"] == strike_prices["date"].max()]["strike_prices"].values.tolist())
+        elif request.endpoint == "current_price":
+            symbol = self.args["symbol"]
+            current_price = pd.read_sql(f"SELECT * FROM current_price WHERE symbol = '{symbol}'", self.engine)
+            current_price["date"] = current_price[["date", "time"]].apply(lambda x : f"{x[0]} {x[1]}", axis = 1)
+            current_price["date"] = pd.to_datetime(current_price["date"], format = "%Y-%m-%d %H:%M:%S.%f")
+
+            return self.formatter.get(round(current_price[current_price["date"] == current_price["date"].max()]["cur_price"].values.tolist()[0], 2))
         else:
             return redirect("/404")
 
