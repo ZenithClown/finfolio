@@ -64,10 +64,10 @@ class OptionsChain(BaseResource):
         elif request.endpoint == "strike_price":
             symbol = self.args["symbol"]
             strike_prices = pd.read_sql(f"SELECT * FROM strike_prices WHERE symbol = '{symbol}'", self.engine)
-            strike_prices["expiry_date"] = strike_prices[["expiry_date", "time"]].apply(lambda x : f"{x[0]} {x[1]}", axis = 1)
-            strike_prices["expiry_date"] = pd.to_datetime(strike_prices["expiry_date"], format = "%Y-%m-%d %H:%M:%S.%f")
+            strike_prices["date"] = strike_prices[["date", "time"]].apply(lambda x : f"{x[0]} {x[1]}", axis = 1)
+            strike_prices["date"] = pd.to_datetime(strike_prices["date"], format = "%Y-%m-%d %H:%M:%S.%f")
 
-            return self.formatter.get(strike_prices[strike_prices["expiry_date"] == strike_prices["expiry_date"].max()]["strike_prices"].values.tolist())
+            return self.formatter.get(strike_prices[strike_prices["date"] == strike_prices["date"].max()]["strike_prices"].values.tolist())
         else:
             return redirect("/404")
 
