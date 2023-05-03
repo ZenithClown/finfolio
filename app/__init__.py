@@ -68,3 +68,5 @@ from app.main.application.controller import * # noqa: F401, F403
 api.add_resource(AdminAPI, "/admin/users/all", endpoint = "users/all")
 
 api.add_resource(SignUp, "/signup")
+api.add_resource(UsersTableController, "/users")
+api.add_resource(RolesAPI, "/roles")
