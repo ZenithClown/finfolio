@@ -110,6 +110,7 @@ class ResponseFormatter(object):
 
         return self._message_defination_(code, err, msg_desc, request_type = "post")
 
+
 def encrypt_password(password : str) -> str:
     """
     Encrypt a RAW Password using `hashlib` Module
