@@ -3,7 +3,7 @@
 import os
 
 basedir    = os.path.abspath(os.path.dirname(__file__)) # base directory
-local_base = os.getenv("DATABASE_URL", "sqlite:///")
+local_base = os.getenv("DATABASE_URL", "sqlite:////database")
 
 class Config:
     """Base Configuration Class - Inherited by Others"""
@@ -19,7 +19,7 @@ class DevelopmentConfig(Config):
     DEBUG = True # This is a development server.
 
     # set database
-    SQLALCHEMY_DATABASE_URI = f"{local_base}/{os.getenv('dev_db', 'dev-database.db')}"
+    SQLALCHEMY_DATABASE_URI = f"{local_base}/{os.getenv('dev_db', 'pOrgz.db')}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
