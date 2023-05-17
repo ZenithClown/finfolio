@@ -11,9 +11,7 @@ combination which may be referenced in any transactional tables.
 TODO: join account, other types of account, one time account etc.
 """
 
-import datetime as dt
 import sqlalchemy as sa
-
 from uuid import uuid4 as UUID
 
 from app.main import db
