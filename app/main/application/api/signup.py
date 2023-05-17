@@ -10,14 +10,10 @@ the database. The API is thus defined to create a new user.
 from app.utils import encrypt_password
 from app.main.application._base_resource import BaseResource
 from app.main.repository.interface.users import UsersTableInterface
-from app.main.repository.interface.authentication import (
-    LastPasswordInterface,
-    UserAuthenticationInterface
-)
 
 class SignUp(BaseResource):
     """
-    SignUp/Registration Request Handler for UMS Application
+    SignUp/Registration Request Handler for pOrgz Application
 
     A list of endpoints is available for a new user registrations.
     Currently, the system does not consider an user role, however
@@ -49,8 +45,6 @@ class SignUp(BaseResource):
 
         # database access repository/interfaces modules
         self.users_tbl_interface = UsersTableInterface()
-        self.last_pass_tbl_interface = LastPasswordInterface()
-        self.users_auth_tbl_interface = UserAuthenticationInterface()
 
 
     @property
@@ -75,7 +69,5 @@ class SignUp(BaseResource):
         # ! WRONG IMPLEMENTATION - same variable is overwritten
         # TODO Fix the same variable name, and possibly create a loop to parse data
         err, msg_desc, success = self.users_tbl_interface.post_user(**self.args)
-        err, msg_desc, success = self.last_pass_tbl_interface.post_record(username = self.args["username"])
-        err, msg_desc, success = self.users_auth_tbl_interface.post_record(username = self.args["username"])
-        
+
         return self.formatter.post(code = 200 if success else 404, err = err, msg_desc = msg_desc)

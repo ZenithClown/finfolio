@@ -13,45 +13,6 @@ from app.main.models.users import UsersTable
 
 
 class UsersTableInterface:
-    # ! this code is currently not optimized
-    # all the interfaces are added into one function
-    get_all = lambda self : [row.__to_dict__() for row in UsersTable.query.all()]
-
-    def get_param_by_username(self, username : str, param : str or list = "all") -> dict:
-        """
-        GET a Parameter or All Attributes based on Username
-
-        A query is defined to get a single attribute like "password"
-        from the `users` tables based on `username`. However, all the
-        parameters can be obtained using `param == all` keyword.
-        """
-
-        error_ = dict()
-        try:
-            result = UsersTable.query.filter_by(username = username).first().__to_dict__()
-            error_["GET.USERNAME"] = {"status" : "passed", "message" : None}
-        except AttributeError:
-            result = None
-            error_["GET.USERNAME"] = {"status" : "failed", "message" : "username does not exists"}
-
-        if type(param) == str:
-            if param != "all":
-                param = ["username", param] 
-            else:
-                pass # return all
-        else:
-            # list of parameters is required
-            param =  list(set(["username"] + list(param)))
-
-        try:
-            result = {k : result[k] for k in param}
-            error_["GET.PARAMETERS"] = {"status" : "passed", "message" : None}
-        except Exception as e:
-            result = dict()
-            error_["GET.PARAMETERS"] = {"status" : "failed", "message" : str(e)}
-
-        return result, error_
-
     def post_user(
             self,
             username : str,
