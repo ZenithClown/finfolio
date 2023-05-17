@@ -3,11 +3,12 @@
 """
 ORM Defination of `users` Table
 
-Users basic information is stored under generic `users` table, while
-there is a seperate table to store alternate informations like mobile
-number, email address etc. The `users` table is the most significant
-table with Primary Key (PK) set as `username` which is set on user
-creation. Other columns has their relevant meanings.
+Users basic information is stored under generic `users` table. The 
+`users` table is the most significant table with Primary Key (PK) set
+as `username` which is set on user creation. Other columns has their
+relevant meanings.
+
+TODO: demography, alternate details, security, roles, etc.
 """
 
 import datetime as dt
