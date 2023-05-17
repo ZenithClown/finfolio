@@ -92,8 +92,7 @@ class ResponseFormatter(object):
 
                     # api request can be authorized, and the same is obtained as
                     # https://stackoverflow.com/a/29387151/6623589
-                    "authorization" : request.authorization.username if request.authorization \
-                        else None
+                    "authorization" : request.authorization.username if request.authorization else None
                 }
             }
         }
