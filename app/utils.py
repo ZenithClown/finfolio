@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 import time
+import hashlib
 
 from flask import request
 
@@ -108,3 +109,28 @@ class ResponseFormatter(object):
         """Format O/P of all POST Response"""
 
         return self._message_defination_(code, err, msg_desc, request_type = "post")
+
+
+def encrypt_password(password : str) -> str:
+    """
+    Encrypt a RAW Password using `hashlib` Module
+
+    Currently, the function encrypts the password as a
+    `hashlib.sha512` string and is stored into database.
+
+    TODO: Create a methodology of using "salting" method
+    """
+
+    return hashlib.sha512(password.encode()).hexdigest()
+
+
+def validate_password(password : str, encoded_password : str) -> bool:
+    """
+    Validates an Encrypted SHA-512 Password String
+
+    SHA-512 encoded string is created and returns <bool> upon
+    password validation.
+    """
+
+    password = hashlib.sha512(password.encode()).hexdigest()
+    return password == encoded_password
