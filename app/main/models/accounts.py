@@ -5,7 +5,7 @@ ORM Defination for User Accounts
 
 A user can have multiple accounts, while multiple users can use the
 same database file to track their expenses. The accounts table gives
-one unique identity (`user_id`) based on each username, account
+one unique identity (`account_id`) based on each username, account
 combination which may be referenced in any transactional tables.
 
 TODO: join account, other types of account, one time account etc.
@@ -20,9 +20,10 @@ from app.main.models.static import AccountTypes
 class AccountsTable(db.Model):
     __tablename__ = "accounts"
 
-    account_id = db.Column(sa.String(36), default = str(UUID()).upper(), primary_key = True)
+    # ! https://stackoverflow.com/a/49398042/6623589 don't call the function itself
+    account_id = db.Column(sa.UUID(as_uuid = True), default = UUID, primary_key = True)
     account_number = db.Column(sa.Integer, nullable = False, unique = True)
-    username = db.Column(sa.String(25), db.ForeignKey('users.username'), nullable = False)
+    username = db.Column(sa.String(25), db.ForeignKey('users.username'), unique = False, nullable = False)
     account_type = db.Column(sa.Enum(AccountTypes), nullable = False)
 
     # each account has an opening and closing date

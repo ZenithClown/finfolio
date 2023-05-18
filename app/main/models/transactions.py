@@ -19,7 +19,7 @@ class TransactionsTable(db.Model):
     __tablename__ = "transactions"
 
     _id = db.Column(sa.Integer, autoincrement = True, primary_key = True)
-    user_id = db.Column(sa.String(36), db.ForeignKey('accounts.account_id'), nullable = False)
+    account_id = db.Column(sa.UUID(as_uuid = True), db.ForeignKey('accounts.account_id'), nullable = False)
 
     transaction_type = db.Column(sa.Enum(TransactionTypes), nullable = False)
     transaction_amount = db.Column(sa.Float(precision = 2), nullable = False)
