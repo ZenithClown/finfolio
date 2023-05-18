@@ -20,7 +20,7 @@ from app.main.models.static import AccountTypes
 class AccountsTable(db.Model):
     __tablename__ = "accounts"
 
-    user_id = db.Column(sa.String(36), default = str(UUID()).upper(), primary_key = True)
+    account_id = db.Column(sa.String(36), default = str(UUID()).upper(), primary_key = True)
     account_number = db.Column(sa.Integer, nullable = False, unique = True)
     username = db.Column(sa.String(25), db.ForeignKey('users.username'), nullable = False)
     account_type = db.Column(sa.Enum(AccountTypes), nullable = False)
