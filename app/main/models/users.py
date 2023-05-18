@@ -29,7 +29,7 @@ class UsersTable(db.Model):
 
     # this section adds identity information
     email_id = db.Column(sa.String(255), nullable = False, unique = True)
-    mobile_number = db.Column(sa.Integer, nullable = False, unique = True) # no country code
+    mobile_number = db.Column(sa.BigInteger, nullable = False, unique = True) # no country code
 
     # this stores the record datetime information
     created_at = db.Column(sa.DateTime, default = dt.datetime.now())

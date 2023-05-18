@@ -20,9 +20,9 @@ from app.main.models.static import AccountTypes
 class AccountsTable(db.Model):
     __tablename__ = "accounts"
 
-    # ! https://stackoverflow.com/a/49398042/6623589 don't call the function itself
-    account_id = db.Column(sa.UUID(as_uuid = True), default = UUID, primary_key = True)
-    account_number = db.Column(sa.Integer, nullable = False, unique = True)
+    # ! https://stackoverflow.com/q/183042/6623589 using UUID as default in different databases
+    account_id = db.Column(sa.String(36), default = lambda : str(UUID()).upper(), primary_key = True)
+    account_number = db.Column(sa.BigInteger, nullable = False, unique = True)
     username = db.Column(sa.String(25), db.ForeignKey('users.username'), unique = False, nullable = False)
     account_type = db.Column(sa.Enum(AccountTypes), nullable = False)
 
