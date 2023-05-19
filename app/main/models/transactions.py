@@ -21,8 +21,10 @@ class TransactionsTable(db.Model):
     _id = db.Column(sa.Integer, autoincrement = True, primary_key = True)
     account_id = db.Column(sa.String(36), db.ForeignKey('accounts.account_id'), nullable = False)
 
+    transaction_date = db.Column(sa.Date, nullable = False)
     transaction_type = db.Column(sa.Enum(TransactionTypes), nullable = False)
     transaction_amount = db.Column(sa.Float(precision = 2), nullable = False)
+    description = db.Column(sa.String(2048), nullable = True)
 
     # this stores the record datetime information
     created_at = db.Column(sa.DateTime, default = dt.datetime.now())
