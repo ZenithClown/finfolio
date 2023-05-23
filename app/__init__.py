@@ -68,3 +68,11 @@ from app.main.application.controller import * # noqa: F401, F403
 
 ### --- List of all Added Resources to API --- ###
 api.add_resource(NewAccount, "/new")
+
+# 1. static endpoints - typically returning `enum` informations
+api.add_resource(AccountController, "/static/accounts", endpoint = "accounts/default")
+api.add_resource(AccountController, "/static/accounts/names", endpoint = "accounts/names")
+api.add_resource(AccountController, "/static/accounts/values", endpoint = "accounts/values")
+api.add_resource(TransactionController, "/static/transactions", endpoint = "transactions/default")
+api.add_resource(TransactionController, "/static/transactions/names", endpoint = "transactions/names")
+api.add_resource(TransactionController, "/static/transactions/values", endpoint = "transactions/values")
