@@ -7,9 +7,9 @@ Account types are static, and keeps track of the number of types of
 account that can be created and tracked via this application.
 """
 
-import enum
+from app.main.models.static._base_enum import ExtendedEnum
 
-class AccountTypes(enum.Enum):
+class AccountTypes(ExtendedEnum):
     C = "Cash in Hand"
     CA = "CREDIT Cards Account"
     DEMAT = "Cash in DEMAT Account excluding MF/SIP"
