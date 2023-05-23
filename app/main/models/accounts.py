@@ -23,7 +23,7 @@ class AccountsTable(db.Model):
     # ! https://stackoverflow.com/q/183042/6623589 using UUID as default in different databases
     account_id = db.Column(sa.String(36), default = lambda : str(UUID()).upper(), primary_key = True)
     account_number = db.Column(sa.BigInteger, nullable = False, unique = True)
-    username = db.Column(sa.String(25), db.ForeignKey('users.username'), unique = False, nullable = False)
+    username = db.Column(sa.String(25), unique = False, nullable = False)
     account_type = db.Column(sa.Enum(AccountTypes), nullable = False)
     account_name = db.Column(sa.String(64), nullable = True)
 
