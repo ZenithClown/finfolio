@@ -25,6 +25,7 @@ class AccountsTable(db.Model):
     account_number = db.Column(sa.BigInteger, nullable = False, unique = True)
     username = db.Column(sa.String(25), db.ForeignKey('users.username'), unique = False, nullable = False)
     account_type = db.Column(sa.Enum(AccountTypes), nullable = False)
+    account_name = db.Column(sa.String(36), nullable = True)
 
     # each account has an opening and closing date
     opening_date = db.Column(sa.Date, nullable = False)
