@@ -10,5 +10,5 @@ account that can be created and tracked via this application.
 import enum
 
 class TransactionTypes(enum.Enum):
-    DEBIT = "DEBIT Transaction"
-    CREDIT = "CREDIT Transaction"
+    D = "Amount Deposited"
+    W = "Amount Withdrawn"
