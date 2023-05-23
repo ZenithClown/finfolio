@@ -13,18 +13,18 @@ import enum
 class ExtendedEnum(enum.Enum):
 
     @classmethod
-    def names(self):
+    def names(cls):
         # return all names for an enum class
-        return list(map(lambda c : c.name, self))
+        return list(map(lambda c : c.name, cls))
 
 
     @classmethod
-    def values(self):
+    def values(cls):
         # return all values for an enum class
-        return list(map(lambda c : c.value, self))
+        return list(map(lambda c : c.value, cls))
 
 
     @classmethod
-    def dict(self):
+    def dict(cls):
         # return name, value in a dictionary format
-        return {c.name : c.value for c in self}
+        return {c.name : c.value for c in cls}
