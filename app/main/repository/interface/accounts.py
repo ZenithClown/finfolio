@@ -22,6 +22,7 @@ class AccountsTableInterface:
             
             # accept the name of the user as in database
             account_type : str,
+            account_name : str,
             opening_date : dt.date,
             closing_date : dt.date = None
     ):
@@ -37,6 +38,7 @@ class AccountsTableInterface:
             account_number = account_number,
             username = username,
             account_type = account_type,
+            account_name = account_name,
             opening_date = opening_date,
             closing_date = closing_date
         )
