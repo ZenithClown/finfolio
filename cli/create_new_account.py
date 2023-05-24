@@ -32,5 +32,5 @@ if __name__ == "__main__":
         "closing_date" : closing_date
     }
 
-    data = requests.post("http://localhost:5000/dev/new", data = payload)
+    data = requests.post("http://localhost:5000/dev/create/new-account", data = payload)
     print(data.status_code, data.text)

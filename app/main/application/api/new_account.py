@@ -38,7 +38,7 @@ class NewAccount(BaseResource):
 
         # database access repository/interfaces modules
         self.accounts_tbl_interface = AccountsTableInterface()
-    
+
 
     def post(self):
         # ! WRONG IMPLEMENTATION - same variable is overwritten

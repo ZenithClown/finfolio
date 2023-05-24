@@ -67,7 +67,7 @@ from app.main.application.api import * # noqa: F401, F403
 from app.main.application.controller import * # noqa: F401, F403
 
 ### --- List of all Added Resources to API --- ###
-api.add_resource(NewAccount, "/new")
+api.add_resource(NewAccount, "/create/new-account")
 
 # 1. static endpoints - typically returning `enum` informations
 api.add_resource(AccountController, "/static/accounts", endpoint = "accounts/default")
