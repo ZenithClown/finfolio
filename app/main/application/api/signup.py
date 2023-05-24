@@ -32,6 +32,7 @@ class NewAccount(BaseResource):
 
         # TODO write additional help documentation for the below attributes
         self.req_parser.add_argument("account_type", type = str, required = True, location = "form")
+        self.req_parser.add_argument("account_name", type = str, required = False, location = "form")
         self.req_parser.add_argument("opening_date", type = lambda x : dt.datetime.strptime(x, "%d-%m-%Y").date(), required = True, location = "form")
         self.req_parser.add_argument("closing_date", type = lambda x : dt.datetime.strptime(x, "%d-%m-%Y").date(), required = False, location = "form")
 
