@@ -23,7 +23,7 @@ class ModelClass(object):
 base = declarative_base(cls = ModelClass) # inherit base as `class MyClass(base)`
 
 if __name__ == "__main__":
-    from . import engine
+    from models import engine
 
     print("Creating Database ...")
     base.metadata.create_all(engine)

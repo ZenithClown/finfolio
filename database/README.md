@@ -12,4 +12,17 @@ The database module controls both `ams` and `ums` module and any related table i
 
 SQLite does not have an in-built `datetime` data type and all is stored as `TEXT`, for more information check the [data types](https://www.sqlite.org/datatype3.html) documentation. Strict database design is avoided, and may be incorporated in the future.
 
+## Getting Started
+
+ORM provides the option to create all the tables, views in the database using the `base.metadata.create_all(engine)` method. In addition, it also has the capability of generating the full statements. During development, the database is set as `example.db` and can be invoked as:
+
+```python
+pOrgz/database$ python models/base.py
+
+Creating Database ...
+2023-12-05 15:27:51,022 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2023-12-05 15:27:51,022 INFO sqlalchemy.engine.Engine COMMIT
+  >> Database created successfully.
+```
+
 </div>
