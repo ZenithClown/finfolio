@@ -60,6 +60,6 @@ CREATE TABLE IF NOT EXISTS "ams.mwAP_CREDIT" (
     CreditLimit INTEGER NOT NULL,
     
     -- statement is generated on a date, and due date is calculated
-    StatementDay  INTEGER (CHECK StatementDay <= 31), -- day number
-    StatementDue_ INTEGER, -- no. of days from statement day to pay due amount
+    StatementDay  INTEGER CHECK(StatementDay <= 31), -- day number
+    StatementDue_ INTEGER -- no. of days from statement day to pay due amount
 );

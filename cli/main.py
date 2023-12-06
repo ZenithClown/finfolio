@@ -14,7 +14,7 @@ configuration keys and informations.
 import os
 import sqlite3
 
-ROOT = os.path.join(os.path.abspath(__file__), "..")
+ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 DB_PATH = "E:\\database\\pOrgz.db" # ! STATIC path is provided
 
 DB_MODELS = os.path.join(ROOT, "database", "models")
@@ -26,5 +26,8 @@ if __name__ == "__main__":
 
     # for first time, create all tables in database
     # also populate static pre-defined master values (from file)
-    con.execute(open(os.path.join(DB_MODELS, "ams.mwAccountType.sql")).read())
-    con.execute(open(os.path.join(DB_MODELS, "ams.mwAccountProperty.sql")).read())
+    con.executescript(open(os.path.join(DB_MODELS, "ams.mwAccountType.sql")).read())
+    con.executescript(open(os.path.join(DB_MODELS, "ams.mwAccountProperty.sql")).read())
+
+    con.commit()
+    con.close()
