@@ -10,7 +10,7 @@ any of the different attributes.
 Copywright © [2023] pOrgz <https://github.com/pOrgz-dev>
 ********************************************************************/
 
-CREATE TABLE "ams.mwAccountType" (
+CREATE TABLE IF NOT EXISTS "ams.mwAccountType" (
     AccountTypeID   INTEGER PRIMARY KEY AUTOINCREMENT,
     AccountTypeName VARCHAR(10) UNIQUE NOT NULL, -- ! treated as TEXT
     _description    TEXT -- ? optional, descriptive information

@@ -10,7 +10,7 @@ associated with account types.
 Copywright © [2023] pOrgz <https://github.com/pOrgz-dev>
 ********************************************************************/
 
-CREATE TABLE "ams.mwAccountProperty" (
+CREATE TABLE IF NOT EXISTS "ams.mwAccountProperty" (
     AccountNumber    INTEGER PRIMARY KEY,
     AccountName      VARCHAR(64) NOT NULL UNIQUE,
     AccountType      INTEGER NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE "ams.mwAccountProperty" (
 
 
 /*** Additional Account Property for ? ACCOUNT_TYPE is Defined Below ***/
-CREATE TABLE "ams.mwAP_DEBIT" (
+CREATE TABLE IF NOT EXISTS "ams.mwAP_DEBIT" (
     _id           INTEGER PRIMARY KEY AUTOINCREMENT,
     AccountNumber INTEGER NOT NULL UNIQUE, -- ! not a PK, for easier join
     
@@ -50,7 +50,7 @@ CREATE TABLE "ams.mwAP_DEBIT" (
 );
 
 
-CREATE TABLE "ams.mwAP_CREDIT" (
+CREATE TABLE IF NOT EXISTS "ams.mwAP_CREDIT" (
     _id           INTEGER PRIMARY KEY AUTOINCREMENT,
     AccountNumber INTEGER NOT NULL UNIQUE, -- ! not a PK, for easier join
 
