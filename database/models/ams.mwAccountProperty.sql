@@ -11,7 +11,8 @@ Copywright © [2023] pOrgz <https://github.com/pOrgz-dev>
 ********************************************************************/
 
 CREATE TABLE IF NOT EXISTS "ams.mwAccountProperty" (
-    AccountNumber    INTEGER PRIMARY KEY,
+    AccountID        VARCHAR(32) PRIMARY KEY, -- generate unique identity
+    AccountNumber    INTEGER NOT NULL UNIQUE,
     AccountName      VARCHAR(64) NOT NULL UNIQUE,
     AccountType      INTEGER NOT NULL,
     AccountOpenDate  DATE NOT NULL, -- ! resulting affinity - TEXT
@@ -27,8 +28,8 @@ CREATE TABLE IF NOT EXISTS "ams.mwAccountProperty" (
 
 /*** Additional Account Property for ? ACCOUNT_TYPE is Defined Below ***/
 CREATE TABLE IF NOT EXISTS "ams.mwAP_DEBIT" (
-    _id           INTEGER PRIMARY KEY AUTOINCREMENT,
-    AccountNumber INTEGER NOT NULL UNIQUE, -- ! not a PK, for easier join
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    AccountID INTEGER NOT NULL UNIQUE, -- ! not a PK, for easier join
     
     -- information available for a debit type account
     -- typically, a debit card is associated with an institution
@@ -46,13 +47,13 @@ CREATE TABLE IF NOT EXISTS "ams.mwAP_DEBIT" (
     NomineeName TEXT, -- ? can we maintain this from the `ums.?`
     NomineeRelationship TEXT,
 
-    FOREIGN KEY(AccountNumber) REFERENCES "ams.mwAccountProperty"(AccountNumber)
+    FOREIGN KEY(AccountID) REFERENCES "ams.mwAccountProperty"(AccountID)
 );
 
 
 CREATE TABLE IF NOT EXISTS "ams.mwAP_CREDIT" (
-    _id           INTEGER PRIMARY KEY AUTOINCREMENT,
-    AccountNumber INTEGER NOT NULL UNIQUE, -- ! not a PK, for easier join
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    AccountID INTEGER NOT NULL UNIQUE, -- ! not a PK, for easier join
 
     -- typically a credit card has the following additional attributes
     -- TODO: have the provision to record credit/cash revision dates
@@ -61,5 +62,7 @@ CREATE TABLE IF NOT EXISTS "ams.mwAP_CREDIT" (
     
     -- statement is generated on a date, and due date is calculated
     StatementDay  INTEGER CHECK(StatementDay <= 31), -- day number
-    StatementDue_ INTEGER -- no. of days from statement day to pay due amount
+    StatementDue_ INTEGER, -- no. of days from statement day to pay due amount
+
+    FOREIGN KEY(AccountID) REFERENCES "ams.mwAccountProperty"(AccountID)
 );
