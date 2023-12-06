@@ -46,13 +46,7 @@ Any of the above mentioned entities (i.e., `root`, `admins` or `users`) can have
 
 ### Accounts Management System (AMS)
 
-Accounts are the core of the financial management tool. An account is identified by an unique identity number generated seperately in the system and is referenced in all the columns. Considering Indian household scenarios, the following types of accounts can be currently tracked in the system:
-  1. Savings Account (`DEBIT`)
-  2. Credit Cards Account (`CREDIT`)
-  3. Wallet Accounts (like Amazon Pay, Uber Wallet | `WALLET`)
-  4. DEMAT Account (`DEMAT`)
-  5. Provident Funds Account (`PPF`)
-  6. National Pensions Scheme (`NPS`)
+Accounts are the core of the financial management tool. An account is identified by an unique identity number generated seperately in the system and is referenced in all the columns. Check more information and types of pre-defined types under master tables [defination](./database/models/ams.mwAccountType.sql).
 
 ## Contribution
 
