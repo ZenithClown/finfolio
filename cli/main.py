@@ -33,7 +33,8 @@ if __name__ == "__main__":
     # also populate static pre-defined master values (from file)
     for file in tqdm.tqdm([
         os.path.join(DB_MODELS, "ams.mwAccountType.sql"),
-        os.path.join(DB_MODELS, "ams.mwAccountProperty.sql")
+        os.path.join(DB_MODELS, "ams.mwAccountProperty.sql"),
+        # os.path.join(DB_MODELS, "ams.transactions.sql") # ERROR: sqlite3.OperationalError: near "(": syntax error at line 40
     ], desc = f"{time.ctime()} | Executing Table Create Statements at {DB_PATH}"):
         try:
             con.executescript(open(file).read())
