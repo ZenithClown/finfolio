@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS "ams.mwAccountProperty" (
     AccountID        VARCHAR(32) PRIMARY KEY, -- generate unique identity
     AccountNumber    INTEGER NOT NULL UNIQUE,
     AccountName      VARCHAR(64) NOT NULL UNIQUE,
-    AccountType      INTEGER NOT NULL,
+    AccountTypeID    INTEGER NOT NULL,
     AccountOpenDate  DATE NOT NULL, -- ! resulting affinity - TEXT
     AccountCloseDate DATE,
     
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS "ams.mwAccountProperty" (
     -- for programming purpose, a default value (blank) is set
     AccountTags   TEXT DEFAULT '' NOT NULL,
 
-    FOREIGN KEY(AccountType) REFERENCES "ams.mwAccountType"(AccountType)
+    FOREIGN KEY(AccountTypeID) REFERENCES "ams.mwAccountType"(AccountTypeID)
 );
 
 

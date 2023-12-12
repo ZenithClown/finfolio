@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS "ams.transactions" (
     -- ? most of the time transaction record is available at day level
     -- each of the transaction has a type, amount and description
     trxDate   DATE NOT NULL,
-    trxType   VARCHAR(4) NOT NULL,     -- TODO: define key definations
+    trxType   VARCHAR(16) NOT NULL,    -- TODO: define key definations
     trxAmount DECIMAL(16, 2) NOT NULL, -- ? MAX: 99,999,999,999,999.99
 
     -- ! all of the derived column have a leading "_" for identification
@@ -48,5 +48,6 @@ CREATE TABLE IF NOT EXISTS "ams.transactions" (
     created_on DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_on DATETIME DEFAULT NULL,
 
-    FOREIGN KEY(AccountID) REFERENCES "ams.mwAccountProperty"(AccountID)
+    FOREIGN KEY(AccountID) REFERENCES "ams.mwAccountProperty"(AccountID),
+    FOREIGN KEY(trxType) REFERENCES "ams.mwTransactionTypes"(trxType)
 );
