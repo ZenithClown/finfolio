@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS "ams.mwAP_DEBIT" (
     -- TODO: can we add/fetch the information using the `ums.?` tables
     SecondaryHolder  TEXT DEFAULT NULL,
     TertiaryHolder   TEXT DEFAULT NULL,
-    quaternaryHolder TEXT DEFAULT NULL,
+    QuaternaryHolder TEXT DEFAULT NULL,
 
     -- optionally add/maintain nominee informations
     _hasNominee INTEGER CHECK(_hasNominee IN (0, 1)) DEFAULT 0 NOT NULL,
