@@ -11,7 +11,7 @@ Copywright © [2023] pOrgz <https://github.com/pOrgz-dev>
 CREATE TABLE IF NOT EXISTS "ams.transactions" (
     _id       INTEGER PRIMARY KEY AUTOINCREMENT,
     AccountID VARCHAR(32) NOT NULL,
-    
+
     -- ? most of the time transaction record is available at day level
     -- each of the transaction has a type, amount and description
     trxDate   DATE NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS "ams.transactions" (
     -- ! all of the derived column have a leading "_" for identification
     -- ! all of the derived fields allow NULL:
     -- null since ai/ml is yet in development stage, and may be revised
-    
+
     -- ? each record has two types of descriptions:
     --   1. as available from the raw records/files/user inputs
     --   2. cleaned/formatted description for text analytics/featurization
