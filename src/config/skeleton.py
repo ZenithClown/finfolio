@@ -23,27 +23,39 @@ class NoConsoleFilter(logging.Filter):
         return not (record.levelname == "INFO") & ("no-console" in record.msg)
 
 
-def setupLogging(logFile : str, logLevel : int = 0):
+def setupLogging(logFile : str, logLevel : int = 0, appType : str = "streamlit"):
     """
     Setup Basic Logging using a Log-Level
 
     The function returns the logging object as `root` that can be
     used widely in the module. To overwrite, set a log level with an
     accepted integer value as defined in documentations.
+
+    A streamlit application has its own set of logging configuration,
+    implemented at different level which is defined in `config.toml`
+    (https://docs.streamlit.io/library/advanced-features/configuration).
+    In addition, streamlit has a in-built vast logging/debugging
+    feature, thus file/console level logging is required only in the
+    legacy-cli application.
     """
 
-    cur_dir = os.path.dirname(os.path.abspath(__file__))
-    config_ = os.path.join(cur_dir, "logger.yaml")
-    with open(config_, "r") as f:
-        log_cfg = yaml.safe_load(f.read())
+    if appType == "cli":
+        cur_dir = os.path.dirname(os.path.abspath(__file__))
+        config_ = os.path.join(cur_dir, "logger.yaml")
+        with open(config_, "r") as f:
+            log_cfg = yaml.safe_load(f.read())
 
-        # add default log file name externally
-        # https://stackoverflow.com/a/62152596/6623589
-        log_cfg["handlers"]["fileHandler"]["filename"] = logFile
-        logging.config.dictConfig(log_cfg)
+            # add default log file name externally
+            # https://stackoverflow.com/a/62152596/6623589
+            log_cfg["handlers"]["fileHandler"]["filename"] = logFile
+            logging.config.dictConfig(log_cfg)
+
+    else:
+        logging.basicConfig(format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s", filename = logFile)
 
     logger = logging.getLogger("root")
-    logger.setLevel(logLevel)
+    logger.setLevel(logLevel)    
+
     return logger
 
 
