@@ -32,7 +32,8 @@ def setupLogging(logFile : str, logLevel : int = 0):
     accepted integer value as defined in documentations.
     """
 
-    config_ = os.path.join("logger.yaml")
+    cur_dir = os.path.dirname(os.path.abspath(__file__))
+    config_ = os.path.join(cur_dir, "logger.yaml")
     with open(config_, "r") as f:
         log_cfg = yaml.safe_load(f.read())
 
@@ -41,7 +42,7 @@ def setupLogging(logFile : str, logLevel : int = 0):
         log_cfg["handlers"]["fileHandler"]["filename"] = logFile
         logging.config.dictConfig(log_cfg)
 
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger("root")
     logger.setLevel(logLevel)
     return logger
 
