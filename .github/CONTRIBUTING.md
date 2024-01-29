@@ -20,8 +20,35 @@ mentioned for your reference. To get an overview of the project, read the [READM
 
 ## Getting Started
 
-To navigate our codebase with confidence, check the documentations :confetti_ball:. For more information on how we write our markdown files,
-see [the GitHub Markdown reference](contributing/content-markup-reference.md) :sparkles:.
+A set of ⚙ configuration repositories were being actively developed to manage the overall product. The
+repositories are custom built to serve functionalities (check the individual repository read me files
+for more information). To start as a developer, it is recommended to create an environment and install the
+configuration/meta repositories with `git` like:
+
+```shell
+virtualenv neuralnod # https://virtualenv.pypa.io/en/latest/user_guide.html
+
+# settings maintained by: https://gist.github.com/nxlogics
+# the codes are generally to be run directly from the source, else added as submodule
+git clone https://gist.github.com/nxlogics/157cfcf13756b56d8e37081590a5d425.git METADATA_DATASOURCE
+```
+
+A _`skeleton`_ repository is developed [**`ndprdconfig`**](https://github.com/neuralNOD/ndprdconfig) that
+can be utilized for quickly setting up configurations (like database configuration settings). This is
+an optional repository, but can be utilized to manage multiple instances.
+
+```shell
+git clone https://github.com/neuralNOD/ndprdconfig.git # setup config files
+```
+
+To learn about `PYTHONPATH` check
+[this link](https://medium.com/chingu/an-introduction-to-environment-variables-and-how-to-use-them-f602f66d15fa).
+The repositories which are configured with `setup.py` or `pyproject.toml` can
+be installed in editable mode in the created virtual environment like:
+
+```shell
+/path/to/repository$ pip install -e .
+```
 
 ### Issues
 
