@@ -1,6 +1,13 @@
-# Contributor Covenant Code of Conduct
+<div align = "center">
 
-## Our Pledge
+# Code of Conduct
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
+[![neuralNOD INC](https://img.shields.io/badge/🧠-neuralNOD_INC-blue)](https://github.com/neuralNOD)
+[![REPO:ADMIN](https://img.shields.io/badge/👔-nxLogics-2A8542)](https://github.com/nxlogics)
+
+</div>
+
+<div align = "justify">
 
 We as members, contributors, and leaders pledge to make participation in our
 community a harassment-free experience for everyone, regardless of age, body
@@ -11,6 +18,14 @@ identity and orientation.
 
 We pledge to act and interact in ways that contribute to an open, welcoming,
 diverse, inclusive, and healthy community.
+
+Please read the full disclosure, ethical standards that are maintained. A
+working group of community members **_is being created to promptly address_**
+any reported issues. The working group is made up of pandas contributors and
+users. Instances of abusive, harassing, or otherwise unacceptable behavior may
+be reported by contacting the working group by e-mail (todo@example.com).
+Messages sent to this e-mail address will not be publicly visible but only to
+the working group members.
 
 ## Our Standards
 
@@ -116,8 +131,7 @@ community.
 
 This Code of Conduct is adapted from the [Contributor Covenant][homepage],
 version 2.1, available at
-[https://www.contributor-covenant.org/version/2/1/code_of_conduct.html][v2.1].
-
+[Code of Conduct (v2.1)](https://www.contributor-covenant.org/version/2/1/code_of_conduct.html).
 Community Impact Guidelines were inspired by
 [Mozilla's code of conduct enforcement ladder][Mozilla CoC].
 
@@ -130,3 +144,5 @@ For answers to common questions about this code of conduct, see the FAQ at
 [Mozilla CoC]: https://github.com/mozilla/diversity
 [FAQ]: https://www.contributor-covenant.org/faq
 [translations]: https://www.contributor-covenant.org/translations
+
+</div>
