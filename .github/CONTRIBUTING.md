@@ -1,17 +1,22 @@
-# Contributing
+<div align = "center">
 
-When contributing to this repository, please first discuss the change you wish to make via issue,
-email, or any other method with the owners of this repository before making a change.  Please note
-we have a [code of conduct](CODE_OF_CONDUCT.md), please follow it in all your interactions with
-the project.
+# Contributing to `neuralNOD`
+[![neuralNOD INC](https://img.shields.io/badge/🧠-neuralNOD_INC-blue)](https://github.com/neuralNOD)
+[![REPO:ADMIN](https://img.shields.io/badge/👔-nxLogics-2A8542)](https://github.com/nxlogics)
 
-To get an overview of the project, read the [README](../README.md).
-Here are some resources to help you get started with open source contributions:
+</div>
 
-- [Finding ways to contribute to open source on GitHub](https://docs.github.com/en/get-started/exploring-projects-on-github/finding-ways-to-contribute-to-open-source-on-github)
-- [Set up Git](https://docs.github.com/en/get-started/quickstart/set-up-git)
-- [GitHub flow](https://docs.github.com/en/get-started/quickstart/github-flow)
-- [Collaborating with pull requests](https://docs.github.com/en/github/collaborating-with-pull-requests)
+<div align = "justify">
+
+First and foremost, 🙏 thank you for considering to contribute to `neuralNOD`. We are currently
+working on the following [projects/products](#void). The projects are mostly optimized and
+custom built for internal usages. New members, or external contributors are requested to adhere to
+the [Code of Conduct](CODE_OF_CONDUCT.md), and are requested to first discuss the changes via
+an issue, or as directed by project owners.
+
+The commit messages are open-ended and not much restricted, however
+[best practices](https://gist.github.com/robertpainsi/b632364184e70900af4ab688decf6f53) are
+mentioned for your reference. To get an overview of the project, read the [README](../README.md).
 
 ## Getting Started
 
@@ -32,3 +37,5 @@ related issue doesn't exist, you can open a new issue using a relevant [issue fo
    Pull Request would represent. The versioning scheme we use is [SemVer](http://semver.org/).
 4. You may merge the Pull Request in once you have the sign-off of two other developers, or if you 
    do not have permission to do that, you may request the second reviewer to merge it for you.
+
+</div>
