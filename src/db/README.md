@@ -6,9 +6,11 @@ The application uses `SQLite` as the de facto database, which is a lightweight, 
 
 ## Adapted Notations
 
-The database module controls both `ams` and `ums` module and any related table is prefixed by `ams.*` or `ums.*` respectively. In addition, master tables are prefixed as `*mw*` while the transactional tables are referenced as `*trx*`, and the table names are written in `camelCase` format. New developers are requested to follow the same convention, or the PR will be rejected. In addition, please note the following:
+The database module controls both `ams` and `ums` module and any related table is prefixed by `ams.*` or `ums.*` respectively. In addition, master tables are prefixed as `mw*` while the transactional tables are referenced as `trx*`, and the table names are written in `camelCase` format. New developers are requested to follow the same convention, or the PR will be rejected. In addition, please note the following:
   * `COMPOSITE_KEY` is avoided in tables, and for transactional tables the default primary key is set as `_id(sa.Integer, primary_key = True, autoincrement = True)`, and
   * All `date` is formatted as `YYYY-MM-DD` while `datetime` is formatted as `YYYY-MM-DD HH:MM:SS.SSS` formatting.
+
+Since there are different types of account types which have unrelated properties, like savings account typically has a branch while a demat/mutual fund account does not have, but they have portfolio information and service providers. For this, an "extended table" are used with the prefix `ext*` to denote an extension typically of a master table. By defination, the extended table defination is in the same file as the primary table.
 
 The key notations (PK, FK, and Composite Key) used in the system are designed considering the best use cases of both [OLAP and OLTP](https://www.youtube.com/watch?v=iw-5kFzIdgY), and thus tables with primary key defined as `_id` are specifically designed to retreive and perform analytical function faster. In addition, if a composite key mapping is required, then a `RecordHash` is generated (to be implemented) so that each record can be uniquely identified and duplicate records can be deleted using simple `COUNT(*) GROUP BY RecordHash` logic.
 
