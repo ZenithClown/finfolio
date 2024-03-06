@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS "ams.transactions" (
     trxAmount DECIMAL(16, 2) NOT NULL, -- ? MAX: 99,999,999,999,999.99
 
     -- ! all of the derived column have a leading "_" for identification
-    -- ! all of the derived fields allow NULL:
+    -- ! all of the derived fields allow/defaults to NULL, unless explicit:
     -- null since ai/ml is yet in development stage, and may be revised
 
     -- ? each record has two types of descriptions:

@@ -56,4 +56,13 @@ By convention, the name of the file (in `models`, `views`) is same as that of th
 descriptive name is associated with the `queries` statements. In addition, for any static content for the master tables the
 data is populated using `INSERT INTO *` statement associated in the same file as the master table.
 
+```python
+>>> import pandas as pd # retreive, barebone library
+>>> import sqlite3 as db
+>>> source = db.connect(r"C:\Users\debmalya\pOrgz\pOrgz.db")
+>>> destination = db.connect(r"D:\FinFolioDB\finDB.db")
+>>> mwAccountProperty = pd.read_sql("SELECT * FROM 'ams.mwAccountProperty'", source)
+>>> mwAccountProperty.to_sql("ams.mwAccountProperty", destination, index = False, if_exists = "append")
+```
+
 </div>
