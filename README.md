@@ -45,12 +45,15 @@ avoided, and may be incorporated in the future.
 
 ## Getting Started
 
-A standard structure ([help](https://www.geeksforgeeks.org/structure-of-database-management-system/)) is develop to structure
-the [**`database`**](./database/) and is seperated into the following sub-directories:
+A standard structure ([help](https://www.geeksforgeeks.org/structure-of-database-management-system/)) is (established like an 
+[`symfony`](https://github.com/symfony/demo) application [to:]) developed to structure the [**`database`**](./database/) and
+is seperated into the following sub-directories:
   * [`models`](./database/models) - contains master and transaction tables definations,
   * [`views`](./database/views/) - definations of table views derived from masters and transactional tables, and
   * [`queries`](./database/queries/) - parameterized queries to interact with the database.
 
-By convention, the name of the file (in `models`, `views`) is same as that of the table/view name defined within, while a more descriptive name is associated with the `queries` statements. In addition, for any static content for the master tables the data is populated using `INSERT INTO *` statement associated in the same file as the master table.
+By convention, the name of the file (in `models`, `views`) is same as that of the table/view name defined within, while a more
+descriptive name is associated with the `queries` statements. In addition, for any static content for the master tables the
+data is populated using `INSERT INTO *` statement associated in the same file as the master table.
 
 </div>
