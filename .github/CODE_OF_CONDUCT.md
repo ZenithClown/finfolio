@@ -2,8 +2,8 @@
 
 # Code of Conduct
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
-[![neuralNOD INC](https://img.shields.io/badge/🧠-neuralNOD_INC-blue)](https://github.com/neuralNOD)
-[![REPO:ADMIN](https://img.shields.io/badge/👔-nxLogics-2A8542)](https://github.com/nxlogics)
+[![Zenith Clown](https://img.shields.io/badge/🧠-Debmalya_Pramanik-blue)](https://zenithclown.github.io/)
+[![REPO:ADMIN](https://img.shields.io/badge/👔-ZenithClown-2A8542)](https://github.com/ZenithClown)
 
 </div>
 
