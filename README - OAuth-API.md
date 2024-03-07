@@ -76,3 +76,7 @@ Python version 3.7 and above supports `importlib.resources` instead of `importli
 
 ## Docker Information
 Setting up docker files for testing and development ease. Use `docker-compose -f dummy-db.yml up` to setup a testing environment which uses `MySQL v5.7`. TODO: create table, schema and default data for testing.
+
+## Utility Functions
+
+<p align = "justify">To properly function and operate the <a href = "https://github.com/pOrgz-dev"><b>pOrgz-dev</b></a>, a list of utility functions, boilerplate designs, template files, etc. are provided in this repository. Check individual submodules for more information(s).</p>
