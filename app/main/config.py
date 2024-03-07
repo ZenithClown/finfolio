@@ -1,4 +1,6 @@
 # -*- encoding: utf-8 -*-
+# this file will be excluded form sphinx-build
+# include the class seperately to sphinx-build, if required
 
 import os
 
@@ -8,13 +10,12 @@ from dotenv import load_dotenv # Python 3.6+
 load_dotenv(verbose = True)
 
 basedir    = os.path.abspath(os.path.dirname(__file__)) # base directory
-local_base = os.getenv("DATABASE_URL", "my-database-url-string")
+local_base = os.getenv('DATABASE_URL', 'my-database-url-string')
 
 class Config:
     """Base Configuration Class - Inherited by Others"""
 
     DEBUG      = False
-    TESTING    = False
     SECRET_KEY = os.getenv("SECRET_KEY", "my_secret_key")
 
 
@@ -44,7 +45,10 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     """Production Environment: invoke this using config_name = prod"""
 
-    pass # configure for production environment here
+    DEBUG = False
+
+    # uncomment the line below to use configure database
+    # SQLALCHEMY_DATABASE_URI = local_base
 
 config_by_name = dict(
         dev  = DevelopmentConfig,
