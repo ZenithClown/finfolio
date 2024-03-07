@@ -1,0 +1,109 @@
+{
+	"info": {
+		"_postman_id": "f3b659fe-b631-41e9-a2c8-01afd849faab",
+		"name": "pOrgz-API",
+		"description": "API and other Micro-Service Responses related to pOrgz Application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "OAuth-API",
+			"item": [
+				{
+					"name": "SignUp Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "first_name",
+									"value": "Debmalya",
+									"type": "text"
+								},
+								{
+									"key": "last_name",
+									"value": "Pramanik",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "pOrgz@tuta.io",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "dPramanik",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "user_role",
+									"value": "ADMIN",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "192.168.0.102:5000/signup",
+							"host": [
+								"192",
+								"168",
+								"0",
+								"102"
+							],
+							"port": "5000",
+							"path": [
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "dPramanik",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "192.168.0.102:5000/login",
+							"host": [
+								"192",
+								"168",
+								"0",
+								"102"
+							],
+							"port": "5000",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

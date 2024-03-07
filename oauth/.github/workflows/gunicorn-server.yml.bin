@@ -1,0 +1,36 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Python package
+
+on:
+  push:
+    # this is an optional dependency check
+    branches: [ features/web-server-gateway ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.7]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies and create necessary directory
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        # create necessary folder to keep logs
+        mkdir -p /tmp/pOrgz
+    - name: deploy and test flask app with gunicorn
+      run: |
+        # install gunicorn dependencies
+        python -m pip install gunicorn
+        gunicorn --bind localhost:5000 --timeout 10 oauth_management:app

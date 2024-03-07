@@ -1,0 +1,5 @@
+[flake8]
+    per-file-ignores =
+        app\main\repository\oauthRepository.py: F403
+    max-line-length = 127
+    ignore = E203, E221, E251
