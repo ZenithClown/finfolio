@@ -16,7 +16,8 @@ class ResponseFormatter(object):
             401 : "Unauthorized",
             403 : "Forbidden",
             404 : "Not Found",
-            500 : "Internal Server Error"
+            500 : "Internal Server Error",
+            502 : "Bad Gateway"
         }.get(code, 502) # 502 > Bad Gateway
 
 
@@ -39,7 +40,7 @@ class ResponseFormatter(object):
 
 
 
-    def post(self, data : list, err : str = None, code : int = 200, msg : str = None) -> dict:
+    def post(self, err : str = None, code : int = 200, msg : str = None) -> dict:
         """Format O/P of all GET Response"""
 
         return {

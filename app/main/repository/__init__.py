@@ -1,3 +1,3 @@
 # -*- encoding: utf-8 -*-
 
-from .oauthRepository import OAuthRepository
+from .register_repo import *

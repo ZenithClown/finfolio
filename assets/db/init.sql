@@ -1,54 +1,59 @@
--- MySQL DB Initialization Commands - initialize docker image with `init`-parameters
-
-CREATE DATABASE IF NOT EXISTS mails;
-
--- use a database names `mails` for storing all informations
-USE mails;
-
-CREATE TABLE `emailMaster` (
-	`GUID` varchar(36) NOT NULL,
-	`typeID` varchar(64) NOT NULL UNIQUE,
-	`address` varchar(255) NOT NULL UNIQUE,
-	PRIMARY KEY (`GUID`,`address`)
+CREATE TABLE `UserMaster` (
+	`UUID` VARCHAR(64) NOT NULL,
+	`username` VARCHAR(64) NOT NULL UNIQUE,
+	`FirstName` VARCHAR(128) NOT NULL,
+	`MiddleName` VARCHAR(128),
+	`LastName` VARCHAR(128) NOT NULL,
+	`email` VARCHAR(256) UNIQUE,
+	`password` VARCHAR(1024) NOT NULL,
+	`mobile` VARCHAR(16),
+	`RoleID` VARCHAR(16) NOT NULL,
+	PRIMARY KEY (`UUID`)
 );
 
-CREATE TABLE `emailTypeMaster` (
-	`typeID` varchar(8) NOT NULL,
-	`acronym` varchar(64),
-	`description` varchar(128),
-	PRIMARY KEY (`typeID`)
+CREATE TABLE `AccountDetails` (
+	`AccountID` INT NOT NULL,
+	`IFSCCode` VARCHAR(16),
+	`CIFNumber` VARCHAR(16),
+	`OpenDate` TIMESTAMP NOT NULL,
+	`CloseDate` TIMESTAMP,
+	`UUID` VARCHAR(64) NOT NULL,
+	`ACTypeID` VARCHAR(16) NOT NULL,
+	PRIMARY KEY (`AccountID`)
 );
 
-CREATE TABLE `history` (
+CREATE TABLE `RolesType` (
+	`RoleID` VARCHAR(64) NOT NULL,
+	`RoleName` VARCHAR(16) NOT NULL UNIQUE,
+	PRIMARY KEY (`RoleID`)
+);
+
+CREATE TABLE `AccountType` (
+	`ACTypeID` VARCHAR(64) NOT NULL,
+	`ACTypeName` VARCHAR(16) NOT NULL UNIQUE,
+	PRIMARY KEY (`ACTypeID`)
+);
+
+CREATE TABLE `UserTransactions` (
 	`ID` INT NOT NULL AUTO_INCREMENT,
-	`datetime` DATETIME(64) NOT NULL,
-	`sender` varchar(36) NOT NULL,
-	`receiver` varchar(36) NOT NULL,
-	`remarks` varchar(255),
+	`TransactionDate` TIMESTAMP NOT NULL,
+	`TransactionDetails` VARCHAR(1024) NOT NULL,
+	`TransactionType` VARCHAR(8) NOT NULL,
+	`TransactionAmount` DECIMAL(32) NOT NULL,
+	`AccountID` INT(32) NOT NULL,
 	PRIMARY KEY (`ID`)
 );
 
-CREATE TABLE `subscribers` (
-	`ID` INT NOT NULL AUTO_INCREMENT,
-	`subscriber` varchar(255) NOT NULL,
-	`preferences` varchar(255) NOT NULL,
-	`isActive` BOOLEAN NOT NULL,
-	PRIMARY KEY (`ID`)
-);
+ALTER TABLE `UserMaster` ADD CONSTRAINT `UserMaster_fk0` FOREIGN KEY (`RoleID`) REFERENCES `RolesType`(`RoleID`);
 
-CREATE TABLE `preferenceMaster` (
-	`ID` INT NOT NULL AUTO_INCREMENT,
-	`type` varchar(64) NOT NULL UNIQUE,
-	`remarks` varchar(255) UNIQUE,
-	PRIMARY KEY (`ID`)
-);
+ALTER TABLE `AccountDetails` ADD CONSTRAINT `AccountDetails_fk0` FOREIGN KEY (`UUID`) REFERENCES `UserMaster`(`UUID`);
 
-ALTER TABLE `emailMaster` ADD CONSTRAINT `emailMaster_fk0` FOREIGN KEY (`typeID`) REFERENCES `emailTypeMaster`(`typeID`);
+ALTER TABLE `AccountDetails` ADD CONSTRAINT `AccountDetails_fk1` FOREIGN KEY (`ACTypeID`) REFERENCES `AccountType`(`ACTypeID`);
 
-ALTER TABLE `history` ADD CONSTRAINT `history_fk0` FOREIGN KEY (`sender`) REFERENCES `emailMaster`(`GUID`);
+ALTER TABLE `UserTransactions` ADD CONSTRAINT `UserTransactions_fk0` FOREIGN KEY (`AccountID`) REFERENCES `AccountDetails`(`AccountID`);
 
-ALTER TABLE `history` ADD CONSTRAINT `history_fk1` FOREIGN KEY (`receiver`) REFERENCES `emailMaster`(`GUID`);
 
-ALTER TABLE `subscribers` ADD CONSTRAINT `subscribers_fk0` FOREIGN KEY (`subscriber`) REFERENCES `emailMaster`(`GUID`);
 
-ALTER TABLE `subscribers` ADD CONSTRAINT `subscribers_fk1` FOREIGN KEY (`preferences`) REFERENCES `preferenceMaster`(`ID`);
+
+
+

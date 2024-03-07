@@ -2,16 +2,40 @@
 
 from .. import db
 
-class UsersMaster(db.Model):
-    __tablename__ = "users_master"
+from .references import (
+        RolesType,
+        AccountType
+    )
 
-    uuid  = db.Column(db.String(64), primary_key = True, nullable = False) # User ID : generate with UUID-4
-    fName = db.Column(db.String(255), nullable = False)                     # First Name
-    lName = db.Column(db.String(255), nullable = False)                     # Last/Surname
-    email = db.Column(db.String(255), nullable = True)                      # Email ID (optional)
-    phone = db.Column(db.String(64), nullable = True)                       # Mobile No. (optional)
-    uName = db.Column(db.String(64), primary_key = True, nullable = False, unique = True)
-    pHash = db.Column(db.String(128), nullable = False)
+class UserMaster(db.Model):
+    """Use the Model to Establish a Connection to DB"""
 
-    def __repr__(self):
-        return f"<{self.uuid}(First Name = {self.fName}, Last Name = {self.lName}, Username = {self.uName})>"
+    __tablename__ = "UserMaster"
+
+    UUID       = db.Column(db.String(64), primary_key = True, nullable = False)
+    username   = db.Column(db.String(64), unique = True, nullable = False)
+    FirstName  = db.Column(db.String(64), nullable = False)
+    MiddleName = db.Column(db.String(64), nullable = True)
+    LastName   = db.Column(db.String(64), nullable = False)
+    email      = db.Column(db.String(256), unique = True, nullable = True)
+    password   = db.Column(db.String(1024), nullable = False)
+    mobile     = db.Column(db.String(16), nullable = True)
+
+    # foreign key(s)
+    RoleID = db.Column(db.String(64), db.ForeignKey(RolesType.RoleID), nullable = False)
+
+
+class AccountDetails(db.Model):
+    """Use the Model to Establish a Connection to DB"""
+
+    __tablename__ = "AccountDetails"
+
+    AccountID = db.Column(db.BigInteger, primary_key = True, nullable = False)
+    IFSCCode  = db.Column(db.String(16), nullable = True)
+    CIFNumber = db.Column(db.String(16), nullable = True)
+    OpenDate  = db.Column(db.Date, nullable = False)
+    CloseDate = db.Column(db.Date, nullable = True)
+
+    # foreign key(s)
+    UUID    = db.Column(db.String(64), db.ForeignKey(UserMaster.UUID), nullable = False)
+    ACTypeID = db.Column(db.String(64), db.ForeignKey(AccountType.ACTypeID), nullable = False)
