@@ -21,7 +21,7 @@ WTForms==2.3.3
 WTForms-Components==0.10.5
 
 # testing and static analysis
-flake8==3.9.2
+flake8==7.0.0
 pytest==6.2.5
 pytest-cov==2.12.1
 
