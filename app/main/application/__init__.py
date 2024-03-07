@@ -1,0 +1,8 @@
+# -*- encoding: utf-8 -*-
+
+# using controller/api-model design
+# CONTROLLER : base methods - directly related to DB Model & Design
+# API MODEL  : speciallized models for calls
+
+from .api_model import *
+from .controller import *

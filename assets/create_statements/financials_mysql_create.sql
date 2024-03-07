@@ -7,7 +7,7 @@ CREATE TABLE `UserMaster` (
 	`email` VARCHAR(256) UNIQUE,
 	`password` VARCHAR(1024) NOT NULL,
 	`mobile` VARCHAR(16),
-	`RoleID` VARCHAR(16) NOT NULL,
+	`RoleID` VARCHAR(64) NOT NULL,
 	PRIMARY KEY (`UUID`)
 );
 
@@ -15,10 +15,10 @@ CREATE TABLE `AccountDetails` (
 	`AccountID` INT NOT NULL,
 	`IFSCCode` VARCHAR(16),
 	`CIFNumber` VARCHAR(16),
-	`OpenDate` TIMESTAMP NOT NULL,
-	`CloseDate` TIMESTAMP,
+	`OpenDate` DATE NOT NULL,
+	`CloseDate` DATE,
 	`UUID` VARCHAR(64) NOT NULL,
-	`ACTypeID` VARCHAR(16) NOT NULL,
+	`ACTypeID` VARCHAR(64) NOT NULL,
 	PRIMARY KEY (`AccountID`)
 );
 
