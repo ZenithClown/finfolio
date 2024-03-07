@@ -1,41 +1,39 @@
 # -*- encoding: utf-8 -*-
 
-from .. import db
+"""
+ORM Defination of `users` Table
 
-from .references import (
-        RolesType,
-        AccountType
-    )
+Users basic information is stored under generic `users` table, while
+there is a seperate table to store alternate informations like mobile
+number, email address etc. The `users` table is the most significant
+table with Primary Key (PK) set as `username` which is set on user
+creation. Other columns has their relevant meanings.
+"""
 
-class UserMaster(db.Model):
-    """Use the Model to Establish a Connection to DB"""
+import datetime as dt
+import sqlalchemy as sa
 
-    __tablename__ = "UserMaster"
+from app.main import db
 
-    UUID       = db.Column(db.String(64), primary_key = True, nullable = False)
-    username   = db.Column(db.String(64), unique = True, nullable = False)
-    FirstName  = db.Column(db.String(64), nullable = False)
-    MiddleName = db.Column(db.String(64), nullable = True)
-    LastName   = db.Column(db.String(64), nullable = False)
-    email      = db.Column(db.String(256), unique = True, nullable = True)
-    password   = db.Column(db.String(1024), nullable = False)
-    mobile     = db.Column(db.String(16), nullable = True)
+class UsersTable(db.Model):
+    __tablename__ = "users"
 
-    # foreign key(s)
-    RoleID = db.Column(db.String(64), db.ForeignKey(RolesType.RoleID), nullable = False)
+    username = db.Column(sa.String(25), primary_key = True)
+    password = db.Column(sa.String(1024), nullable = False)
+
+    # adding the users personal information
+    first_name = db.Column(sa.String(255), nullable = False)
+    middle_name = db.Column(sa.String(255), nullable = True)
+    family_name = db.Column(sa.String(255), nullable = False)
+
+    # this section adds identity information
+    email_id = db.Column(sa.String(255), nullable = False, unique = True)
+    mobile_number = db.Column(sa.Integer, nullable = False, unique = True) # no country code
+
+    # this stores the record datetime information
+    created_at = db.Column(sa.DateTime, default = dt.datetime.now())
+    updated_at = db.Column(sa.DateTime, onupdate = dt.datetime.now())
 
 
-class AccountDetails(db.Model):
-    """Use the Model to Establish a Connection to DB"""
-
-    __tablename__ = "AccountDetails"
-
-    AccountID = db.Column(db.BigInteger, primary_key = True, nullable = False)
-    IFSCCode  = db.Column(db.String(16), nullable = True)
-    CIFNumber = db.Column(db.String(16), nullable = True)
-    OpenDate  = db.Column(db.Date, nullable = False)
-    CloseDate = db.Column(db.Date, nullable = True)
-
-    # foreign key(s)
-    UUID    = db.Column(db.String(64), db.ForeignKey(UserMaster.UUID), nullable = False)
-    ACTypeID = db.Column(db.String(64), db.ForeignKey(AccountType.ACTypeID), nullable = False)
+    def __repr__(self) -> str:
+        return f"<UsersTable (id = {id}, username = {self.username})>"

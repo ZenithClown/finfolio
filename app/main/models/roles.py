@@ -1,13 +1,31 @@
 # -*- encoding: utf-8 -*-
 
-from .. import db
+"""
+ORM Structure for User Roles
+
+Typically, for each created user we may want to assign a different
+roles based on their privileges. The roles master can be defined to
+set different types of roles and for control. The `roles` table
+however is defined such that each user falls in any one of the
+defined categories.
+"""
+
+import datetime as dt
+import sqlalchemy as sa
+
+from app.main import db
 
 class RolesMaster(db.Model):
     __tablename__ = "roles_master"
 
-    role_id   = db.Column(db.String(64), primary_key = True, nullable = False)
-    user_id   = db.Column(db.String(64), db.ForeignKey('users_master.uuid'), nullable = False)
-    role_name = db.Column(db.String(32), nullable = False)
+    id_ = db.Column(sa.Integer, primary_key = True, autoincrement = True)
+    role = db.Column(sa.String(25), nullable = False, unique = True)
+    description = db.Column(sa.String(255), nullable = False, unique = True)
 
-    def __repr__(self):
-        return f"<{self.role_id}(Role Name = {self.role_name})>"
+
+class UsersRoles(db.Model):
+    __tablename__ = "user_roles"
+
+    id_ = db.Column(sa.Integer, primary_key = True, autoincrement = True)
+    username = db.Column(sa.String(25), db.ForeignKey('users.username', ondelete = "CASCADE"), nullable = False)
+    user_role = db.Column(sa.String(25), db.ForeignKey('roles_master.role', ondelete = "CASCADE"), nullable = False)

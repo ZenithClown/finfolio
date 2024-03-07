@@ -4,7 +4,7 @@
 
 from unittest import TestCase
 
-from . import app
+from .. import app
 
 class BaseCase(TestCase):
     """Base Case Model for Testing"""
