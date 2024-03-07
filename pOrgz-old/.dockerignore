@@ -1,0 +1,23 @@
+# dockerignore
+
+# ignore git files/directories
+.git
+.gitignore
+.gitattributes
+
+# ignore Travis CI in docker
+.travis.yml
+
+# node & npm
+node_modules
+npm-debug.log
+
+# certain dockerfiles are ignored
+Dockerfile*
+docker-compose*
+
+# ignore general/summary files
+README*
+LICENSE
+CHANGELOG*
+CONTRIBUTION*
