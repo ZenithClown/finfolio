@@ -12,7 +12,7 @@ from app.main import (
         db, # SQLAlchemy Connector dB Object
         create_app
     )
-from app.main.model import * # noqa: F401, F403
+from app.main.models import * # noqa: F401, F403
 
 load_dotenv(verbose=True)
 app = create_app(os.getenv("PROJECT_ENV_NAME") or "demo")

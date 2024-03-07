@@ -1,2 +1,15 @@
+# dockerignore
+
 .git
-.dockerignore
+.gitignore
+.gitattributes
+
+node_modules
+npm-debug.log
+
+Dockerfile*
+docker-compose*
+
+README*
+LICENSE
+CONTRIBUTION*
