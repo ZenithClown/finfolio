@@ -71,11 +71,12 @@ CREATE TABLE IF NOT EXISTS "ams.extDebitAccount" (
     CIF  TEXT, -- customer identification file number
     IFSC TEXT, -- related to a savings/current account
 
-    -- additionally, a debit account can have multiple owner
-    -- TODO: can we add/fetch the information using the `ums.?` tables
-    SecondaryHolder  TEXT DEFAULT NULL,
-    TertiaryHolder   TEXT DEFAULT NULL,
-    QuaternaryHolder TEXT DEFAULT NULL,
+    -- additionally, a debit account can have multiple owner this
+    -- is addressed by keeping a field for "secondary holder" while
+    -- in case of more than 2 holders, holders can be added into
+    -- the "tertiary and others" holder field, csv expected
+    SecondaryHolder    TEXT DEFAULT NULL, -- ? get from `ums.?`
+    TertiaryPlusHolder TEXT DEFAULT NULL, -- ! csv value expected
 
     -- optionally add/maintain nominee informations
     _hasNominee INTEGER CHECK(_hasNominee IN (0, 1)) DEFAULT 0 NOT NULL,
