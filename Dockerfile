@@ -4,27 +4,37 @@
 
 # -------------------------------------------------------------------
 #   Mnemonic:   Dockerfile
-#   Abstract:   Hello-World Docker Template
+#   Abstract:   File for initializing application, and auto-scale
+#               tailored email services using docker.
 #
-#   Date:       15 July 2021
+#   Date:       07 December 2021
 #   Author:     Debmalya Pramanik
 # -------------------------------------------------------------------
 
-FROM python:3.8
+FROM tiangolo/uwsgi-nginx-flask:python3.8
 
-ENV INSTALL_PATH /usr/src/helloworld
+# add maintainer tag
+LABEL maintainer="Debmalya Pramanik <dpramanik.official@gmail.com>"
+
+# add dummy app
+ENV INSTALL_PATH /usr/src/mailer
 RUN mkdir -p $INSTALL_PATH
 
-# install net-tools and nano-editor
+# install net-tools mysql-client
+# using mariadb-client inplace of mysql-client
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    nano \
     net-tools \
+  && apt-get install -y --no-install-recommends mariadb-client \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
 # set working directory
 WORKDIR $INSTALL_PATH
+
+# logging addition is included
+# change the directory `app` as required
+RUN mkdir -p /tmp/logs/mailer/
 
 # setup flask environment
 # install all requirements
@@ -34,8 +44,6 @@ RUN pip install -r requirements.txt
 # copy all files and folder to docker
 COPY . .
 
-# install the package with setup tools
-RUN pip install <pkg-name>
-
 # run the application in docker environment
-# setup code for the same
+# you can use the wsgi service to start the application
+CMD [ "python", "./manage.py" ]
