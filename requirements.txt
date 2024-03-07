@@ -52,7 +52,7 @@ bcrypt==3.2.0
 billiard==3.6.4.0
 blinker==1.4
 celery==5.1.2
-certifi==2021.5.30
+certifi==2024.2.2
 cffi==1.14.6
 click==7.1.2
 click-didyoumean==0.0.3
