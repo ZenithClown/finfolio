@@ -54,7 +54,12 @@ def sbi(filepath : str, filetype : str = "excel") -> pd.DataFrame:
     records["trxDate"] = records["trxDate"].apply(lambda x : x.date())
     records["trxDescOrig"] = records[["_description", "_reference"]] \
         .apply(lambda x : f"{x[0]} ref:: {x[1]}", axis = 1)
-    
+
+    for column in ["_debit", "_credit"]:
+        # value is " " when null, else no strip
+        records[column] = records[column] \
+            .apply(lambda x : np.nan if x == " " else x)
+
     records["trxType"], records["trxAmount"] = zip(
         *records[["_debit", "_credit"]].apply(
             lambda x : ("DEPOSIT", x[1]) if np.isnan(x[0]) else
