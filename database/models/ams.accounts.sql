@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS "ams.mwAccountProperty" (
 
 CREATE TABLE IF NOT EXISTS "ams.extDebitAccount" (
     _id       INTEGER PRIMARY KEY AUTOINCREMENT,
-    AccountID INTEGER NOT NULL UNIQUE, -- ! not a PK, for easier join
+    AccountID VARCHAR(32) NOT NULL UNIQUE, -- ! not a PK, for easier join
 
     -- information available for a debit type account
     -- typically, a debit card is associated with an institution
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS "ams.extDebitAccount" (
 
 CREATE TABLE IF NOT EXISTS "ams.extCreditAccount" (
     _id       INTEGER PRIMARY KEY AUTOINCREMENT,
-    AccountID INTEGER NOT NULL UNIQUE, -- ! not a PK, for easier join
+    AccountID VARCHAR(32) NOT NULL UNIQUE, -- ! not a PK, for easier join
 
     -- typically a credit card has the following additional attributes
     -- TODO: have the provision to record credit/cash revision dates
@@ -115,4 +115,25 @@ CREATE TABLE IF NOT EXISTS "ams.extCreditAccount" (
     StatementDue_ INTEGER, -- no. of days from statement day to pay due amount
 
     FOREIGN KEY(AccountID) REFERENCES "ams.mwAccountProperty"(AccountID)
+);
+
+CREATE TABLE IF NOT EXISTS "ams.extTermDepositAccount" (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    AccountID VARCHAR(32) NOT NULL UNIQUE, -- ! not a PK, for easier join
+
+    -- ! features/fields are as per sbi account td-advice receipt
+    -- wip:: add/update information from other bank accounts
+    AccountSubTypeID INTEGER NOT NULL,
+    
+    -- ? term accounts are genrally associated with a debit account
+    -- this field can be used internally to auto-map in ext-transactions
+    DebitAccount VARCHAR(32) NOT NULL,
+
+    -- opt:: this are for future/admin references and validations
+    _operationMode   TEXT, -- ? single/recurring/others
+    _schemeDetails   TEXT, -- ? can be name/references for admin
+    _maturityDetails TEXT, -- ? repay principal and interest/etc.
+    
+    -- admin:: remarks is created/updated by admin
+    _remarks TEXT
 );
