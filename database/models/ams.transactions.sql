@@ -53,12 +53,12 @@ CREATE TABLE IF NOT EXISTS "ams.transactions" (
 
 CREATE TABLE "ams.extFixedDeposits" (
     FDAccountNumber VARCHAR(32) PRIMARY KEY,
-    PrinicipalTrxID INTEGER NOT NULL UNIQUE,
-    
-    -- now map the withdraw transaction ids
-    -- ? in sbi, the principal and interest are posted seperately
-    WithdrawPrincipalTrxID INTEGER NOT NULL UNIQUE,
-    WithdrawInterestsTrxID INTEGER NOT NULL UNIQUE,
+
+    -- track the deposit and withdraw transaction
+    -- from the linked/defined debit accounts,
+    -- ? can fetch all details using `JOIN` statement
+    DepositTrxID  INTEGER NOT NULL UNIQUE,
+    WithdrawTrxID INTEGER NOT NULL UNIQUE,
 
     FOREIGN KEY(FDAccountNumber) REFERENCES "ams.mwAccountProperty"(AccountID)
 );
