@@ -51,3 +51,15 @@ CREATE TABLE IF NOT EXISTS "ams.transactions" (
     FOREIGN KEY(AccountID) REFERENCES "ams.mwAccountProperty"(AccountID),
     FOREIGN KEY(trxType) REFERENCES "ams.mwTransactionTypes"(trxType)
 );
+
+CREATE TABLE "ams.extFixedDeposits" (
+    FDAccountNumber VARCHAR(32) PRIMARY KEY,
+    PrinicipalTrxID INTEGER NOT NULL UNIQUE,
+    
+    -- now map the withdraw transaction ids
+    -- ? in sbi, the principal and interest are posted seperately
+    WithdrawPrincipalTrxID INTEGER NOT NULL UNIQUE,
+    WithdrawInterestsTrxID INTEGER NOT NULL UNIQUE,
+
+    FOREIGN KEY(FDAccountNumber) REFERENCES "ams.mwAccountProperty"(AccountID)
+);
