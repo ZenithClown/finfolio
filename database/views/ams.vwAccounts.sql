@@ -29,7 +29,30 @@ CREATE VIEW "ams.vwDebitAccount" AS
         , NomineeName
         , NomineeRelationship
     FROM "ams.mwAccountProperty" A
-
     LEFT JOIN "ams.extDebitAccount" B ON A.AccountID = B.AccountID
-
     WHERE AccountTypeID = 1
+
+CREATE VIEW "ams.vwTermDeposittAccount" AS
+    SELECT
+        A.AccountID AS AccountID
+        , A.AccountNumber
+        , A.AccountName
+        , SubTypeName AS AccountType
+        , C._description AS AccountTypeLong
+        , AccountOpenDate
+        , AccountCloseDate
+        , DebitAccount
+        , D.AccountNumber AS DebitAccountNumber
+        , D.AccountName AS DebitAccountName
+        , CASE
+            WHEN AccountCloseDate IS NULL THEN (JULIANDAY(CURRENT_TIMESTAMP) - JULIANDAY(AccountOpenDate))
+            ELSE (JULIANDAY(AccountCloseDate) - JULIANDAY(AccountOpenDate))
+            END AS TenureDays
+    FROM "ams.mwAccountProperty" A
+    LEFT JOIN "ams.extTermDepositAccount" B ON A.AccountID = B.AccountID
+    LEFT JOIN "ams.extAccountType" C ON B.AccountSubTypeID = C.AccountSubTypeID
+    LEFT JOIN (
+        SELECT AccountID, AccountNumber, AccountName FROM "ams.mwAccountProperty"
+        WHERE AccountTypeID = 1
+    ) D ON B.DebitAccount = D.AccountID
+    WHERE A.AccountTypeID = 8
