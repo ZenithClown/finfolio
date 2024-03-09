@@ -10,4 +10,4 @@ operations for the `finfolio` database.
 @version: v0.0.1
 """
 
-from server.interface.insert import to_transactions
+from backend.interface.insert import to_transactions

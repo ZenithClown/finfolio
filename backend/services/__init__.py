@@ -10,4 +10,4 @@ parsers are defined under the services section.
 @version: v0.0.1
 """
 
-from server.services.parsers import sbi
+from backend.services.parsers import sbi
