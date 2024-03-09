@@ -44,7 +44,8 @@ VALUES
     (4, 'DEMAT', 'A typical table for holding information related to share market, populate equity, f&o transactions.'),
     (5, 'RETIREMENT', 'An account dedicated for savings for retirements, like PPF, VPF, NPS, etc.'),
     (6, 'INSURANCE', 'Use this to track investments/redemptions into insurance'),
-    (7, 'MUTUALFUND', 'A typical account for management of mutual funds and SIP/STP informations.');
+    (7, 'MUTUALFUND', 'A typical account for management of mutual funds and SIP/STP informations.'),
+    (8, 'TDACCOUNT', 'Term deposit accounts like FD/RD/etc. can be tracked here.');
 
 /***** Account Information & Related Extended Tables *****/
 CREATE TABLE IF NOT EXISTS "ams.mwAccountProperty" (
