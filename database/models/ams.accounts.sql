@@ -47,6 +47,20 @@ VALUES
     (7, 'MUTUALFUND', 'A typical account for management of mutual funds and SIP/STP informations.'),
     (8, 'TDACCOUNT', 'Term deposit accounts like FD/RD/etc. can be tracked here.');
 
+CREATE TABLE IF NOT EXISTS "ams.extAccountType" (
+    AccountSubTypeID INTEGER PRIMARY KEY AUTOINCREMENT,
+    AccountTypeID    INTEGER NOT NULL,
+    SubTypeName      VARCHAR(16) NOT NULL,
+    _description     TEXT, -- ? optional, descriptive information
+
+    FOREIGN KEY(AccountTypeID) REFERENCES "ams.mwAccountType"(AccountTypeID)
+);
+
+INSERT INTO "ams.extAccountType" (AccountSubTypeID, AccountTypeID, SubTypeName, _description)
+VALUES
+    (1, 8, 'FD', 'Fixed Deposit Account'),
+    (2, 8, 'RD', 'Recurring Deposit Account');
+
 /***** Account Information & Related Extended Tables *****/
 CREATE TABLE IF NOT EXISTS "ams.mwAccountProperty" (
     AccountID        VARCHAR(32) PRIMARY KEY, -- generate unique identity
@@ -66,7 +80,7 @@ CREATE TABLE IF NOT EXISTS "ams.mwAccountProperty" (
 CREATE TABLE IF NOT EXISTS "ams.extDebitAccount" (
     _id       INTEGER PRIMARY KEY AUTOINCREMENT,
     AccountID INTEGER NOT NULL UNIQUE, -- ! not a PK, for easier join
-    
+
     -- information available for a debit type account
     -- typically, a debit card is associated with an institution
     CIF  TEXT, -- customer identification file number
