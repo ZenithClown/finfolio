@@ -29,9 +29,8 @@ CREATE TABLE IF NOT EXISTS "ams.transactions" (
     _trxDescDrv VARCHAR(512), -- ! derived, allow null, maybe added later
 
     -- ! additional derived field using text analytics/featurizations
-    _trxMethod      VARCHAR(8), -- method of transaction, eg. NEFT/RTGS/UPI/etc.
-    _debit_account  VARCHAR(64), -- transaction debit account
-    _credit_account VARCHAR(64), -- transaction credit account
+    _trxMethod  VARCHAR(8), -- method of transaction, eg. NEFT/RTGS/UPI/etc.
+    _trxAccount VARCHAR(256), -- transation account details, can be named/number
 
     -- self account transactions can be identified using the flag
     -- helps in reducing duplicate records/calculations
