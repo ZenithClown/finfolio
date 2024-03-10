@@ -19,4 +19,25 @@ VALUES
     ("INTEREST", "Interest Received, typically at Savings Account"),
     ("NEFT", "National Electronic Funds Transfer (NEFT) Transaction"),
     ("UPI", "Unified Payments Interface (UPI) Transaction"),
-    ("MANDATE", "Automatic Payment Setup by Account Holder");
+    ("MANDATE", "Automatic Payment Setup by Account Holder"),
+    ("IMPS", "Immediate Payment Service (IMPS) Transaction");
+
+CREATE TABLE IF NOT EXISTS "ams.trxAccounts" (
+    AccountID   VARCHAR(256) PRIMARY KEY,
+    AccountName VARCHAR(512) UNIQUE NOT NULL,
+    
+    -- ? institution details are maintained as below:
+    InstitutionType VARCHAR(16) NOT NULL,
+    InstitutionDesc VARCHAR(64) NOT NULL
+);
+
+INSERT INTO "ams.trxAccounts" (AccountID, AccountName, InstitutionType, InstitutionDesc)
+VALUES
+    ("DIBS", "Digital Indian Business Solutions Pvt. Ltd.", "ORGANIZATION", "Internship Company"),
+    ("IIFL", "IIFL Securities Pvt. Ltd.", "ORGANIZATION", "DEMAT A/C"),
+    ("IWORKS", "Inspirigence Works Pvt. Ltd.", "ORGANIZATION", "Internship Company"),
+    ("JASNI", "Jasni A Salim", "INDIVIDUAL", "Content Writing - Freelancing Work"),
+    ("KTP", "Kolkata Traffic Police", "GOVERNMENT", "Challan/Charges for Traffic Violations"),
+    ("PIL", "Pidilite Industries Ltd.", "ORGANIZATION", "Full-Time Working Company"),
+    ("RIL", "Reliance Jio Infocomm Ltd.", "ORGANIZATION", "Full-Time Working Company"),
+    ("ZERODHA", "Zerodha Pvt. Ltd.", "ORGANIZATION", "DEMAT A/C");
