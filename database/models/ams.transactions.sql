@@ -47,7 +47,11 @@ CREATE TABLE IF NOT EXISTS "ams.transactions" (
     created_on DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_on DATETIME DEFAULT NULL,
 
-    FOREIGN KEY(AccountID) REFERENCES "ams.mwAccountProperty"(AccountID)
+    FOREIGN KEY(AccountID) REFERENCES "ams.mwAccountProperty"(AccountID),
+
+    -- optional:: added foreign key for dev/tagged categorization
+    FOREIGN KEY(_trxMethod) REFERENCES "ams.trxMethod"(MethodName),
+    FOREIGN KEY(_trxAccount) REFERENCES "ams.trxAccounts"(AccountID)
 );
 
 CREATE TABLE "ams.extFixedDeposits" (
