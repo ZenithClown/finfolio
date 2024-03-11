@@ -10,7 +10,8 @@ configurations or variables, which are directly imported.
 import os
 import sys
 
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+__THIS_FILE_DIR__ = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(__THIS_FILE_DIR__)
 
 # import the skeleton for config
 # ! may delete on configurations
@@ -18,7 +19,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 import skeleton as skl
 
 APP_HOME = skl.setupHome() # ! home directory, should be parameterized
-APP_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
+APP_ROOT = os.path.join(__THIS_FILE_DIR__, "..", "..")
 
 # all application data is stored in serverless, sqlite3 database
 # todo: enable encryption logic on db file with hashing algorithm
@@ -29,3 +30,7 @@ DB_STRUCT = os.path.join(APP_ROOT, "database")
 
 DB_VIEWS  = os.path.join(DB_STRUCT, "views")
 DB_MODELS = os.path.join(DB_STRUCT, "models")
+INTERFACE = os.path.join(DB_STRUCT, "interface")
+
+# ..versionadded:: initial master data is added from `master-data.json` instead from file
+MASTER_INIT_DATA = os.path.join(__THIS_FILE_DIR__, "master-data.json")
