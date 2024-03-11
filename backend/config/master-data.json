@@ -1,0 +1,53 @@
+{
+  "about": "Initial Master Data is Added in the `master-data.json` File",
+
+  "tables": {
+    "ams.transactions": [
+      [
+        1,
+        "DEBIT",
+        "Use this to store transactions from savings/current account."
+      ],
+      [
+        2,
+        "CREDIT",
+        "Use this to store transactions related to loans, credit cards, etc."
+      ],
+      [
+        3,
+        "WALLET",
+        "A type of account for storing gift cards, points, cashbacks, rewards etc. informations."
+      ],
+      [
+        4,
+        "DEMAT",
+        "A typical table for holding information related to share market, populate equity, f&o transactions."
+      ],
+      [
+        5,
+        "RETIREMENT",
+        "An account dedicated for savings for retirements, like PPF, VPF, NPS, etc."
+      ],
+      [
+        6,
+        "INSURANCE",
+        "Use this to track investments/redemptions into insurance"
+      ],
+      [
+        7,
+        "MUTUALFUND",
+        "A typical account for management of mutual funds and SIP/STP informations."
+      ],
+      [
+        8,
+        "TDACCOUNT",
+        "Term deposit accounts like FD/RD/etc. can be tracked here."
+      ]
+    ],
+
+    "ams.mwSubAccountType": [
+      [1, 8, "FD", "Fixed Deposit Account"],
+      [1, 8, "RD", "Recurring Deposit Account"]
+    ]
+  }
+}

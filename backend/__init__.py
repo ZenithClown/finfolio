@@ -29,8 +29,8 @@ def execute(statement : str, engine : object, params : tuple = tuple()) -> bool:
     :param statement: The SQL statement, may be parameterized with `?`
         or a simple statement like `SELECT * FROM table`, and can be
         parameterized like `SELECT * FROM table WHERE feature = ?`.
-        SQLite uses "atomic commit" approach, thus multiple statements
-        can be executed using a single execute statement.
+        SQLite uses "atomic commit" approach, and only allows one
+        statement execution at a time.
 
     :type  engine: object
     :param engine: An instance of the `sqlite3.connect()` to establish
@@ -43,3 +43,34 @@ def execute(statement : str, engine : object, params : tuple = tuple()) -> bool:
 
     engine.execute(statement, params)
     engine.commit() # commit to database
+    return True
+
+
+def executescript(statement : str, engine : object) -> bool:
+    """
+    An Function to Execute Multiple SQL Statements
+
+    The `engine` object is an instance of the `sqlite3.connect()` and
+    the function simply executes like:
+
+    ```python
+    import sqlite3 as db
+
+    statement = "" # statement, or `open(file).read()` like
+    executed_ = execute(statement, engine = db.connect("data.db"))
+    ```
+
+    :type  statement: str
+    :param statement: Multiple SQL statements can be executed using
+        the `engine.executescript()` command, however this does not
+        allow parameteric contents. More information:
+        https://stackoverflow.com/a/34806782/6623589
+
+    :type  engine: object
+    :param engine: An instance of the `sqlite3.connect()` to establish
+        connection and execute statement.
+    """
+
+    engine.executescript(statement)
+    engine.commit() # commit to database
+    return True

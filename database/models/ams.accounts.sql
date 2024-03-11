@@ -35,19 +35,7 @@ CREATE TABLE IF NOT EXISTS "ams.mwAccountType" (
     _description    TEXT -- ? optional, descriptive information
 );
 
-/*** INSERT PRE-DEFINED (GLOBAL/STATIC) VALUES ***/
-INSERT INTO "ams.mwAccountType" (AccountTypeID, AccountTypeName, _description)
-VALUES
-    (1, 'DEBIT', 'Use this to store transactions from savings/current account.'),
-    (2, 'CREDIT', 'Use this to store transactions related to loans, credit cards, etc.'),
-    (3, 'WALLET', 'A type of account for storing gift cards, points, cashbacks, rewards etc. informations.'),
-    (4, 'DEMAT', 'A typical table for holding information related to share market, populate equity, f&o transactions.'),
-    (5, 'RETIREMENT', 'An account dedicated for savings for retirements, like PPF, VPF, NPS, etc.'),
-    (6, 'INSURANCE', 'Use this to track investments/redemptions into insurance'),
-    (7, 'MUTUALFUND', 'A typical account for management of mutual funds and SIP/STP informations.'),
-    (8, 'TDACCOUNT', 'Term deposit accounts like FD/RD/etc. can be tracked here.');
-
-CREATE TABLE IF NOT EXISTS "ams.extAccountType" (
+CREATE TABLE IF NOT EXISTS "ams.mwSubAccountType" (
     AccountSubTypeID INTEGER PRIMARY KEY AUTOINCREMENT,
     AccountTypeID    INTEGER NOT NULL,
     SubTypeName      VARCHAR(16) NOT NULL,
@@ -56,17 +44,13 @@ CREATE TABLE IF NOT EXISTS "ams.extAccountType" (
     FOREIGN KEY(AccountTypeID) REFERENCES "ams.mwAccountType"(AccountTypeID)
 );
 
-INSERT INTO "ams.extAccountType" (AccountSubTypeID, AccountTypeID, SubTypeName, _description)
-VALUES
-    (1, 8, 'FD', 'Fixed Deposit Account'),
-    (2, 8, 'RD', 'Recurring Deposit Account');
-
 /***** Account Information & Related Extended Tables *****/
 CREATE TABLE IF NOT EXISTS "ams.mwAccountProperty" (
     AccountID        VARCHAR(32) PRIMARY KEY, -- generate unique identity
     AccountNumber    INTEGER NOT NULL UNIQUE,
     AccountName      VARCHAR(64) NOT NULL UNIQUE,
     AccountTypeID    INTEGER NOT NULL,
+    AccountSubTypeID INTEGER NULL,
     AccountOpenDate  DATE NOT NULL, -- ! resulting affinity - TEXT
     AccountCloseDate DATE,
     
@@ -74,7 +58,8 @@ CREATE TABLE IF NOT EXISTS "ams.mwAccountProperty" (
     -- for programming purpose, a default value (blank) is set
     AccountTags   TEXT DEFAULT '' NOT NULL,
 
-    FOREIGN KEY(AccountTypeID) REFERENCES "ams.mwAccountType"(AccountTypeID)
+    FOREIGN KEY(AccountTypeID) REFERENCES "ams.mwAccountType"(AccountTypeID),
+    FOREIGN KEY(AccountSubTypeID) REFERENCES "ams.mwSubAccountType"(AccountSubTypeID)
 );
 
 CREATE TABLE IF NOT EXISTS "ams.extDebitAccount" (
@@ -121,19 +106,17 @@ CREATE TABLE IF NOT EXISTS "ams.extTermDepositAccount" (
     _id       INTEGER PRIMARY KEY AUTOINCREMENT,
     AccountID VARCHAR(32) NOT NULL UNIQUE, -- ! not a PK, for easier join
 
-    -- ! features/fields are as per sbi account td-advice receipt
-    -- wip:: add/update information from other bank accounts
-    AccountSubTypeID INTEGER NOT NULL,
-    
     -- ? term accounts are genrally associated with a debit account
     -- this field can be used internally to auto-map in ext-transactions
     DebitAccount VARCHAR(32) NOT NULL,
 
     -- opt:: this are for future/admin references and validations
-    _operationMode   TEXT, -- ? single/recurring/others
-    _schemeDetails   TEXT, -- ? can be name/references for admin
-    _maturityDetails TEXT, -- ? repay principal and interest/etc.
-    
+    OperationMode   TEXT, -- ? single/recurring/others
+    SchemeDetails   TEXT, -- ? can be name/references for admin
+    MaturityDetails TEXT, -- ? repay principal and interest/etc.
+
     -- admin:: remarks is created/updated by admin
-    _remarks TEXT
+    TDRemarks TEXT,
+
+    FOREIGN KEY(AccountID) REFERENCES "ams.mwAccountProperty"(AccountID)
 );
