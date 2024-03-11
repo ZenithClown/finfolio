@@ -19,10 +19,10 @@ APP_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
 
 # all application data is stored in serverless, sqlite3 database
 # todo: enable encryption logic on db file with hashing algorithm
-APP_ENGINE, DB_CURSOR = skl.getOrFetchDB(dbFile = os.path.join(APP_HOME, "pOrgz.db"))
+APP_ENGINE, DB_CURSOR = skl.getOrFetchDB(dbFile = os.path.join(APP_HOME, "finfolio.db"))
 
 # using parameterized raw-sql for db communication
 DB_STRUCT = os.path.join(APP_ROOT, "database")
 
-DB_VIEWS = os.path.join(DB_STRUCT, "views")
+DB_VIEWS  = os.path.join(DB_STRUCT, "views")
 DB_MODELS = os.path.join(DB_STRUCT, "models")
