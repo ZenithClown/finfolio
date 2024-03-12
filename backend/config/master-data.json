@@ -47,7 +47,7 @@
 
     "ams.mwSubAccountType": [
       [1, 8, "FD", "Fixed Deposit Account"],
-      [1, 8, "RD", "Recurring Deposit Account"]
+      [2, 8, "RD", "Recurring Deposit Account"]
     ]
   }
 }
