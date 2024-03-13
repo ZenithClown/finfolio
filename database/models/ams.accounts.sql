@@ -49,14 +49,18 @@ CREATE TABLE IF NOT EXISTS "ams.mwAccountProperty" (
     AccountID        VARCHAR(32) PRIMARY KEY, -- generate unique identity
     AccountNumber    INTEGER NOT NULL UNIQUE,
     AccountName      VARCHAR(64) NOT NULL UNIQUE,
-    AccountTypeID    INTEGER NOT NULL,
-    AccountSubTypeID INTEGER NULL,
+    AccountTypeID    VARCHAR(3) NOT NULL,
+    AccountSubTypeID VARCHAR(3) NULL,
     AccountOpenDate  DATE NOT NULL, -- ! resulting affinity - TEXT
-    AccountCloseDate DATE,
-    
+    AccountCloseDate DATE, -- ? if null, account is active/operational
+
     -- ? AccountTags: csv, use this to generate combined report
     -- for programming purpose, a default value (blank) is set
-    AccountTags   TEXT DEFAULT '' NOT NULL,
+    -- AccountTags   TEXT DEFAULT '' NOT NULL, -- TODO: implement
+
+    -- ? AccountOwner: name/id of the owner for all mapping details
+    -- currently `ums.*` is not maintained, thus account is blank #12
+    -- AccountOwner TEXT NOT NULL, -- TODO: implement
 
     FOREIGN KEY(AccountTypeID) REFERENCES "ams.mwAccountType"(AccountTypeID),
     FOREIGN KEY(AccountSubTypeID) REFERENCES "ams.mwSubAccountType"(AccountSubTypeID)
