@@ -36,22 +36,18 @@ CREATE TABLE IF NOT EXISTS "ams.dmw_trxMethod" (
     _search_terms VARCHAR(256) UNIQUE NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS "ams.trxAccounts" (
-    AccountID   VARCHAR(256) PRIMARY KEY,
-    AccountName VARCHAR(512) UNIQUE NOT NULL,
+CREATE TABLE IF NOT EXISTS "ams.dmw_trxAccount" (
+    _account_id   VARCHAR(16) PRIMARY KEY,
+    _account_name VARCHAR(128) UNIQUE NOT NULL,
     
-    -- ? institution details are maintained as below:
-    InstitutionType VARCHAR(16) NOT NULL,
-    InstitutionDesc VARCHAR(64) NOT NULL
-);
+    -- ! each can have a different type, which is not
+    -- related to `mwAccountType` table, but is for
+    -- maintaing tags for accounts which can be used
+    -- in a combined report/filtering a data subset
+    -- ? account details are maintained as below:
+    -- useful for grouping different levels, like work
+    _account_type VARCHAR(16) NOT NULL,
+    _account_desc VARCHAR(64) NOT NULL,
 
-INSERT INTO "ams.trxAccounts" (AccountID, AccountName, InstitutionType, InstitutionDesc)
-VALUES
-    ("DIBS", "Digital Indian Business Solutions Pvt. Ltd.", "ORGANIZATION", "Internship Company"),
-    ("IIFL", "IIFL Securities Pvt. Ltd.", "ORGANIZATION", "DEMAT A/C"),
-    ("IWORKS", "Inspirigence Works Pvt. Ltd.", "ORGANIZATION", "Internship Company"),
-    ("JASNI", "Jasni A Salim", "INDIVIDUAL", "Content Writing - Freelancing Work"),
-    ("KTP", "Kolkata Traffic Police", "GOVERNMENT", "Challan/Charges for Traffic Violations"),
-    ("PIL", "Pidilite Industries Ltd.", "ORGANIZATION", "Full-Time Working Company"),
-    ("RIL", "Reliance Jio Infocomm Ltd.", "ORGANIZATION", "Full-Time Working Company"),
-    ("ZERODHA", "Zerodha Pvt. Ltd.", "ORGANIZATION", "DEMAT A/C");
+    _search_terms VARCHAR(256) UNIQUE NOT NULL
+);
