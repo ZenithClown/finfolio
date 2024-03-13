@@ -22,12 +22,18 @@ only single (`_`) sign. The tagged `id` column is always named like:
 _<column-name>_id TYPE PRIMARY KEY # snake case column name
 ```
 
+In addition, all the tables have a field `_search_terms` which is
+defined for automatic tagging by code purpose. The value is comma
+seperated, and most of the time is of no use to the end user.
+
 Copywright © [2024] Debmalya Pramanik
 ********************************************************************/
 
 CREATE TABLE IF NOT EXISTS "ams.dmw_trxMethod" (
     _method_id   VARCHAR(8) PRIMARY KEY,
-    _method_desc VARCHAR(128) NOT NULL
+    _method_desc VARCHAR(128) NOT NULL,
+
+    _search_terms VARCHAR(256) UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "ams.trxAccounts" (
