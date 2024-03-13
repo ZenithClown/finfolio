@@ -9,6 +9,7 @@ configurations or variables, which are directly imported.
 
 import os
 import sys
+import json
 
 __THIS_FILE_DIR__ = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(__THIS_FILE_DIR__)
@@ -33,4 +34,5 @@ DB_MODELS = os.path.join(DB_STRUCT, "models")
 INTERFACE = os.path.join(DB_STRUCT, "interface")
 
 # ..versionadded:: initial master data is added from `master-data.json` instead from file
-MASTER_INIT_DATA = os.path.join(__THIS_FILE_DIR__, "master-data.json")
+_master_data_config = os.path.join(__THIS_FILE_DIR__, "master-data.json")
+MASTER_INIT_DATA = json.load(open(_master_data_config, "r"))

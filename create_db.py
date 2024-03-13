@@ -34,3 +34,16 @@ if __name__ == "__main__":
     ]
 
     _ = [executescript(statement, engine = APP_ENGINE) for statement in TQ(files, desc = "Initialize DB Models...")]
+
+    print("Starting to Populate Master Data with Preconfigured Keys...")
+    for table, file in zip(
+        ["ams.mwAccountType", "ams.mwSubAccountType"],
+        ["insert_into_ams_mw_account_type.sql", "insert_into_ams_mw_sub_account_type.sql"]
+    ):
+        statement = readStatement(INTERFACE, file) # dynamic read from `database/interface`
+        for record in TQ(MASTER_INIT_DATA["tables"][table], desc = f"PROC({table}) ..."):
+            try:
+                _ = execute(statement, engine = APP_ENGINE, params = tuple(record))
+            except Exception as err:
+                print(f"  >> Failed Record: {tuple(record)}.")
+                print(f"  >> Error Message: {err}")

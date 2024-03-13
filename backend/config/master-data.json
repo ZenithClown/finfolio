@@ -2,7 +2,7 @@
   "about": "Initial Master Data is Added in the `master-data.json` File",
 
   "tables": {
-    "ams.transactions": [
+    "ams.mwAccountType": [
       [
         "DBT",
         "DEBIT",
