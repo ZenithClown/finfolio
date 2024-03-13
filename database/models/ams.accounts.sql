@@ -30,9 +30,9 @@ Copywright © [2023] pOrgz <https://github.com/pOrgz-dev>
 ********************************************************************/
 
 CREATE TABLE IF NOT EXISTS "ams.mwAccountType" (
-    AccountTypeID   INTEGER PRIMARY KEY AUTOINCREMENT,
-    AccountTypeName VARCHAR(10) UNIQUE NOT NULL, -- ! treated as TEXT
-    _description    TEXT -- ? optional, descriptive information
+    AccountTypeID   VARCHAR(3) PRIMARY KEY,
+    AccountTypeName VARCHAR(32) UNIQUE NOT NULL, -- ! treated as TEXT
+    AccountTypeDesc TEXT -- ? optional/long, descriptive information
 );
 
 CREATE TABLE IF NOT EXISTS "ams.mwSubAccountType" (
