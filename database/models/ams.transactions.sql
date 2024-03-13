@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS "ams.transactions" (
 
     -- ! additional derived field using text analytics/featurizations
     _trxMethod  VARCHAR(8), -- method of transaction, eg. NEFT/RTGS/UPI/etc.
-    _trxAccount VARCHAR(256), -- transation account details, can be named/number
+    _trxAccount VARCHAR(16), -- transation account detail, mapped to tags table
 
     -- ! deposit/withdraw category can be amc, charges, etc.
     -- TODO create a pre-configured tags for auto-population from model
@@ -61,8 +61,8 @@ CREATE TABLE IF NOT EXISTS "ams.transactions" (
     FOREIGN KEY(AccountID) REFERENCES "ams.mwAccountProperty"(AccountID),
 
     -- optional:: added foreign key for dev/tagged categorization
-    FOREIGN KEY(_trxMethod) REFERENCES "ams.trxMethod"(MethodName),
-    FOREIGN KEY(_trxAccount) REFERENCES "ams.trxAccounts"(AccountID)
+    FOREIGN KEY(_trxMethod) REFERENCES "ams.dmw_trxMethod"(_method_id),
+    FOREIGN KEY(_trxAccount) REFERENCES "ams.dmw_trxAccount"(_account_id)
 );
 
 CREATE TABLE "ams.extFixedDeposits" (

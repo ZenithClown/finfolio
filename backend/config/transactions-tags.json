@@ -1,0 +1,25 @@
+{
+  "about" : "Pre-Configured Tags Related to Transactions Table",
+
+  "tables" : {
+    "ams.dmw_trxMethod" : [
+      ["ATMCASH", "Cash Transaction at ATM", "ATM"],
+      ["INTEREST", "Interest Received, typically at Savings Account", "INTEREST"],
+      ["NEFT", "National Electronic Funds Transfer [NEFT] Transaction", "NEFT"],
+      ["UPI", "Unified Payments Interface [UPI] Transaction", "UPI"],
+      ["MANDATE", "Automatic Payment Setup by Account Holder", "MANDATE"],
+      ["IMPS", "Immediate Payment Service [IMPS] Transaction", "IMPS"]
+    ],
+
+    "ams.dmw_trxAccount" : [
+      ["DIBS", "Digital Indian Business Solutions Pvt. Ltd.", "ORGANIZATION", "Internship Company", "DIGITAL INDIAN"],
+      ["IIFL", "IIFL Securities Pvt. Ltd.", "ORGANIZATION", "DEMAT A/C", "IIFL SECURITIES"],
+      ["IWORKS", "Inspirigence Works Pvt. Ltd.", "ORGANIZATION", "Internship Company", "INSPIRIGENCE WORKS"],
+      ["JASNI", "Jasni A Salim", "INDIVIDUAL", "Content Writing - Freelancing Work", "JASNI A S"],
+      ["KTP", "Kolkata Traffic Police", "GOVERNMENT", "Transactions with the Kolkata Traffic Police, typically Charges/Challan Payments", "Kolkata Traffic Police"],
+      ["PIL", "Pidilite Industries Ltd.", "ORGANIZATION", "Full-Time Working Company", "PIDILITE INDUSTRIES"],
+      ["RIL", "Reliance Jio Infocomm Ltd.", "ORGANIZATION", "Full-Time Working Company", "RELIANCE JIO INF,RELIANCE DIGITAL,JIO PLATFORMS"],
+      ["ZERODHA", "Zerodha Pvt. Ltd.", "ORGANIZATION", "DEMAT A/C", "ZERODHA"]
+    ]
+  }
+}

@@ -3,46 +3,14 @@
 
   "tables": {
     "ams.mwAccountType": [
-      [
-        "DBT",
-        "DEBIT",
-        "Use this to store transactions from savings/current account."
-      ],
-      [
-        "CDT",
-        "CREDIT",
-        "Use this to store transactions related to loans, credit cards, etc."
-      ],
-      [
-        "WLT",
-        "WALLET",
-        "A type of account for storing gift cards, points, cashbacks, rewards etc. informations."
-      ],
-      [
-        "DMT",
-        "DEMAT",
-        "A typical table for holding information related to share market, populate equity, f&o transactions."
-      ],
-      [
-        "RET",
-        "RETIREMENT",
-        "An account dedicated for savings for retirements, like PPF, VPF, NPS, etc."
-      ],
-      [
-        "INS",
-        "INSURANCE",
-        "Use this to track investments/redemptions into insurance"
-      ],
-      [
-        "MFA",
-        "MUTUALFUND",
-        "A typical account for management of mutual funds and SIP/STP informations."
-      ],
-      [
-        "TDA",
-        "TDACCOUNT",
-        "Term deposit accounts like FD/RD/etc. can be tracked here."
-      ]
+      ["DBT", "DEBIT", "Use this to store transactions from savings/current account."],
+      ["CDT", "CREDIT", "Use this to store transactions related to loans, credit cards, etc."],
+      ["WLT", "WALLET", "A type of account for storing gift cards, points, cashbacks, rewards etc. informations."],
+      ["DMT", "DEMAT", "A typical table for holding information related to share market, populate equity, f&o transactions."],
+      ["RET", "RETIREMENT", "An account dedicated for savings for retirements, like PPF, VPF, NPS, etc."],
+      ["INS", "INSURANCE", "Use this to track investments/redemptions into insurance"],
+      ["MFA", "MUTUALFUND", "A typical account for management of mutual funds and SIP/STP informations."],
+      ["TDA", "TDACCOUNT", "Term deposit accounts like FD/RD/etc. can be tracked here."]
     ],
 
     "ams.mwSubAccountType": [
