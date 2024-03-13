@@ -36,10 +36,10 @@ CREATE TABLE IF NOT EXISTS "ams.mwAccountType" (
 );
 
 CREATE TABLE IF NOT EXISTS "ams.mwSubAccountType" (
-    AccountSubTypeID INTEGER PRIMARY KEY AUTOINCREMENT,
-    AccountTypeID    INTEGER NOT NULL,
-    SubTypeName      VARCHAR(16) NOT NULL,
-    _description     TEXT, -- ? optional, descriptive information
+    AccountSubTypeID   VARCHAR(3) PRIMARY KEY,
+    AccountTypeID      VARCHAR(3) NOT NULL,
+    AccountSubTypeName VARCHAR(32) UNIQUE NOT NULL,
+    AccountSubTypeDesc TEXT, -- ? optional/long, descriptive information
 
     FOREIGN KEY(AccountTypeID) REFERENCES "ams.mwAccountType"(AccountTypeID)
 );
