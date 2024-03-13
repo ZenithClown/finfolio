@@ -93,7 +93,6 @@ CREATE TABLE IF NOT EXISTS "ams.extDebitAccount" (
     TertiaryPlusHolder TEXT DEFAULT NULL, -- ! csv value expected
 
     -- optionally add/maintain nominee informations
-    _hasNominee INTEGER CHECK(_hasNominee IN (0, 1)) DEFAULT 0 NOT NULL,
     NomineeName TEXT, -- ? can we maintain this from the `ums.?`
     NomineeRelationship TEXT,
 
