@@ -50,7 +50,10 @@
       ["RDS", "TDA", "Recurring Deposit Account"],
       ["SVN", "DBT", "Saving Account"],
       ["SAL", "DBT", "Salary Account"],
-      ["CUR", "DBT", "Current Account"]
+      ["CUR", "DBT", "Current Account"],
+      ["PPF", "RET", "Personal Providend Funds Account"],
+      ["VPF", "RET", "Voluntary Providend Funds Account"],
+      ["NPS", "RET", "National Pension Schemes Account"]
     ]
   }
 }
