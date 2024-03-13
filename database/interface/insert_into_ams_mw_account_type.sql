@@ -1,2 +1,2 @@
-INSERT INTO "ams.mwAccountType" (AccountTypeID, AccountTypeName, _description)
+INSERT INTO "ams.mwAccountType" (AccountTypeID, AccountTypeName, AccountTypeDesc)
     VALUES (?, ?, ?);

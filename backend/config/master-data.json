@@ -4,50 +4,53 @@
   "tables": {
     "ams.transactions": [
       [
-        1,
+        "DBT",
         "DEBIT",
         "Use this to store transactions from savings/current account."
       ],
       [
-        2,
+        "CDT",
         "CREDIT",
         "Use this to store transactions related to loans, credit cards, etc."
       ],
       [
-        3,
+        "WLT",
         "WALLET",
         "A type of account for storing gift cards, points, cashbacks, rewards etc. informations."
       ],
       [
-        4,
+        "DMT",
         "DEMAT",
         "A typical table for holding information related to share market, populate equity, f&o transactions."
       ],
       [
-        5,
+        "RET",
         "RETIREMENT",
         "An account dedicated for savings for retirements, like PPF, VPF, NPS, etc."
       ],
       [
-        6,
+        "INS",
         "INSURANCE",
         "Use this to track investments/redemptions into insurance"
       ],
       [
-        7,
+        "MFA",
         "MUTUALFUND",
         "A typical account for management of mutual funds and SIP/STP informations."
       ],
       [
-        8,
+        "TDA",
         "TDACCOUNT",
         "Term deposit accounts like FD/RD/etc. can be tracked here."
       ]
     ],
 
     "ams.mwSubAccountType": [
-      [1, 8, "FD", "Fixed Deposit Account"],
-      [2, 8, "RD", "Recurring Deposit Account"]
+      ["FDS", "TDA", "Fixed Deposit Account"],
+      ["RDS", "TDA", "Recurring Deposit Account"],
+      ["SVN", "DBT", "Saving Account"],
+      ["SAL", "DBT", "Salary Account"],
+      ["CUR", "DBT", "Current Account"]
     ]
   }
 }
