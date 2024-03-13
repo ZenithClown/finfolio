@@ -12,7 +12,12 @@ whose objective/descriptions is as follows:
         associated. To facilitate this, the master tables provide a
         master key to map different available attributes of an
         account with any of the different attributes.
-    2. mwAccountProperty : Any of the defined account type has
+    2. mwSubAccountType : To distinguish between various types of
+        account (for example, a term/time deposit can be fixed or
+        recurring) a sub-account table is defined that can be used to
+        track the sub-account types. The same is mapped in the
+        account property table.
+    3. mwAccountProperty : Any of the defined account type has
         certain attributes associated with it, for example account
         number, name etc. being the basic required information. In
         addition, certain special attributes like "IFSC",
@@ -25,6 +30,12 @@ whose objective/descriptions is as follows:
             details etc.
         * extCreditAccount : Holds credit account details like
             payment cycles, credit limits etc.
+        * extTermDepositAccount : Term/Time deposit account typically
+            are created for a time and is linked to a "DEBIT" type of
+            account and the deposit/withdrawal are associated in the
+            parent account. This table holds information like the
+            linked debit account, interest percentage, scheme details
+            among various other features.
 
 Copywright © [2023] pOrgz <https://github.com/pOrgz-dev>
 ********************************************************************/
