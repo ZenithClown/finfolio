@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 """
-Insert Records into a `finfolio` Table
+Insert & Save Records into a `finfolio` Table & Pickle File
 
 A typical object oriented approach (todo) to insert records into
 the table. Can use the `PRAGMA table_info('<table-name>')` to fetch
