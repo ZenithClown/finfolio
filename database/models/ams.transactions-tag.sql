@@ -5,6 +5,19 @@ The tags are maintained at different level, like account, method, end
 user tags, etc. which can be used for categorizing the transactions
 and thus in better reporting.
 
+Adopted Notation: This is a master table with pre-configured data,
+maintained for simplification of end-usage report generation. By
+default, the tables are named like:
+
+```
+ams.dmw_<column-name>
+```
+
+Where, `dmw` stands for "derived master" records, and this is a new
+suffix added into the project. In case, the original column names
+starts with a leading (`_`, i.e.,, in case of derived columns) then
+only single (`_`) sign.
+
 Copywright © [2024] Debmalya Pramanik
 ********************************************************************/
 
