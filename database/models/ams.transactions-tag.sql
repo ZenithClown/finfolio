@@ -16,24 +16,19 @@ ams.dmw_<column-name>
 Where, `dmw` stands for "derived master" records, and this is a new
 suffix added into the project. In case, the original column names
 starts with a leading (`_`, i.e.,, in case of derived columns) then
-only single (`_`) sign.
+only single (`_`) sign. The tagged `id` column is always named like:
+
+```
+_<column-name>_id TYPE PRIMARY KEY # snake case column name
+```
 
 Copywright © [2024] Debmalya Pramanik
 ********************************************************************/
 
-CREATE TABLE IF NOT EXISTS "ams.trxMethod" (
-    MethodName VARCHAR(8) PRIMARY KEY,
-    MethodDescription VARCHAR(128) NOT NULL
+CREATE TABLE IF NOT EXISTS "ams.dmw_trxMethod" (
+    _method_id   VARCHAR(8) PRIMARY KEY,
+    _method_desc VARCHAR(128) NOT NULL
 );
-
-INSERT INTO "ams.trxMethod" (MethodName, MethodDescription)
-VALUES
-    ("ATMCASH", "Cash Transaction at ATM"),
-    ("INTEREST", "Interest Received, typically at Savings Account"),
-    ("NEFT", "National Electronic Funds Transfer (NEFT) Transaction"),
-    ("UPI", "Unified Payments Interface (UPI) Transaction"),
-    ("MANDATE", "Automatic Payment Setup by Account Holder"),
-    ("IMPS", "Immediate Payment Service (IMPS) Transaction");
 
 CREATE TABLE IF NOT EXISTS "ams.trxAccounts" (
     AccountID   VARCHAR(256) PRIMARY KEY,
