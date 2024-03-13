@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS "ams.mwAccountType" (
 CREATE TABLE IF NOT EXISTS "ams.mwSubAccountType" (
     AccountSubTypeID   VARCHAR(3) PRIMARY KEY,
     AccountTypeID      VARCHAR(3) NOT NULL,
-    AccountSubTypeID VARCHAR(64) UNIQUE NOT NULL,
+    AccountSubTypeName VARCHAR(64) UNIQUE NOT NULL,
 
     FOREIGN KEY(AccountTypeID) REFERENCES "ams.mwAccountType"(AccountTypeID)
 );
