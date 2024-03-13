@@ -65,14 +65,14 @@ CREATE TABLE IF NOT EXISTS "ams.transactions" (
     FOREIGN KEY(_trxAccount) REFERENCES "ams.dmw_trxAccount"(_account_id)
 );
 
-CREATE TABLE "ams.extFixedDeposits" (
-    FDAccountNumber VARCHAR(32) PRIMARY KEY,
+-- CREATE TABLE "ams.extFixedDeposits" (
+--     FDAccountNumber VARCHAR(32) PRIMARY KEY,
 
-    -- track the deposit and withdraw transaction
-    -- from the linked/defined debit accounts,
-    -- ? can fetch all details using `JOIN` statement
-    DepositTrxID  INTEGER NOT NULL UNIQUE,
-    WithdrawTrxID INTEGER NOT NULL UNIQUE,
+--     -- track the deposit and withdraw transaction
+--     -- from the linked/defined debit accounts,
+--     -- ? can fetch all details using `JOIN` statement
+--     DepositTrxID  INTEGER NOT NULL UNIQUE,
+--     WithdrawTrxID INTEGER NOT NULL UNIQUE,
 
-    FOREIGN KEY(FDAccountNumber) REFERENCES "ams.mwAccountProperty"(AccountID)
-);
+--     FOREIGN KEY(FDAccountNumber) REFERENCES "ams.mwAccountProperty"(AccountID)
+-- );

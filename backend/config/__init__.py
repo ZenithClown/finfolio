@@ -35,4 +35,7 @@ INTERFACE = os.path.join(DB_STRUCT, "interface")
 
 # ..versionadded:: initial master data is added from `master-data.json` instead from file
 _master_data_config = os.path.join(__THIS_FILE_DIR__, "master-data.json")
+_transaction_tags_data_config = os.path.join(__THIS_FILE_DIR__, "transactions-tags.json")
+
 MASTER_INIT_DATA = json.load(open(_master_data_config, "r"))
+TRX_TAGS_INIT_DATA = json.load(open(_transaction_tags_data_config, "r"))

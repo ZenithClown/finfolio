@@ -30,7 +30,9 @@ if __name__ == "__main__":
 
     # ? create master tables, as defined under `database/models/`
     files = [
-        readStatement(DB_MODELS, "ams.accounts.sql")
+        readStatement(DB_MODELS, "ams.accounts.sql"),
+        readStatement(DB_MODELS, "ams.transactions-tag.sql"),
+        readStatement(DB_MODELS, "ams.transactions.sql")
     ]
 
     _ = [executescript(statement, engine = APP_ENGINE) for statement in TQ(files, desc = "Initialize DB Models...")]
@@ -42,6 +44,19 @@ if __name__ == "__main__":
     ):
         statement = readStatement(INTERFACE, file) # dynamic read from `database/interface`
         for record in TQ(MASTER_INIT_DATA["tables"][table], desc = f"PROC({table}) ..."):
+            try:
+                _ = execute(statement, engine = APP_ENGINE, params = tuple(record))
+            except Exception as err:
+                print(f"  >> Failed Record: {tuple(record)}.")
+                print(f"  >> Error Message: {err}")
+
+    print("Starting to Populate Transactions-Tags Master Data with Preconfigured Keys...")
+    for table, file in zip(
+        ["ams.dmw_trxMethod", "ams.dmw_trxAccount"],
+        ["insert_into_ams_dmw_trx_method.sql", "insert_into_ams_dmw_trx_account.sql"]
+    ):
+        statement = readStatement(INTERFACE, file) # dynamic read from `database/interface`
+        for record in TQ(TRX_TAGS_INIT_DATA["tables"][table], desc = f"PROC({table}) ..."):
             try:
                 _ = execute(statement, engine = APP_ENGINE, params = tuple(record))
             except Exception as err:
