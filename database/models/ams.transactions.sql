@@ -5,6 +5,15 @@ The main/core transactions table that holds all the transactions
 information along with certain additional derived features (explained
 on each line) is defined.
 
+In addition, an extended table is defined that handles all internal
+transactions to- and fro- own accounts. For example, a Term/Time
+deposit account is linked to a parent debit account and the nature
+of transaction is:
+    > STEP 1: On opening a TD Account, the amount is deducted
+        (WITHDRAW) from the linked DEBIT account,
+    > STEP 2: Interest is accumulated in the TD Account, and finally
+        the total amount is credited (DEPOSIT) back.
+
 Copywright © [2023] pOrgz <https://github.com/pOrgz-dev>
 ********************************************************************/
 
@@ -32,16 +41,18 @@ CREATE TABLE IF NOT EXISTS "ams.transactions" (
     _trxMethod  VARCHAR(8), -- method of transaction, eg. NEFT/RTGS/UPI/etc.
     _trxAccount VARCHAR(256), -- transation account details, can be named/number
 
+    -- ! deposit/withdraw category can be amc, charges, etc.
+    -- TODO create a pre-configured tags for auto-population from model
+    _trxCategory VARCHAR(3), -- ? if null, then undefined, i.e., normal transaction
+
+    -- ? also, allow tagging based on model/user as below:
+    -- TODO: #14 create a derived column "Transaction Category" based on `_trxCategory*`
+    _trxCategoryAuto VARCHAR(128), -- ? csv, automatic tagging by ai/ml model
+    _trxCategoryUser VARCHAR(128), -- ? csv, multiple manual tagging by the end user
+
     -- self account transactions can be identified using the flag
     -- helps in reducing duplicate records/calculations
     _self_account_transfer BOOLEAN CHECK(_self_account_transfer IN (0, 1)) DEFAULT 0 NOT NULL,
-
-    -- ! self classified tags using ai/ml classification method
-    _tag_by_automation VARCHAR(128), -- csv, automatic tagging by ai/ml model
-
-    -- ! allow end user to manually tag/classify the records
-    -- this manual tagging has the highest precedence over any other tagging
-    _tag_by_end_user VARCHAR(128), -- csv, multiple manual tagging by the end user
 
     -- specify created/updated on timestamp for verification
     created_on DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
