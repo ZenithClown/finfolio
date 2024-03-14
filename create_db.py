@@ -32,7 +32,8 @@ if __name__ == "__main__":
     files = [
         readStatement(DB_MODELS, "ams.accounts.sql"),
         readStatement(DB_MODELS, "ams.transactions-tag.sql"),
-        readStatement(DB_MODELS, "ams.transactions.sql")
+        readStatement(DB_MODELS, "ams.transactions.sql"),
+        readStatement(DB_MODELS, "dev.objects.sql")
     ]
 
     _ = [executescript(statement, engine = APP_ENGINE) for statement in TQ(files, desc = "Initialize DB Models...")]
