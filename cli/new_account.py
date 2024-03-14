@@ -88,6 +88,9 @@ def setTDAccount(subtypes : list, accounts : list) -> tuple:
     choice_ = int(input("Enter Account Choice Number: "))
     DebitAccount = accounts[choice_ - 1][0]
 
+    # get interest rate, which is rounded to 5 decimal places
+    InterestRate = round(float(input("Interest Rate (0.00 <= r <= 1.00): ")), 5)
+
     OperationMode = input("Operation Mode: ") or None
     SchemeDetails = input("Scheme Details: ") or None
     MaturityDetails = input("Maturity Details: ") or None
@@ -95,5 +98,5 @@ def setTDAccount(subtypes : list, accounts : list) -> tuple:
     TDRemarks = input("Remarks (example: 'savings for super-computer'; csv): ") or None
     return (
         (AccountID, AccountNumber, AccountName, AccountTypeID, AccountSubTypeID, AccountOpenDate, AccountCloseDate),
-        (AccountID, DebitAccount, OperationMode, SchemeDetails, MaturityDetails, TDRemarks)
+        (AccountID, DebitAccount, InterestRate, OperationMode, SchemeDetails, MaturityDetails, TDRemarks)
     )

@@ -1,2 +1,2 @@
-INSERT INTO "ams.extTermDepositAccount" (AccountID, DebitAccount, OperationMode, SchemeDetails, MaturityDetails, TDRemarks)
-    VALUES (?, ?, ?, ?, ?, ?);
+INSERT INTO "ams.extTermDepositAccount" (AccountID, DebitAccount, InterestRate, OperationMode, SchemeDetails, MaturityDetails, TDRemarks)
+    VALUES (?, ?, ?, ?, ?, ?, ?);

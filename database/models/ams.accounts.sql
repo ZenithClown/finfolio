@@ -122,6 +122,7 @@ CREATE TABLE IF NOT EXISTS "ams.extTermDepositAccount" (
     -- ? term accounts are genrally associated with a debit account
     -- this field can be used internally to auto-map in ext-transactions
     DebitAccount VARCHAR(32) NOT NULL,
+    InterestRate DECIMAL(8, 5) CHECK(InterestRate BETWEEN 0 AND 1),
 
     -- opt:: this are for future/admin references and validations
     OperationMode   TEXT, -- ? single/recurring/others
