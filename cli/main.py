@@ -17,7 +17,10 @@ the pOrgz application is CLI mode.
 import os
 import sys
 
-from new_account import setDebitAccount # pyright: ignore[reportMissingImports]
+from new_account import (
+    setTDAccount,   # create a new td account // 3
+    setDebitAccount # create a new debit account // 1
+)
 
 # ! append the path to the root of the file start
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -36,13 +39,18 @@ FROM "ams.mwSubAccountType"
 WHERE AccountTypeID = '{type_}'
 """
 
+dyn_fetch_debit_account = """
+SELECT * FROM "ams.mwAccountProperty" WHERE AccountTypeID = 'DBT'
+"""
+
 readStatement = lambda dir, file : open(os.path.join(dir, file)).read()
 fetchSubTypes = lambda type_ : APP_ENGINE.execute(dyn_fetch_account_sub_type.format(type_ = type_)).fetchall()
-# formatSubType = lambda type_ : [result[0] for result in fetchSubTypes(type_)]
+formatDebitAccounts = lambda : APP_ENGINE.execute(dyn_fetch_debit_account).fetchall()
 
 def mapOperations(operation : int):
     return {
-        1 : (setDebitAccount, fetchSubTypes("DBT"), "create_new_ext_dbt_acc_property.sql")
+        1 : (setDebitAccount, fetchSubTypes("DBT"), "create_new_ext_dbt_acc_property.sql"),
+        3 : (setTDAccount, fetchSubTypes("TDA"), "create_new_ext_td_acc_property.sql")
     }.get(operation, None)
 
 
@@ -50,12 +58,17 @@ if __name__ == "__main__":
     print("What do you want to do? Select option from below:")
     print("  1. Create a DEBIT Account.")
     print("  2. Create a CREDIT Account.")
+    print("  3. Create a TERM/Time Deposit Account.")
     operation = int(input("Enter Option Number: "))
 
     create_new_acc_property = readStatement(INTERFACE, "create_new_account_property.sql")
 
     func, sub_types, statement = mapOperations(operation = operation)
-    primary_account_property, extended_account_property = func(sub_types)
+
+    if operation in [1]: # these function can work only with sub-types
+        primary_account_property, extended_account_property = func(sub_types)
+    elif operation in [3]: # need multiple parameters
+        primary_account_property, extended_account_property = func(sub_types, accounts = formatDebitAccounts())
 
     execute(create_new_acc_property, engine = APP_ENGINE, params = primary_account_property)
 
