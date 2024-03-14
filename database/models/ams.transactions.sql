@@ -50,10 +50,6 @@ CREATE TABLE IF NOT EXISTS "ams.transactions" (
     _trxCategoryAuto VARCHAR(128), -- ? csv, automatic tagging by ai/ml model
     _trxCategoryUser VARCHAR(128), -- ? csv, multiple manual tagging by the end user
 
-    -- self account transactions can be identified using the flag
-    -- helps in reducing duplicate records/calculations
-    _self_account_transfer BOOLEAN CHECK(_self_account_transfer IN (0, 1)) DEFAULT 0 NOT NULL,
-
     -- specify created/updated on timestamp for verification
     created_on DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_on DATETIME DEFAULT NULL,
@@ -65,14 +61,19 @@ CREATE TABLE IF NOT EXISTS "ams.transactions" (
     FOREIGN KEY(_trxAccount) REFERENCES "ams.dmw_trxAccount"(_account_id)
 );
 
--- CREATE TABLE "ams.extFixedDeposits" (
---     FDAccountNumber VARCHAR(32) PRIMARY KEY,
+-- extended transactions account, to get all types of inter-account and transaction breakup
+CREATE TABLE IF NOT EXISTS "ams.extTransactions" (
+    _id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    refTrxID INTEGER NOT NULL, -- ! not unique to hold credit account information
 
---     -- track the deposit and withdraw transaction
---     -- from the linked/defined debit accounts,
---     -- ? can fetch all details using `JOIN` statement
---     DepositTrxID  INTEGER NOT NULL UNIQUE,
---     WithdrawTrxID INTEGER NOT NULL UNIQUE,
+    -- source account number is available from `refTrxID`,
+    -- ? while destination account number is mapped here:
+    destinationAccountID VARCHAR(32) NOT NULL,
+    transactionGroupUQID VARCHAR(32) NOT NULL,
 
---     FOREIGN KEY(FDAccountNumber) REFERENCES "ams.mwAccountProperty"(AccountID)
--- );
+    -- the transaction type is related to the destination account::
+    _trxType VARCHAR(16) NOT NULL,
+
+    FOREIGN KEY(refTrxID) REFERENCES "ams.transactions"(_id),
+    FOREIGN KEY(destinationAccountID) REFERENCES "ams.mwAccountProperty"(AccountID)
+);
