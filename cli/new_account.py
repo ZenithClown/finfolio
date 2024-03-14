@@ -12,7 +12,7 @@ data into the FinFolio-DB system.
 
 from uuid import uuid4 as UUID
 
-def setAccountProperty() -> tuple:
+def setAccountProperty(subtypes : list) -> tuple:
     """
     Fetch Primary Account Opening Details from User
 
@@ -28,7 +28,16 @@ def setAccountProperty() -> tuple:
     AccountOpenDate = input(f"Account Opening Date (YYYY-MM-DD): ")
     AccountCloseDate = input(f"Account Closing Date (YYYY-MM-DD): ") or None
 
-    return (AccountID, AccountNumber, AccountName, AccountOpenDate, AccountCloseDate)
+    print("\nRegister a Sub-Type with the Account: ")
+    print("  >> 0 : No Sub Type")
+    for idx, subtype in enumerate(subtypes):
+        subtype = f"{subtype[0]} ({subtype[1]})"
+        print(f"  >> {idx + 1} : {subtype}")
+
+    choice_ = int(input("Enter Sub-Type Number: "))
+    AccountSubTypeID = None if choice_ == 0 else subtypes[choice_ - 1][0]
+
+    return (AccountID, AccountNumber, AccountName, AccountSubTypeID, AccountOpenDate, AccountCloseDate)
 
 
 def setDebitAccount(subtypes : list) -> tuple:
@@ -41,16 +50,7 @@ def setDebitAccount(subtypes : list) -> tuple:
     """
 
     AccountTypeID = "DBT" # always constant
-    AccountID, AccountNumber, AccountName, AccountOpenDate, AccountCloseDate = setAccountProperty()
-
-    print("\nRegister a Sub-Type with the Account: ")
-    print("  >> 0 : No Sub Type")
-    for idx, subtype in enumerate(subtypes):
-        subtype = f"{subtype[0]} ({subtype[1]})"
-        print(f"  >> {idx + 1} : {subtype}")
-
-    choice_ = int(input("Enter Sub-Type Number: "))
-    AccountSubTypeID = None if choice_ == 0 else subtypes[choice_ - 1][0]
+    AccountID, AccountNumber, AccountName, AccountSubTypeID, AccountOpenDate, AccountCloseDate = setAccountProperty(subtypes)
 
     # ? setting additional properties as per extended table schema:
     CIF = input("Enter Associated CIF Number: ")
@@ -65,4 +65,38 @@ def setDebitAccount(subtypes : list) -> tuple:
     return (
         (AccountID, AccountNumber, AccountName, AccountTypeID, AccountSubTypeID, AccountOpenDate, AccountCloseDate),
         (AccountID, CIF, IFSC, SecondaryHolder, TertiaryPlusHolder, NomineeName, NomineeRelationship)
+    )
+
+
+def setTDAccount(subtypes : list, accounts : list) -> tuple:
+    """
+    Create/Register a New DEBIT (Savings, Salary, Current) Account
+
+    The python-interface function to create and register a new debit
+    card account. Since, this is part of a CLI application, the
+    functions prompts the opening questions only in terminal.
+    """
+
+    AccountTypeID = "DBT" # always constant
+    AccountID, AccountNumber, AccountName, AccountSubTypeID, AccountOpenDate, AccountCloseDate = setAccountProperty(subtypes)
+
+    print("\nLinked Primary/DEBIT Account: ")
+    for idx, account in enumerate(accounts):
+        account = f"{account[2]} ({account[1]})"
+        print(f"  >> {idx + 1} : {account}")
+
+    choice_ = int(input("Enter Account Choice Number: "))
+    DebitAccount = accounts[choice_ - 1][0]
+
+    # get interest rate, which is rounded to 5 decimal places
+    InterestRate = round(float(input("Interest Rate (0.00 <= r <= 1.00): ")), 5)
+
+    OperationMode = input("Operation Mode: ") or None
+    SchemeDetails = input("Scheme Details: ") or None
+    MaturityDetails = input("Maturity Details: ") or None
+
+    TDRemarks = input("Remarks (example: 'savings for super-computer'; csv): ") or None
+    return (
+        (AccountID, AccountNumber, AccountName, AccountTypeID, AccountSubTypeID, AccountOpenDate, AccountCloseDate),
+        (AccountID, DebitAccount, InterestRate, OperationMode, SchemeDetails, MaturityDetails, TDRemarks)
     )
