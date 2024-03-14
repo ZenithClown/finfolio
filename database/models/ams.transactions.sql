@@ -50,10 +50,6 @@ CREATE TABLE IF NOT EXISTS "ams.transactions" (
     _trxCategoryAuto VARCHAR(128), -- ? csv, automatic tagging by ai/ml model
     _trxCategoryUser VARCHAR(128), -- ? csv, multiple manual tagging by the end user
 
-    -- self account transactions can be identified using the flag
-    -- helps in reducing duplicate records/calculations
-    _self_account_transfer BOOLEAN CHECK(_self_account_transfer IN (0, 1)) DEFAULT 0 NOT NULL,
-
     -- specify created/updated on timestamp for verification
     created_on DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_on DATETIME DEFAULT NULL,
