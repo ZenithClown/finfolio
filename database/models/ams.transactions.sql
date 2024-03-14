@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS "ams.transactions" (
 -- extended transactions account, to get all types of inter-account and transaction breakup
 CREATE TABLE IF NOT EXISTS "ams.extTransactions" (
     _id      INTEGER PRIMARY KEY AUTOINCREMENT,
-    refTrxID INTEGER UNIQUE NOT NULL,
+    refTrxID INTEGER NOT NULL, -- ! not unique to hold credit account information
 
     -- source account number is available from `refTrxID`,
     -- ? while destination account number is mapped here:
