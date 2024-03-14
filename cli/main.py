@@ -59,18 +59,27 @@ if __name__ == "__main__":
     print("  1. Create a DEBIT Account.")
     print("  2. Create a CREDIT Account.")
     print("  3. Create a TERM/Time Deposit Account.")
+    print("  4. Register/Map TD Account Transaction to DEBIT Account.")
     operation = int(input("Enter Option Number: "))
 
-    create_new_acc_property = readStatement(INTERFACE, "create_new_account_property.sql")
+    if operation <= 3:
+        # new_account.py :: operation associated with creating a new account
+        create_new_acc_property = readStatement(INTERFACE, "create_new_account_property.sql")
 
-    func, sub_types, statement = mapOperations(operation = operation)
+        func, sub_types, statement = mapOperations(operation = operation)
 
-    if operation in [1]: # these function can work only with sub-types
-        primary_account_property, extended_account_property = func(sub_types)
-    elif operation in [3]: # need multiple parameters
-        primary_account_property, extended_account_property = func(sub_types, accounts = formatDebitAccounts())
+        if operation in [1]: # these function can work only with sub-types
+            primary_account_property, extended_account_property = func(sub_types)
+        elif operation in [3]: # need multiple parameters
+            primary_account_property, extended_account_property = func(sub_types, accounts = formatDebitAccounts())
+        else:
+            raise NotImplementedError("Please Wait for a Future Release!")
 
-    execute(create_new_acc_property, engine = APP_ENGINE, params = primary_account_property)
+        execute(create_new_acc_property, engine = APP_ENGINE, params = primary_account_property)
 
-    create_ext_acc_property = readStatement(INTERFACE, statement)
-    execute(create_ext_acc_property, engine = APP_ENGINE, params = extended_account_property)
+        create_ext_acc_property = readStatement(INTERFACE, statement)
+        execute(create_ext_acc_property, engine = APP_ENGINE, params = extended_account_property)
+
+    elif operation == 4:
+        # map td account transaction with/to debit account
+        pass
