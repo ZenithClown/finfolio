@@ -12,6 +12,24 @@ data into the FinFolio-DB system.
 
 from uuid import uuid4 as UUID
 
+def setAccountProperty() -> tuple:
+    """
+    Fetch Primary Account Opening Details from User
+
+    Primary account opening details are populated into the table
+    `ams.mwAccountProperty` while all the extended table informations
+    are fetched using `set*****Account()` functions.
+    """
+
+    _random_new_uuid = str(UUID()).upper()
+    AccountID = input(f"Create a New Account ID [{_random_new_uuid}]: ") or _random_new_uuid
+    AccountNumber = int(input(f"Enter Account Number: "))
+    AccountName = input(f"Set an Account Name: ")
+    AccountOpenDate = input(f"Account Opening Date (YYYY-MM-DD): ")
+    AccountCloseDate = input(f"Account Closing Date (YYYY-MM-DD): ") or None
+
+    return (AccountID, AccountNumber, AccountName, AccountOpenDate, AccountCloseDate)
+
 
 def setDebitAccount(subtypes : list) -> tuple:
     """
@@ -22,14 +40,8 @@ def setDebitAccount(subtypes : list) -> tuple:
     functions prompts the opening questions only in terminal.
     """
 
-    _random_new_uuid = str(UUID()).upper()
-    AccountID = input(f"Create a New Account ID [{_random_new_uuid}]: ") or _random_new_uuid
-    AccountNumber = int(input(f"Enter Account Number: "))
-    AccountName = input(f"Set an Account Name: ")
-    AccountOpenDate = input(f"Account Opening Date (YYYY-MM-DD): ")
-    AccountCloseDate = input(f"Account Closing Date (YYYY-MM-DD): ") or None
-
     AccountTypeID = "DBT" # always constant
+    AccountID, AccountNumber, AccountName, AccountOpenDate, AccountCloseDate = setAccountProperty()
 
     print("\nRegister a Sub-Type with the Account: ")
     print("  >> 0 : No Sub Type")
