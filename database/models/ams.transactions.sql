@@ -69,7 +69,6 @@ CREATE TABLE IF NOT EXISTS "ams.extTransactions" (
     -- source account number is available from `refTrxID`,
     -- ? while destination account number is mapped here:
     destinationAccountID VARCHAR(32) NOT NULL,
-    transactionGroupUQID VARCHAR(32) NOT NULL,
 
     -- the transaction type is related to the destination account::
     _trxType VARCHAR(16) NOT NULL,
