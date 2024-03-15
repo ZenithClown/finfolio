@@ -17,6 +17,8 @@ the pOrgz application is CLI mode.
 import os
 import sys
 
+from tabulate import tabulate
+
 from new_account import (
     setTDAccount,   # create a new td account // 3
     setDebitAccount # create a new debit account // 1
@@ -43,15 +45,24 @@ dyn_fetch_debit_account = """
 SELECT * FROM "ams.mwAccountProperty" WHERE AccountTypeID = 'DBT'
 """
 
+dyn_fetch_tdaccount_ext_transactions = """
+SELECT * FROM "ams.extTransactions" WHERE srcAccountID = '{src_account_id}'
+"""
+
 readStatement = lambda dir, file : open(os.path.join(dir, file)).read()
 fetchSubTypes = lambda type_ : APP_ENGINE.execute(dyn_fetch_account_sub_type.format(type_ = type_)).fetchall()
 formatDebitAccounts = lambda : APP_ENGINE.execute(dyn_fetch_debit_account).fetchall()
+fetchExistingExtTrx = lambda src_account_id : APP_ENGINE.execute(dyn_fetch_tdaccount_ext_transactions.format(src_account_id = src_account_id)).fetchall()
 
 def mapOperations(operation : int):
     return {
         1 : (setDebitAccount, fetchSubTypes("DBT"), "create_new_ext_dbt_acc_property.sql"),
         3 : (setTDAccount, fetchSubTypes("TDA"), "create_new_ext_td_acc_property.sql")
     }.get(operation, None)
+
+
+def printTable(items : list, headers : list) -> None:
+    print(tabulate(items, headers = headers, tablefmt = "psql"))
 
 
 if __name__ == "__main__":
@@ -82,4 +93,23 @@ if __name__ == "__main__":
 
     elif operation == 4:
         # map td account transaction with/to debit account
-        pass
+        account_sub_type = fetchSubTypes("TDA")
+
+        print("\nType of TERM/Time Deposit Account to Register/Map/Insert: ")
+        for idx, subtype in enumerate(account_sub_type):
+            subtype = f"{subtype[0]} ({subtype[1]})"
+            print(f"  >> {idx + 1} : {subtype}")
+
+        choice_ = int(input("Enter Sub-Type Number: "))
+        account_sub_type = account_sub_type[choice_ - 1][0]
+
+        accounts = [account for account in formatDebitAccounts() if account[4] == account_sub_type]
+        print(f"\nSelect Account ID (for Account Sub-Type == `{account_sub_type}`): ")
+        for idx, account in enumerate(accounts):
+            account = f"{account[2]} ({account[1]})"
+            print(f"  >> {idx + 1} : {account}")
+        choice_ = int(input("Enter Account Choice Number: "))
+        account_id = accounts[choice_ - 1][0]
+
+        print(f"\nAll Available/Mapped Records for Account ID: `{account_id}`")
+        printTable(fetchExistingExtTrx(account_id), headers = ["_id", "refTrxID", "srcAccountID", "dstAccountID", "_trxType"])
