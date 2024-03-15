@@ -65,14 +65,15 @@ CREATE TABLE IF NOT EXISTS "ams.transactions" (
 CREATE TABLE IF NOT EXISTS "ams.extTransactions" (
     _id      INTEGER PRIMARY KEY AUTOINCREMENT,
     refTrxID INTEGER NOT NULL, -- ! not unique to hold credit account information
-
-    -- source account number is available from `refTrxID`,
-    -- ? while destination account number is mapped here:
-    destinationAccountID VARCHAR(32) NOT NULL,
+    
+    -- src - source, dst - destination :: account details are mapped
+    srcAccountID VARCHAR(32) NOT NULL,
+    dstAccountID VARCHAR(32) NOT NULL,
 
     -- the transaction type is related to the destination account::
     _trxType VARCHAR(16) NOT NULL,
 
     FOREIGN KEY(refTrxID) REFERENCES "ams.transactions"(_id),
-    FOREIGN KEY(destinationAccountID) REFERENCES "ams.mwAccountProperty"(AccountID)
+    FOREIGN KEY(srcAccountID) REFERENCES "ams.mwAccountProperty"(AccountID),
+    FOREIGN KEY(dstAccountID) REFERENCES "ams.mwAccountProperty"(AccountID)
 );
