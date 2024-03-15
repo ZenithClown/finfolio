@@ -24,7 +24,10 @@ from new_account import (
     setDebitAccount # create a new debit account // 1
 )
 
-from ext_transactions import mapFDAccount
+from ext_transactions import (
+    mapFDAccount, # register/map for fixed deposits
+    mapRDAccount  # register/map for recurring deposits
+)
 
 # ! append the path to the root of the file start
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -126,5 +129,7 @@ if __name__ == "__main__":
         print("\nInput Value from Terminal:")
         if account_sub_type == "FDS":
             _ = mapFDAccount(src_account_id, dst_account_id)
+        elif account_sub_type == "RDS":
+            _ = mapRDAccount(src_account_id, dst_account_id)
         else:
             raise NotImplementedError
