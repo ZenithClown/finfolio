@@ -46,13 +46,18 @@ SELECT * FROM "ams.mwAccountProperty" WHERE AccountTypeID = 'DBT'
 """
 
 dyn_fetch_tdaccount_ext_transactions = """
-SELECT * FROM "ams.extTransactions" WHERE srcAccountID = '{src_account_id}'
+SELECT * FROM "ams.extTransactions" WHERE dstAccountID = '{dst_account_id}'
+"""
+
+dyn_fetch_td_ext_account_details = """
+SELECT * FROM "ams.extTermDepositAccount" WHERE AccountID = '{account_id}'
 """
 
 readStatement = lambda dir, file : open(os.path.join(dir, file)).read()
 fetchSubTypes = lambda type_ : APP_ENGINE.execute(dyn_fetch_account_sub_type.format(type_ = type_)).fetchall()
 formatDebitAccounts = lambda : APP_ENGINE.execute(dyn_fetch_debit_account).fetchall()
-fetchExistingExtTrx = lambda src_account_id : APP_ENGINE.execute(dyn_fetch_tdaccount_ext_transactions.format(src_account_id = src_account_id)).fetchall()
+fetchExistingExtTrx = lambda dst_account_id : APP_ENGINE.execute(dyn_fetch_tdaccount_ext_transactions.format(dst_account_id = dst_account_id)).fetchall()
+fetchTDExtAccDetail = lambda account_id : APP_ENGINE.execute(dyn_fetch_td_ext_account_details.format(account_id = account_id)).fetchone()
 
 def mapOperations(operation : int):
     return {
@@ -109,7 +114,9 @@ if __name__ == "__main__":
             account = f"{account[2]} ({account[1]})"
             print(f"  >> {idx + 1} : {account}")
         choice_ = int(input("Enter Account Choice Number: "))
-        account_id = accounts[choice_ - 1][0]
+        dst_account_id = accounts[choice_ - 1][0] # ! destination account id
+        src_account_id = fetchTDExtAccDetail(dst_account_id)[2]
+        print(f"Mapped Source A/C ID: `{src_account_id}`")
 
-        print(f"\nAll Available/Mapped Records for Account ID: `{account_id}`")
-        printTable(fetchExistingExtTrx(account_id), headers = ["_id", "refTrxID", "srcAccountID", "dstAccountID", "_trxType"])
+        print(f"\nAll Available/Mapped Records for Account ID: `{dst_account_id}`")
+        printTable(fetchExistingExtTrx(dst_account_id), headers = ["_id", "refTrxID", "srcAccountID", "dstAccountID", "_trxType"])
