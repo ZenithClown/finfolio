@@ -75,5 +75,9 @@ CREATE TABLE IF NOT EXISTS "ams.extTransactions" (
 
     FOREIGN KEY(refTrxID) REFERENCES "ams.transactions"(_id),
     FOREIGN KEY(srcAccountID) REFERENCES "ams.mwAccountProperty"(AccountID),
-    FOREIGN KEY(dstAccountID) REFERENCES "ams.mwAccountProperty"(AccountID)
+    FOREIGN KEY(dstAccountID) REFERENCES "ams.mwAccountProperty"(AccountID),
+
+    -- ? add unique constraint to avoid duplicate entry
+    UNIQUE(srcAccountID, dstAccountID, _trxType),
+    UNIQUE(srcAccountID, dstAccountID, refTrxID)
 );

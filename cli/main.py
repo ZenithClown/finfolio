@@ -24,6 +24,8 @@ from new_account import (
     setDebitAccount # create a new debit account // 1
 )
 
+from ext_transactions import mapFDAccount
+
 # ! append the path to the root of the file start
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from backend.config import * # noqa: F401, F403
@@ -120,3 +122,9 @@ if __name__ == "__main__":
 
         print(f"\nAll Available/Mapped Records for Account ID: `{dst_account_id}`")
         printTable(fetchExistingExtTrx(dst_account_id), headers = ["_id", "refTrxID", "srcAccountID", "dstAccountID", "_trxType"])
+
+        print("\nInput Value from Terminal:")
+        if account_sub_type == "FDS":
+            _ = mapFDAccount(src_account_id, dst_account_id)
+        else:
+            raise NotImplementedError
