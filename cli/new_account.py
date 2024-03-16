@@ -28,14 +28,17 @@ def setAccountProperty(subtypes : list) -> tuple:
     AccountOpenDate = input(f"Account Opening Date (YYYY-MM-DD): ")
     AccountCloseDate = input(f"Account Closing Date (YYYY-MM-DD): ") or None
 
-    print("\nRegister a Sub-Type with the Account: ")
-    print("  >> 0 : No Sub Type")
-    for idx, subtype in enumerate(subtypes):
-        subtype = f"{subtype[0]} ({subtype[1]})"
-        print(f"  >> {idx + 1} : {subtype}")
+    if subtypes:
+        print("\nRegister a Sub-Type with the Account: ")
+        print("  >> 0 : No Sub Type")
+        for idx, subtype in enumerate(subtypes):
+            subtype = f"{subtype[0]} ({subtype[1]})"
+            print(f"  >> {idx + 1} : {subtype}")
 
-    choice_ = int(input("Enter Sub-Type Number: "))
-    AccountSubTypeID = None if choice_ == 0 else subtypes[choice_ - 1][0]
+        choice_ = int(input("Enter Sub-Type Number: "))
+        AccountSubTypeID = None if choice_ == 0 else subtypes[choice_ - 1][0]
+    else:
+        AccountSubTypeID = None
 
     return (AccountID, AccountNumber, AccountName, AccountSubTypeID, AccountOpenDate, AccountCloseDate)
 

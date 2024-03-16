@@ -20,8 +20,9 @@ import sys
 from tabulate import tabulate
 
 from new_account import (
-    setTDAccount,   # create a new td account // 3
-    setDebitAccount # create a new debit account // 1
+    setTDAccount,       # create a new td account // 3
+    setDebitAccount,    # create a new debit account // 1
+    setAccountProperty  # currently using for all others
 )
 
 from ext_transactions import (
@@ -67,7 +68,8 @@ fetchTDExtAccDetail = lambda account_id : APP_ENGINE.execute(dyn_fetch_td_ext_ac
 def mapOperations(operation : int):
     return {
         1 : (setDebitAccount, fetchSubTypes("DBT"), "create_new_ext_dbt_acc_property.sql"),
-        3 : (setTDAccount, fetchSubTypes("TDA"), "create_new_ext_td_acc_property.sql")
+        3 : (setTDAccount, fetchSubTypes("TDA"), "create_new_ext_td_acc_property.sql"),
+        4 : (setAccountProperty, [], None)
     }.get(operation, None)
 
 
@@ -80,10 +82,11 @@ if __name__ == "__main__":
     print("  1. Create a DEBIT Account.")
     print("  2. Create a CREDIT Account.")
     print("  3. Create a TERM/Time Deposit Account.")
-    print("  4. Register/Map TD Account Transaction to DEBIT Account.")
+    print("  4. Create a DEMAT Account.")
+    print("  5. Register/Map TD Account Transaction to DEBIT Account.")
     operation = int(input("Enter Option Number: "))
 
-    if operation <= 3:
+    if operation <= 4:
         # new_account.py :: operation associated with creating a new account
         create_new_acc_property = readStatement(INTERFACE, "create_new_account_property.sql")
 
@@ -93,15 +96,20 @@ if __name__ == "__main__":
             primary_account_property, extended_account_property = func(sub_types)
         elif operation in [3]: # need multiple parameters
             primary_account_property, extended_account_property = func(sub_types, accounts = formatDebitAccounts())
+        elif operation in [4]: # these account does not have an extended property
+            AccountTypeID = "DMT"
+            AccountID, AccountNumber, AccountName, AccountSubTypeID, AccountOpenDate, AccountCloseDate = func(sub_types)
+            primary_account_property = (AccountID, AccountNumber, AccountName, AccountTypeID, AccountSubTypeID, AccountOpenDate, AccountCloseDate)
         else:
             raise NotImplementedError("Please Wait for a Future Release!")
 
         execute(create_new_acc_property, engine = APP_ENGINE, params = primary_account_property)
 
-        create_ext_acc_property = readStatement(INTERFACE, statement)
-        execute(create_ext_acc_property, engine = APP_ENGINE, params = extended_account_property)
+        if statement:
+            create_ext_acc_property = readStatement(INTERFACE, statement)
+            execute(create_ext_acc_property, engine = APP_ENGINE, params = extended_account_property)
 
-    elif operation == 4:
+    elif operation == 5:
         # map td account transaction with/to debit account
         account_sub_type = fetchSubTypes("TDA")
 
