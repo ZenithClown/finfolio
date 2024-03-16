@@ -80,3 +80,45 @@ CREATE TABLE IF NOT EXISTS "ams.extDebitTransactions" (
     -- ? add unique constraint to avoid duplicate entry
     UNIQUE(srcAccountID, dstAccountID, _trxType)
 );
+
+CREATE TABLE IF NOT EXISTS "ams.DEMATTransactions" (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    AccountID VARCHAR(32) NOT NULL,
+
+    -- ? ISIN is considered as the primary key, as certain
+    -- transactions comes with a tag like `-BE`, `-T` which can
+    -- be avoided and also, ISIN number is unique for stocks listed
+    -- in both NSE and BSE which have different symbols
+    ISIN VARCHAR(12) NOT NULL, -- ? https://www.investopedia.com/terms/i/isin.asp
+    _sym VARCHAR(24) NOT NULL, -- ! todo delete this on symbol master setup
+
+    -- other information to trade informetions::
+    tradeDate DATE NOT NULL,
+    exchgName VARCHAR(5) NOT NULL,
+    
+    -- ? segment and series name needs understanding
+    segmentName VARCHAR(5),
+    seriesName  VARCHAR(5),
+
+    -- TODO: create a master for this
+    tradeType VARCHAR(5) NOT NULL,
+    onAuction INTEGER CHECK(onAuction IN (0, 1)),
+    
+    -- ! quantity is total order value, price is per unit
+    tradeQuantity INTEGER NOT NULL,
+    _symUnitPrice DECIMAL(7, 3) NOT NULL,
+
+    -- optional informations, kept, todo develop use-cases
+    _trade_id VARCHAR(16),
+    _order_id VARCHAR(24),
+    
+    -- order execution time is also provided by brokers
+    orderExecutionTime DATETIME,
+
+    -- specify created/updated on timestamp for verification
+    created_on DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_on DATETIME DEFAULT NULL,
+
+    FOREIGN KEY(ISIN) REFERENCES "mwSymbolDetails"(ISINCode),
+    FOREIGN KEY(AccountID) REFERENCES "ams.mwAccountProperty"(AccountID)
+);
