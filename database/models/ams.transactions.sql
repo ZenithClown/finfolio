@@ -62,9 +62,9 @@ CREATE TABLE IF NOT EXISTS "ams.transactions" (
 );
 
 -- extended transactions account, to get all types of inter-account and transaction breakup
-CREATE TABLE IF NOT EXISTS "ams.extTransactions" (
+CREATE TABLE IF NOT EXISTS "ams.extDebitTransactions" (
     _id      INTEGER PRIMARY KEY AUTOINCREMENT,
-    refTrxID INTEGER NOT NULL, -- ! not unique to hold credit account information
+    refTrxID INTEGER UNIQUE NOT NULL, -- ! not unique to hold credit account information
     
     -- src - source, dst - destination :: account details are mapped
     srcAccountID VARCHAR(32) NOT NULL,
@@ -78,6 +78,5 @@ CREATE TABLE IF NOT EXISTS "ams.extTransactions" (
     FOREIGN KEY(dstAccountID) REFERENCES "ams.mwAccountProperty"(AccountID),
 
     -- ? add unique constraint to avoid duplicate entry
-    UNIQUE(srcAccountID, dstAccountID, _trxType),
-    UNIQUE(srcAccountID, dstAccountID, refTrxID)
+    UNIQUE(srcAccountID, dstAccountID, _trxType)
 );
