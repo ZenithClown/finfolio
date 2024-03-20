@@ -19,7 +19,7 @@ The base model class file binds over the engine for providing
 additional utility functions define below.
 """
 
-class BaseModel(object): # TODO: replace with `isinstance(_base)`
+class BaseModel(object): # TODO: replace with `isinstance(_base)` #16
     """
     Base Model Class File Defination
 
