@@ -11,3 +11,6 @@ The models directory is seperated into two parts - `ums` for the user
 management system, and `ams` for account management system. Check
 schema documentation for more information. (TODO #6, #12)
 """
+
+from finfolio.main.models.ams import *
+from finfolio.main.models.ums import *
