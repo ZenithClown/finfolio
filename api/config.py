@@ -1,29 +1,40 @@
 # -*- encoding: utf-8 -*-
 
-"""
-Developer Usage: Defination of Base Model Class
+"""All Configurations for FinFolio-DB"""
 
-The base model class file can be inherited by models to typically
-store common functions. Usage:
+import os
 
-```python
-from sqlalchemy.ext.declarative import declarative_base
+class BaseConfig(object):
+    """Base Configuration Class - Inherited by Others"""
 
-_base = declarative_base()
+    DEBUG   = False
+    TESTING = False
 
-class BaseModel(_base):
-    pass
-```
+    # TODO: consider the use of secrets, password salting
+    # https://flask-security-too.readthedocs.io/en/stable/quickstart.html
+    SECRET_KEY = os.getenv("SECRET_KEY", "my_secret_key")
 
-The base model class file binds over the engine for providing
-additional utility functions define below.
-"""
+    # ? not using the flask-sqlalchemy event system, thus
+    # https://stackoverflow.com/a/33790196/6623589
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-class BaseModel(object): # TODO: replace with `isinstance(_base)` #16
+
+class DevelopmentConfig(BaseConfig):
+    """Development Configuration - Invoke using `config_name = dev` Key"""
+
+    DEBUG = True # all debugs are logged into cosole
+
+    # ? database configurations are defined here, may use config
+    SQLALCHEMY_DATABASE_URI = "DATABASE_URI"
+
+
+class BaseModel(object):
     """
-    Base Model Class File Defination
+    Developer Usage: Defination of Base Model Class
 
-    The base function is defined under the `api/models/_base.py` file
+    The base model class file can be inherited by models to typically
+    store common function logics, like dunder methods. The base
+    function is defined under the `api/models/config.py` file
     and is used as a wrapper over the `isinstance(create_engine())`
     to provide a common space for shared functionalities.
 
