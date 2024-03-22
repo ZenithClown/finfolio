@@ -25,7 +25,7 @@ class DevelopmentConfig(BaseConfig):
     DEBUG = True # all debugs are logged into cosole
 
     # ? database configurations are defined here, may use config
-    SQLALCHEMY_DATABASE_URI = "DATABASE_URI"
+    SQLALCHEMY_DATABASE_URI = "sqlite:///C://Users//debmalya//pOrgz//database.db"
 
 
 class BaseModel(object):
