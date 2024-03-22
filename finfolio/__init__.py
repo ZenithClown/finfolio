@@ -22,7 +22,7 @@ import os
 from flask_restful import Api
 
 # ? namespace:: import `create_app()` for application initialization
-from app.main import create_app # pyright: ignore[reportMissingImports]
+from finfolio.main import create_app # pyright: ignore[reportMissingImports]
 
 API_ROOT_DIRECTORY = os.path.join(os.path.abspath(os.path.dirname(__file__)))
 APP_ROOT_DIRECTORY = os.path.join(API_ROOT_DIRECTORY, "..") # TODO: define `manage.py`
