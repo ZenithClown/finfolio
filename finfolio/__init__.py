@@ -12,14 +12,6 @@ however, gradual transition is in progress for an API.
 
 import os
 
-# ? necessary imports for a flask-api
-from flask import Flask
-from flask_bcrypt import Bcrypt # hasing algorithms
-from flask_sqlalchemy import SQLAlchemy
-
-# ? namespace:: internal module imports
-
-
 API_ROOT_DIRECTORY = os.path.join(os.path.abspath(os.path.dirname(__file__)))
 APP_ROOT_DIRECTORY = os.path.join(API_ROOT_DIRECTORY, "..") # TODO: define `manage.py`
 
