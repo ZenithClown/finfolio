@@ -1,19 +1,46 @@
 # -*- encoding: utf-8 -*-
 
 """
-A REST-API Model for the FinFolio-DB Usages
+REST-API Endpoints Initialization & Defination Section
 
-The REST-API is developed using `sqlalchemy.orm` concepts and is
-currently under development.
+The api endpoints (or routes) are defined at the application level
+(i.e., `finfolio/finfolio` directory) enabling the option to use the
+instance at both `manage.py` and testing environment.
 
-WARN:: The `database` directory currently holds all the SQL statement
-however, gradual transition is in progress for an API.
+Currently, this section is in development, and gradual transition in
+progress to move/alter all codes from `finfolio/database` to
+`finfolio/finfolio`, i.e., at the REST-API level.
+
+@author:  pOrgz-dev, Debmalya Pramanik
+@version: v1.0.0
 """
 
+
 import os
+
+# ? namespace:: import of the flask-#, i.e., extensions
+from flask_restful import Api
+
+# ? namespace:: import `create_app()` for application initialization
+from app.main import create_app # pyright: ignore[reportMissingImports]
 
 API_ROOT_DIRECTORY = os.path.join(os.path.abspath(os.path.dirname(__file__)))
 APP_ROOT_DIRECTORY = os.path.join(API_ROOT_DIRECTORY, "..") # TODO: define `manage.py`
 
 # ? the api version is same as that of the project version
 __version__ = open(os.path.join(APP_ROOT_DIRECTORY, "VERSION"), "r").read()
+
+# define project type from `config.py` or `.env` file or `$PATH`
+# ! only `dev` environment is now defined, may push for prod on maturity
+PROJECT_ENVIRON = os.getenv("PROJECT_ENV_NAME") or "dev"
+app = create_app(PROJECT_ENVIRON) # check config.py
+
+# ? create `api` object using `Api` and define all endpoints
+prefix = {
+    # rest-api endpoint prefix :: locahost:5000/dev/...
+
+    "dev"  : "/dev",
+    "test" : "/testing"
+}.get(PROJECT_ENVIRON, f"/api/{PROJECT_ENVIRON}")
+
+api = Api(app, prefix = prefix)
