@@ -9,7 +9,11 @@ class DBTAccount(db.Model):
     
     __tablename__ = "ams.extDBTAccount"
 
-    _id = db.Column(db.Integer, primary_key = True, autoincrement = True)
+    # ? autoincrement = True should work for mysql/psql directly
+    # https://stackoverflow.com/a/69822361/6623589
+    __table_args__ = {"sqlite_autoincrement" : True}
+
+    _id = db.Column(db.Integer, primary_key = True, autoincrement = True, server_default = db.FetchedValue())
 
     # ? the account id is referenced and is a foreign key
     # ? not maintaining a primary key relationship for easier join
@@ -37,7 +41,11 @@ class CDTAccount(db.Model):
     
     __tablename__ = "ams.extCDTAccount"
 
-    _id = db.Column(db.Integer, primary_key = True, autoincrement = True)
+    # ? autoincrement = True should work for mysql/psql directly
+    # https://stackoverflow.com/a/69822361/6623589
+    __table_args__ = {"sqlite_autoincrement" : True}
+
+    _id = db.Column(db.Integer, primary_key = True, autoincrement = True, server_default = db.FetchedValue())
 
     # ? the account id is referenced and is a foreign key
     # ? not maintaining a primary key relationship for easier join
@@ -61,7 +69,11 @@ class TDAAccount(db.Model):
     
     __tablename__ = "ams.extTDAAccount"
 
-    _id = db.Column(db.Integer, primary_key = True, autoincrement = True)
+    # ? autoincrement = True should work for mysql/psql directly
+    # https://stackoverflow.com/a/69822361/6623589
+    __table_args__ = {"sqlite_autoincrement" : True}
+
+    _id = db.Column(db.Integer, primary_key = True, autoincrement = True, server_default = db.FetchedValue())
 
     # ? the account id is referenced and is a foreign key
     # ? not maintaining a primary key relationship for easier join

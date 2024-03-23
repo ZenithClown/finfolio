@@ -10,3 +10,5 @@ transactions under each account.
 
 from finfolio.main.models.ams.accounts import *
 from finfolio.main.models.ams.ext_accounts import *
+
+from finfolio.main.models.ams.transactions import *

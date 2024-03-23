@@ -10,8 +10,7 @@ attributes of an individual/family.
 Copywright © [2023] pOrgz <https://github.com/pOrgz-dev>
 """
 
-import datetime as dt
-
+from sqlalchemy import func
 from finfolio.main import db
 
 
@@ -104,5 +103,5 @@ class MWAccountProperty(db.Model):
 
     # ? we may add created and updated on information, for underatanding
     # ! not to confuse with account opening date, but this is when the record created
-    created_at = db.Column(db.DateTime, nullable = False, default = str(dt.datetime.now()))
-    updated_on = db.Column(db.DateTime, onupdate = str(dt.datetime.now()))
+    created_at = db.Column(db.DateTime, nullable = False, server_default = func.current_timestamp())
+    updated_on = db.Column(db.DateTime, server_onupdate = func.current_timestamp())
