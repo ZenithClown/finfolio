@@ -17,3 +17,11 @@ from finfolio.main.models import * # noqa: F401, F403 # pyright: ignore[reportMi
 with app.app_context():
     # db.init_app(app)
     db.create_all() # create all tables
+
+# ! Addind Seed/Initial Data into Tables ! #
+root = UserRoles(role_id = 1, role_name = "ROOT", role_desc = "Root/Super Admin User")
+user = UserRoles(role_id = 2, role_name = "USER", role_desc = "A Normal User to Track Accounts")
+
+with app.app_context():
+    db.session.add_all([root, user])
+    db.session.commit()

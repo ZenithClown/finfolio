@@ -8,3 +8,4 @@ and account mappings.
 """
 
 from finfolio.main.models.ums.users import *
+from finfolio.main.models.ums.roles import *
