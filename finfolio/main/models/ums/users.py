@@ -32,7 +32,7 @@ class UserAccounts(db.Model):
     # ! the role of a user is to be controlled by the api
     # be default, the first user is always `ROOT`, all others
     # maybe `USER` - but maybe configured for access information
-    roles = db.Column(db.String(4), nullable = False, default = "USER")
+    roles = db.Column(db.String(4), db.ForeignKey("ums.UserRoles.role_id"), nullable = False)
 
     # ? we may add created and updated on information, for underatanding
     created_at = db.Column(db.DateTime, nullable = False, default = str(dt.datetime.now()))
