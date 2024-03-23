@@ -37,3 +37,5 @@ class UserAccounts(db.Model):
     # ? we may add created and updated on information, for underatanding
     created_at = db.Column(db.DateTime, nullable = False, default = str(dt.datetime.now()))
     updated_on = db.Column(db.DateTime, onupdate = str(dt.datetime.now()))
+
+    accounts = db.relationship("MWAccountProperty", backref = "owner")
