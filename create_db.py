@@ -21,6 +21,7 @@ with app.app_context():
 # ! Addind Seed/Initial Data into Tables ! #
 root = UserRoles(role_id = 1, role_name = "ROOT", role_desc = "Root/Super Admin User")
 user = UserRoles(role_id = 2, role_name = "USER", role_desc = "A Normal User to Track Accounts")
+external = UserRoles(role_id = 3, role_name = "EXT+", role_desc = "An External User, typically has a Transactional Relationship")
 
 dbt = MWAccountType(account_type_id = "DBT", account_type_name = "DEBIT", account_type_desc = "Use this to store transactions from savings/current account.")
 cdt = MWAccountType(account_type_id = "CDT", account_type_name = "CREDIT", account_type_desc = "Use this to store transactions related to loans, credit cards, etc.")
@@ -43,7 +44,7 @@ nps = MWSubAccountType(account_subtype_id = "NPS", account_type_id = "RET", acco
 
 with app.app_context():
     # seed user roles
-    db.session.add_all([root, user])
+    db.session.add_all([root, user, external])
     db.session.commit()
 
     # seed user account types
