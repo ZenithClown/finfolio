@@ -34,7 +34,7 @@ class DBTTransactions(db.Model):
     # this back-ensures the relationships, account owner and nominee details
     account_id = db.Column(
         db.String(32), db.ForeignKey("ams.mwAccountProperty.account_id"),
-        unique = True, nullable = False,
+        nullable = False,
     )
 
     # ? most of the time transaction record is available at day level
