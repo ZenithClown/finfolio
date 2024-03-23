@@ -2,8 +2,7 @@
 
 """Users Metadata & Relationship Informations"""
 
-import datetime as dt
-
+from sqlalchemy import func
 from finfolio.main import db
 
 class UserAccounts(db.Model):
@@ -35,7 +34,7 @@ class UserAccounts(db.Model):
     roles = db.Column(db.String(4), db.ForeignKey("ums.UserRoles.role_id"), nullable = False)
 
     # ? we may add created and updated on information, for underatanding
-    created_at = db.Column(db.DateTime, nullable = False, default = str(dt.datetime.now()))
-    updated_on = db.Column(db.DateTime, onupdate = str(dt.datetime.now()))
+    created_at = db.Column(db.DateTime, nullable = False, server_default = func.current_timestamp())
+    updated_on = db.Column(db.DateTime, server_onupdate = func.current_timestamp())
 
     accounts = db.relationship("MWAccountProperty", backref = "owner")
