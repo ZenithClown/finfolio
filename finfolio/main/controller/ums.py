@@ -21,13 +21,17 @@ class UserManagementSystemController(BaseResource):
     def __init__(self) -> None:
         super().__init__()
 
+        # adding list of arguments available for the controller
+        # self.req_parser.add_argument("username", type = str, required = False)
+
+        # initialize the interfaces associated with the controller
         self.ums_interface = UMSInterface()
     
 
     def get(self):
         """GET Request for UMS Module"""
 
-        data = None # no response, safe-keeping
+        data, err = None, None # no response, safe-keeping
 
         if request.endpoint == "ums/root-user":
             data = self.ums_interface.get_root()
