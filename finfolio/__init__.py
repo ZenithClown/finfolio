@@ -49,4 +49,5 @@ api = Api(app, prefix = prefix)
 from finfolio.main.controller import * # noqa: F401, F403 # pyright: ignore[reportMissingImports]
 
 ### --- User Management System (UMS) Endpoints/Routes --- ###
-api.add_resource(UserManagementSystemController, "ums/users")
+api.add_resource(UserManagementSystemController, "ums/users", endpoint = "ums/default")
+api.add_resource(UserManagementSystemController, "ums/root-user", endpoint = "ums/root-user")

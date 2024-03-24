@@ -86,6 +86,13 @@ class BaseModel(object):
 
     def __get_dtypes__(self):
         return { c.key : str(c.type) for c in self.__get_features__() }
+    
+
+    def __to_dict__(self):
+        # method to automatically convert table records into dict/json
+        # reduces overhead of using marshalling and/or lambda functions
+
+        return { c.key : getattr(self, c.key) for c in self.__table__.columns }
 
 
 class ResponseFormatter(object):
@@ -192,47 +199,3 @@ class BaseResource(Resource):
         """
 
         return self.req_parser.parse_args()
-    
-
-    def __to_dict__(self, records : Iterable, columns : Iterable) -> Iterable[dict]:
-        """
-        Converts a Table View and Returns Parsed Results as a List of JSON/DICT
-
-        The views table only allows GET operations on a given table
-        views. The table views are defined under `app/main/models/views`
-        and each specific table is imported for further analysis.
-
-        :type  records: array-like
-        :param records: A set of records obtained using `query.all()`
-            functionality. This is a `row` type object, which is JSON
-            serialized in this function.
-
-        :type  columns: array-like
-        :param columns: List of column names, available as `.columns`
-            arguments on a table object.
-        """
-
-        records_ = [] # serialized JSON object
-        for row in records:
-            di = dict() # intermediate records
-            for column, value in zip(columns, row):
-                # TODO optimize such that `Decimal` is auto-converted to `float`
-                if isinstance(value, Decimal):
-                    value = float(value)
-
-                # TODO optimize/define `UUID` for columns using `uniqueidentifier`
-                if isinstance(value, UUID):
-                    value = str(value)
-
-                # TODO also update for any date/time/datetime type
-                if (
-                    isinstance(value, dt.datetime)
-                    or isinstance(value, dt.datetime.date)
-                    or isinstance(value, dt.datetime.time)
-                ):
-                    value = str(value)
-
-                di[column.key] = value
-            records_.append(di)
-
-        return records_
