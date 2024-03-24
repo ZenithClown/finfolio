@@ -39,8 +39,14 @@ app = create_app(PROJECT_ENVIRON) # check config.py
 prefix = {
     # rest-api endpoint prefix :: locahost:5000/dev/...
 
-    "dev"  : "/dev",
-    "test" : "/testing"
-}.get(PROJECT_ENVIRON, f"/api/{PROJECT_ENVIRON}")
+    "dev"  : "/dev/",
+    "test" : "/testing/"
+}.get(PROJECT_ENVIRON, f"/api/{PROJECT_ENVIRON}/{__version__}/")
 
 api = Api(app, prefix = prefix)
+
+### --- List all Resources/Controller --- ###
+from finfolio.main.controller import * # noqa: F401, F403 # pyright: ignore[reportMissingImports]
+
+### --- User Management System (UMS) Endpoints/Routes --- ###
+api.add_resource(UserManagementSystemController, "ums/users")
