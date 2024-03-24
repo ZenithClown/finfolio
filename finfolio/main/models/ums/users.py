@@ -38,3 +38,13 @@ class UserAccounts(db.Model):
     updated_on = db.Column(db.DateTime, server_onupdate = func.current_timestamp())
 
     accounts = db.relationship("MWAccountProperty", backref = "owner")
+
+
+    def __to_dict__(self):
+        records = super().__to_dict__()
+        columns = ["username", "fullname", "email", "phone", "dob", "roles"]
+
+        # ! type-casting is required for data-types not serializable
+        records["dob"] = str(records["dob"])
+
+        return { k : v for k, v in records.items() if k in columns }
