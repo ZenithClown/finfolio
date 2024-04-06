@@ -10,9 +10,10 @@ and accounts, with roles privileges.
 Copywright © [2023] pOrgz <https://github.com/pOrgz-dev>
 """
 
+from finfolio.main.config import BaseInterface
 from finfolio.main.models.ums import * # noqa: F401, F403 # pyright: ignore[reportMissingImports]
 
-class UMSInterface:
+class UMSInterface(BaseInterface):
 
     get_all  = lambda self : [row.__to_dict__() for row in UserAccounts.query.order_by(UserAccounts.username.asc()).all()]
     get_root = lambda self : UserAccounts.query.filter(UserAccounts.roles == 1).first().__to_dict__() # get root user details
@@ -29,7 +30,17 @@ class UMSInterface:
             database, and returns only one single record.
         """
 
-        try:
-            return UserAccounts.query.filter(UserAccounts.username == username).first().__to_dict__(), None
-        except AttributeError as err:
-            return dict(), err # ? probably no data
+        content = UserAccounts.query.filter(UserAccounts.username == username).first()
+
+        if content:
+            try:
+                content = content.__to_dict__()
+            except Exception as err:
+                content = None
+                self.error = err
+                self.message = "InternalError: Something Went Wrong!"
+        else:
+            self.error = 204
+            self.message = f"{username} is not available."
+
+        return content, self.error, self.message

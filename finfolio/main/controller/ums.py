@@ -22,7 +22,7 @@ class UserManagementSystemController(BaseResource):
         super().__init__()
 
         # adding list of arguments available for the controller
-        # self.req_parser.add_argument("username", type = str, required = False)
+        self.req_parser.add_argument("username", type = str, required = False, location=("values",))
 
         # initialize the interfaces associated with the controller
         self.ums_interface = UMSInterface()
@@ -31,11 +31,14 @@ class UserManagementSystemController(BaseResource):
     def get(self):
         """GET Request for UMS Module"""
 
-        data, err = None, None # no response, safe-keeping
+        data, err, msg = None, None, None
 
         if request.endpoint == "ums/root-user":
             data = self.ums_interface.get_root()
         elif request.endpoint == "ums/default":
-            data = self.ums_interface.get_all()
+            if self.args["username"]:
+                data, err, msg = self.ums_interface.get_user(self.args["username"])
+            else:
+                data = self.ums_interface.get_all()
 
-        return self.formatter.get(data)
+        return self.formatter.get(data, err = err, code = 200 if data else 204)

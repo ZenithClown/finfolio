@@ -113,7 +113,7 @@ class ResponseFormatter(object):
         }.get(code, 502) # 502 > Bad Gateway
 
 
-    def get(self, data : list, err : str = None, code : int = 200, msg : str = None) -> dict:
+    def get(self, data : list | dict, err : str = None, code : int = 200, msg : str = None) -> dict:
         """Format O/P of all GET Response"""
 
         return {
@@ -199,3 +199,9 @@ class BaseResource(Resource):
         """
 
         return self.req_parser.parse_args()
+
+
+class BaseInterface(object):
+    def __init__(self) -> None:
+        self.code = None
+        self.message = None
