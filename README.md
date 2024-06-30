@@ -13,12 +13,12 @@
 <div align = "justify">
 
 The **`finfolio`** is designed to be a standard schema for maintaining and storing financial information at a personal
-level and also provisions for holding information for a group of people belonging to a same family/organization.
+level and also provisions for holding information for a group of people belonging to the same family/organization. The database
+is designed to serve as the backend for the [personal finance management application](https://github.com/pOrgz-dev).
 
 The application uses [**`SQLite`**](https://sqlite.org/index.html) as the de facto database, which is lightweight, and a
-serverless, self-contained full-featured database engine. The schema definitions, queries, and views are written in SQL
-format and is chosen over _query builder_ or a full-fledged _ORM_ since the database is hosted serverless and is encrypted
-using a hashing algorithm - thus minimizing the risk of data leak ([more information](https://www.youtube.com/watch?v=x1fCJ7sUXCM)
+serverless, self-contained full-featured database engine. The backend is still under development and choosing the
+right libraries is being discussed internally ([more information](https://www.youtube.com/watch?v=x1fCJ7sUXCM)
 on choosing the right method to communicate with a database).
 
 ## Adapted Notations
