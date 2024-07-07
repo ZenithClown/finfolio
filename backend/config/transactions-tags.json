@@ -12,14 +12,14 @@
     ],
 
     "ams.dmw_trxAccount" : [
-      ["DIBS", "Digital Indian Business Solutions Pvt. Ltd.", "ORGANIZATION", "Internship Company", "DIGITAL INDIAN"],
-      ["IIFL", "IIFL Securities Pvt. Ltd.", "ORGANIZATION", "DEMAT A/C", "IIFL SECURITIES"],
-      ["IWORKS", "Inspirigence Works Pvt. Ltd.", "ORGANIZATION", "Internship Company", "INSPIRIGENCE WORKS"],
-      ["JASNI", "Jasni A Salim", "INDIVIDUAL", "Content Writing - Freelancing Work", "JASNI A S"],
-      ["KTP", "Kolkata Traffic Police", "GOVERNMENT", "OTHERS", "Kolkata Traffic Police"],
-      ["PIL", "Pidilite Industries Ltd.", "ORGANIZATION", "Full-Time Working Company", "PIDILITE INDUSTRIES"],
-      ["RIL", "Reliance Jio Infocomm Ltd.", "ORGANIZATION", "Full-Time Working Company", "RELIANCE JIO INF,RELIANCE DIGITAL,JIO PLATFORMS"],
-      ["ZERODHA", "Zerodha Pvt. Ltd.", "ORGANIZATION", "DEMAT A/C", "ZERODHA"]
+      ["", "", "ORGANIZATION", "Internship Company", "DIGITAL INDIAN"],
+      ["", , "ORGANIZATION", "DEMAT A/C", "IIFL SECURITIES"],
+      [, , "ORGANIZATION", "Internship Company", "INSPIRIGENCE WORKS"],
+      ["INDIVIDUAL", "Content Writing - Freelancing Work", "JASNI A S"],
+      [, "GOVERNMENT", "OTHERS", "Kolkata Traffic Police"],
+      [, "ORGANIZATION", "Full-Time Working Company", "PIDILITE INDUSTRIES"],
+      [, "ORGANIZATION", "Full-Time Working Company", "RELIANCE JIO INF,RELIANCE DIGITAL,JIO PLATFORMS"],
+      [, ", "ORGANIZATION", "DEMAT A/C", "ZERODHA"]
     ]
   }
 }
