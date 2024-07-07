@@ -16,8 +16,9 @@ main and is imported as is required, and is not set to initialization.
 """
 
 import sqlalchemy as sa
+from sqlalchemy.orm import sessionmaker
 
-from . import USER_HOME_DIRECTORY
+from backend import USER_HOME_DIRECTORY
 
 engine = sa.create_engine(f"sqlite:///{USER_HOME_DIRECTORY}/finfolio.db", echo = True)
-session = sa.orm.sessionmaker(autoflush = False, autocommit = False, bind = engine)
+session = sessionmaker(autoflush = False, autocommit = False, bind = engine)
