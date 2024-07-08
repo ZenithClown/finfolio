@@ -18,4 +18,4 @@ transational tables in database.
 """
 
 from backend.app.api.models.ams import * # noqa: F401, F403 # pyright: ignore[reportMissingImports]
-from backend.app.api.models.ums import * # noqa: F401, F403 # pyright: ignore[reportMissingImports]
+# from backend.app.api.models.ums import * # noqa: F401, F403 # pyright: ignore[reportMissingImports]
