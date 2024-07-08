@@ -40,5 +40,7 @@ class TimeStampedModel(BaseModel):
     tables which includes the created/updated on timestamp for records.
     """
 
+    __abstract__ = True
+
     created_at = Column(DateTime, nullable = False, default = dt.datetime.now(dt.timezone.utc))
     updated_on = Column(DateTime, nullable = True, default = None, onupdate = dt.datetime.now(dt.timezone.utc))

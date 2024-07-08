@@ -12,3 +12,5 @@ handle account transactions, and these values are pre-seeded from the
 `backend.app.config.seed.*.py` files. As a standard practice, the
 metadata tables are in all caps leading with `META_` keyword.
 """
+
+from backend.app.api.models.ams.meta_tables import * # noqa: F401, F403 # pyright: ignore[reportMissingImports]

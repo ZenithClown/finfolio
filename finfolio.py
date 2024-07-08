@@ -23,6 +23,6 @@ if __name__ == "__main__":
     prettify.textAlign("Welcome to FINFOLIO Start Module")
     prettify.textAlign("================================")
 
-    print(f"{time.ctime()} : Setting Application Home at - {USER_HOME_DIRECTORY}")
+    print(f"{time.ctime()} : Setting Application Home at - {USER_HOME_DIRECTORY}", end = "\n\n")
     skeleton.setupHome(USER_HOME_DIRECTORY) # ? initialize project path
     model.metadata.create_all(engine)
