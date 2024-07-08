@@ -15,6 +15,7 @@ from backend import USER_HOME_DIRECTORY
 
 from backend.app.api.models import * # noqa: F401, F403 # pyright: ignore[reportMissingImports]
 from backend.app.api.base import model
+from backend.app.config.seed import _seed
 
 import backend.app.config.skeleton as skeleton
 
@@ -23,6 +24,10 @@ if __name__ == "__main__":
     prettify.textAlign("Welcome to FINFOLIO Start Module")
     prettify.textAlign("================================")
 
-    print(f"{time.ctime()} : Setting Application Home at - {USER_HOME_DIRECTORY}", end = "\n\n")
+    print(f"\n{time.ctime()} : Setting Application Home at - {USER_HOME_DIRECTORY}", end = "\n\n")
     skeleton.setupHome(USER_HOME_DIRECTORY) # ? initialize project path
     model.metadata.create_all(engine)
+
+    print(f"{time.ctime()} : Seeding the database with initial metadata.", end = "\n\n")
+    _seed() # ! all the commits and session is incorporated
+    print("  >> Finished compilation and initialization of database.")
