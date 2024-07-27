@@ -2,9 +2,11 @@
 
 """User Roles & Privileges Defination"""
 
-from finfolio.main import db
+from sqlalchemy import Column, VARCHAR, Integer
 
-class UserRoles(db.Model):
+from backend.app.api.base import BaseModel
+
+class UserRoles(BaseModel):
     """
     Defination of User Roles & Privileges
 
@@ -14,15 +16,12 @@ class UserRoles(db.Model):
     of access may be defined.
     """
 
-    __tablename__ = "ums.UserRoles"
+    __tablename__ = "ums.META_USER_ROLES"
 
     # ? autoincrement = True should work for mysql/psql directly
     # https://stackoverflow.com/a/69822361/6623589
     __table_args__ = {"sqlite_autoincrement" : True}
 
-    role_id   = db.Column(db.Integer, primary_key = True, autoincrement = True, server_default = db.FetchedValue())
-    role_name = db.Column(db.String(4), unique = True, nullable = False)
-    role_desc = db.Column(db.String(64)) # optional description column
-
-    # ? maintain a one-to-many relationship with the users table
-    privileges = db.relationship("UserAccounts", backref = "owner")
+    role_id   = Column(Integer, primary_key = True, autoincrement = True)
+    role_name = Column(VARCHAR(4), unique = True, nullable = False)
+    role_desc = Column(VARCHAR(64), nullable = False)
