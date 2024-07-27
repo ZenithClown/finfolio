@@ -6,7 +6,7 @@ from sqlalchemy import Column, VARCHAR, Integer
 
 from backend.app.api.base import BaseModel
 
-class UserRoles(BaseModel):
+class META_USER_ROLES(BaseModel):
     """
     Defination of User Roles & Privileges
 

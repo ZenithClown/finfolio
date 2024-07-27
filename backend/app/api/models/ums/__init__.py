@@ -8,3 +8,5 @@ users registered and tracked under a single database. Typically, the
 head of the family is defined as the ROOT user and under him/her rest
 of the accounts can be created.
 """
+
+from backend.app.api.models.ums.meta_tables import * # noqa: F401, F403 # pyright: ignore[reportMissingImports]
