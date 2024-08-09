@@ -14,3 +14,4 @@ metadata tables are in all caps leading with `META_` keyword.
 """
 
 from backend.app.api.models.ams.meta_tables import * # noqa: F401, F403 # pyright: ignore[reportMissingImports]
+from backend.app.api.models.ams.master_tables import * # noqa: F401, F403 # pyright: ignore[reportMissingImports]
