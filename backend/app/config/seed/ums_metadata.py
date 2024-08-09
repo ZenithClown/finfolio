@@ -12,7 +12,7 @@ from backend.app.api.models import * # noqa: F401, F403 # pyright: ignore[report
 
 def user_roles() -> list:
     """
-    Initial Data for `ams.META_ACCOUNT_TYPE` Table
+    Initial Data for `ums.META_USER_ROLES` Table
     """
 
     data = {
@@ -26,5 +26,26 @@ def user_roles() -> list:
         META_USER_ROLES(
             role_name = key,
             role_desc = data[key]["desc"]
+        ) for key in data.keys()
+    ]
+
+
+def user_rubroles() -> list:
+    """
+    Initial Data for `ums.META_USER_SUBROLES` Table
+    """
+
+    data = {
+        "COMPANY" : dict(subrole_desc = "An organization where a user has typically worked."),
+        "FRIENDS" : dict(subrole_desc = "A friend of a user."),
+        "RELATIVES" : dict(subrole_desc = "A relative of a user, whose account is typically not tracked."),
+        "OTHERS" : dict(subrole_desc = "An other type of external user whose relation does not fall into any other defined sub-category.")
+    }
+
+    return [
+        META_USER_SUBROLES(
+            role_id = 4, # constant to external user; have not decided for a different subroles
+            subrole_name = key,
+            subrole_desc = data[key]["subrole_desc"]
         ) for key in data.keys()
     ]

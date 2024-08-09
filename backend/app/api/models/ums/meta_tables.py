@@ -41,7 +41,7 @@ class META_USER_SUBROLES(BaseModel):
     # ? each account sub type is unique 3 digit code, and is linked to a parent type
     role_id = Column(Integer, ForeignKey("ums.META_USER_ROLES.role_id", ondelete = "CASCADE"), nullable = False)
 
-    subrole_name = Column(VARCHAR(7), unique = True, nullable = False)
+    subrole_name = Column(VARCHAR(16), unique = True, nullable = False)
     subrole_desc = Column(VARCHAR(64), nullable = False)
 
     __table_args__ = (Index("ix_meta_subrole_role", role_id), )

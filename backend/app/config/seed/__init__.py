@@ -15,7 +15,7 @@ from backend.app.config.seed.ams_metadata import * # noqa: F401, F403 # pyright:
 from backend.app.config.seed.ums_metadata import * # noqa: F401, F403 # pyright: ignore[reportMissingImports]
 
 def _seed() -> bool:
-    for func in [account_types, account_subtypes, user_roles]:
+    for func in [account_types, account_subtypes, user_roles, user_rubroles]:
         try:
             with session.begin() as sess:
                 sess.add_all(func())

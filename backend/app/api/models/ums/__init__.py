@@ -10,3 +10,4 @@ of the accounts can be created.
 """
 
 from backend.app.api.models.ums.meta_tables import * # noqa: F401, F403 # pyright: ignore[reportMissingImports]
+from backend.app.api.models.ums.master_tables import * # noqa: F401, F403 # pyright: ignore[reportMissingImports]
