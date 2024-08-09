@@ -2,7 +2,7 @@
 
 """Users Metadata & Relationship Informations"""
 
-from sqlalchemy import Column, VARCHAR, Date, ForeignKey
+from sqlalchemy import Column, VARCHAR, Date, ForeignKey, Integer, Index
 
 from backend.app.api.base import TimeStampedModel
 
@@ -32,4 +32,7 @@ class UserAccounts(TimeStampedModel):
     # ! the role of a user is to be controlled by the api
     # be default, the first user is always `ROOT`, all others
     # maybe `USER` - but maybe configured for access information
-    user_role = Column(VARCHAR(4), ForeignKey("ums.META_USER_ROLES.role_id", ondelete = "CASCADE"), nullable = False)
+    user_role = Column(Integer, ForeignKey("ums.META_USER_ROLES.role_id", ondelete = "CASCADE"), nullable = False)
+    user_subrole = Column(Integer, ForeignKey("ums.META_USER_SUBROLES.subrole_id", ondelete = "CASCADE"), nullable = True, default = None)
+
+    __table_args__ = (Index("ix_mw_user_role", user_role), Index("ix_mw_user_subrole", user_subrole), )
