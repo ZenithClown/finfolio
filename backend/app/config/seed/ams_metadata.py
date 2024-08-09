@@ -7,7 +7,7 @@ The seed data is defined under a general function and can be
 executed from the management file on initialization.
 """
 
-from backend.app.api.base import model
+# from backend.app.api.base import model
 from backend.app.api.models import * # noqa: F401, F403 # pyright: ignore[reportMissingImports]
 
 def account_types() -> list:

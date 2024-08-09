@@ -13,7 +13,7 @@ from sqlalchemy import Column, DateTime
 from sqlalchemy.orm import declarative_base
 
 from backend import USER_HOME_DIRECTORY
-from backend.main import session
+# from backend.main import session
 
 # ! defination of abstract model object
 model = declarative_base()
