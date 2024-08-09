@@ -15,10 +15,8 @@ from backend import USER_HOME_DIRECTORY
 
 from backend.app.api.models import * # noqa: F401, F403 # pyright: ignore[reportMissingImports]
 from backend.app.api.base import model
+from backend.app.config import skeleton
 from backend.app.config.seed import _seed
-
-import backend.app.config.skeleton as skeleton
-
 
 if __name__ == "__main__":
     prettify.textAlign("Welcome to FINFOLIO Start Module")
