@@ -2,10 +2,11 @@
 
 """Users Metadata & Relationship Informations"""
 
-from sqlalchemy import func
-from finfolio.main import db
+from sqlalchemy import Column, VARCHAR, Date, ForeignKey
 
-class UserAccounts(db.Model):
+from backend.app.api.base import TimeStampedModel
+
+class UserAccounts(TimeStampedModel):
     """
     Core of User Management System (UMS) - User's Master/Metadata
 
@@ -18,33 +19,17 @@ class UserAccounts(db.Model):
 
     __tablename__ = "ums.UserAccounts"
 
-    username = db.Column(db.String(32), primary_key = True)
-    fullname = db.Column(db.String(128), nullable = False) # not unique
+    username = Column(VARCHAR(32), primary_key = True)
+    fullname = Column(VARCHAR(128), nullable = False) # not unique
 
     # all other fields are optional, but good to have
-    email = db.Column(db.String(128))
-    phone = db.Column(db.String(16)) # may include country code
+    email = Column(VARCHAR(128))
+    phone = Column(VARCHAR(16)) # may include country code
 
     # ? date of birth is useful for calculation/projection in finance
-    dob = db.Column(db.Date) # allow nulls, todo handle in calculation
+    dob = Column(Date) # allow nulls, todo handle in calculation
 
     # ! the role of a user is to be controlled by the api
     # be default, the first user is always `ROOT`, all others
     # maybe `USER` - but maybe configured for access information
-    roles = db.Column(db.String(4), db.ForeignKey("ums.UserRoles.role_id"), nullable = False)
-
-    # ? we may add created and updated on information, for underatanding
-    created_at = db.Column(db.DateTime, nullable = False, server_default = func.current_timestamp())
-    updated_on = db.Column(db.DateTime, server_onupdate = func.current_timestamp())
-
-    accounts = db.relationship("MWAccountProperty", backref = "owner")
-
-
-    def __to_dict__(self):
-        records = super().__to_dict__()
-        columns = ["username", "fullname", "email", "phone", "dob", "roles"]
-
-        # ! type-casting is required for data-types not serializable
-        records["dob"] = str(records["dob"])
-
-        return { k : v for k, v in records.items() if k in columns }
+    user_role = Column(VARCHAR(4), ForeignKey("ums.META_USER_ROLES.role_id", ondelete = "CASCADE"), nullable = False)
