@@ -30,4 +30,4 @@ class META_SUBACCOUNT_TYPE(BaseModel):
     account_subtype_name = Column(VARCHAR(16), unique = True, nullable = False) # typically, the display name
     account_subtype_desc = Column(VARCHAR(64), nullable = True) # description of the account type, for user aware
 
-    __table_args__ = (Index("ix_meta_subaccount_type_account_type", account_type), )
+    __table_args__ = (Index("ix_meta_subaccount_account", account_type), )
