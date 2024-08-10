@@ -2,7 +2,7 @@
 
 """Users Metadata & Relationship Informations"""
 
-from sqlalchemy import Column, VARCHAR, Date, ForeignKey, Integer, Index
+from sqlalchemy import Column, VARCHAR, Date, ForeignKey, Integer, Index, CheckConstraint, VARBINARY, BOOLEAN
 
 from backend.app.api.base import TimeStampedModel
 
@@ -20,7 +20,11 @@ class UserAccounts(TimeStampedModel):
     __tablename__ = "ums.UserAccounts"
 
     username = Column(VARCHAR(32), primary_key = True)
-    fullname = Column(VARCHAR(128), nullable = False) # not unique
+    fullname = Column(VARCHAR(128), unique = True, nullable = False) # not unique
+
+    # ? the password is available for only users who has login access, thus nullable
+    # todo use cryptography.fernet / gh#1 https://github.com/ZenithClown/finfolio/issues/1
+    password = Column(VARBINARY(256), nullable = True, default = None)
 
     # all other fields are optional, but good to have
     email = Column(VARCHAR(128))
@@ -35,4 +39,12 @@ class UserAccounts(TimeStampedModel):
     user_role = Column(Integer, ForeignKey("ums.META_USER_ROLES.role_id", ondelete = "CASCADE"), nullable = False)
     user_subrole = Column(Integer, ForeignKey("ums.META_USER_SUBROLES.subrole_id", ondelete = "CASCADE"), nullable = True, default = None)
 
-    __table_args__ = (Index("ix_mw_user_role", user_role), Index("ix_mw_user_subrole", user_subrole), )
+    # ..versionadded:: using a text field "login" that can be used on frontend
+    # users who are typically external do not have a login credentials to the application
+    login = Column(BOOLEAN, nullable = False, default = 1)
+
+    __table_args__ = (
+        Index("ix_mw_user_role", user_role),
+        Index("ix_mw_user_subrole", user_subrole),
+        CheckConstraint("login IN (0, 1)", "login_flag"), # ? boolean is not available, thus check constraint
+    )
