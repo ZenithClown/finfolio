@@ -39,7 +39,8 @@ def user_rubroles() -> list:
         "COMPANY" : dict(subrole_desc = "An organization where a user has typically worked."),
         "FRIENDS" : dict(subrole_desc = "A friend of a user."),
         "RELATIVES" : dict(subrole_desc = "A relative of a user, whose account is typically not tracked."),
-        "OTHERS" : dict(subrole_desc = "An other type of external user whose relation does not fall into any other defined sub-category.")
+        "OTHERS" : dict(subrole_desc = "An other type of external user whose relation does not fall into any other defined sub-category."),
+        "ENTITY" : dict(subrole_desc = "An organization who typically has a transactional relationship with the user.")
     }
 
     return [
