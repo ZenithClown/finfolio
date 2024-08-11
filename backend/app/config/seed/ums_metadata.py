@@ -19,9 +19,10 @@ def user_roles() -> list:
         "ROOT" : dict(desc = "Root/Super Admin User."),
         "SUDO" : dict(desc = "A Privileged User who was Granted Access by ROOT."),
         "USER" : dict(desc = "A Normal User to Track Accounts."),
-        "EXT+" : dict(desc = "An External User, typically has a Transactional Relationship.")
+        "EXT+" : dict(desc = "An External User, typically has a Transactional Relationship."),
+        "INT+" : dict(desc = "An Internal Account of the User, typically for tracking different account types.")
     }
-    
+
     return [
         META_USER_ROLES(
             role_name = key,
