@@ -1,0 +1,104 @@
+/********************************************************************
+DBML - Database Markup Language for ERD & Documentation
+
+DBML is an unique language developed by the Holistics Software INC.
+(https://www.holistics.io/) designed to define and document database
+structures and schema (https://dbml.dbdiagram.io/home).
+
+## Schema Overview
+
+The schema is designed for personal financial analysis (for self and
+other family members) that gives a quick glimpse on the earnings and
+expenditure. The design is kept as simple as possible, however it is
+recommended that people with a coding background to use the same.
+
+More Information: https://github.com/ZenithClown/finfolio
+
+## Adopted Schema Namespace & Definition
+
+A single file approach is adopted for easier management,
+documentation and understanding the schema layout. While any type of
+database can be used to store the data, PostgreSQL is used as the
+de-facto database by myself.
+
+### METADATA Schema Namespace
+
+A special schema namespace to hold configuration and related
+information that is being used in the database for various reporting.
+
+## Data Security & BI
+
+The data security is left at the discretion of the end-user. Note
+that the tool is developed for personal finance management and a
+person with the knowledge of database and related tools used are
+required to handle the same.
+
+Typically, if an user uses secured client-server database like MySQL
+or PostgreSQL then the same may suffice in terms of security.
+********************************************************************/
+
+PROJECT finfolio {
+  database_type: 'PostgreSQL'
+  document_name: 'Finace Portfolio Schema'
+
+  note: 'A Censtralized Schema for Personal Finance Management'
+}
+
+// ! METADATA Namespace - Configuration & Settings
+TABLE meta.mw_user_account {
+  username VARCHAR(16) [PK]
+  fullname VARCHAR(64) [UNIQUE, NOT NULL]
+  
+  // ? date of birth is useful for calculation/projection in finance
+  date_of_bith DATE
+
+  NOTE: '''
+    Table Schema for an User Account
+
+    The user account is the starting point for the personal
+    finance management application, where, the head of the
+    family may add more member's account details.
+  '''
+}
+
+TABLE meta.mw_account_type {
+  account_type VARCHAR(3) [PK]
+
+  // typically the additional column are for end user (internal)
+  account_type_name VARCHAR(16) [UNIQUE, NOT NULL]
+  account_type_desc VARCHAR(64) [UNIQUE, NOT NULL]
+}
+
+TABLE meta.mw_sub_account_type {
+  account_subtype_id VARCHAR(3) [PK]
+  account_type_id    VARCHAR(3) [NOT NULL, REF: > meta.mw_account_type.account_type]
+
+  // typically the additional column are for end user (internal)
+  account_subtype_name VARCHAR(16) [UNIQUE, NOT NULL]
+  account_subtype_desc VARCHAR(64) [UNIQUE, NOT NULL]
+}
+
+TABLE meta.mw_account_details {
+  // ? using randomly generated keys for account id
+  // however, other end user may change the same as per need
+  account_id CHAR(5) [PK]
+
+  // the following information is for identification by end user
+  account_name  VARCHAR(64) [UNIQUE, NOT NULL]
+  account_owner VARCHAR(16) [UNIQUE, NOT NULL, REF: > meta.mw_user_account.username]
+  
+  // the type of account has a significant impact on end calculation
+  account_type_id    VARCHAR(3) [UNIQUE, NOT NULL, REF: > meta.mw_account_type.account_type]
+  account_subtype_id VARCHAR(3) [REF: > meta.mw_sub_account_type.account_subtype_id]
+
+  // ? account opening and closing information for future reference
+  account_opened_on DATE [NOT NULL]
+  account_closed_on DATE
+
+  // an account may also be set as inactive even if the account is not closed
+  account_marked_inactive_on DATE
+
+  // ? we may not have all the transactions, thus we can set an opening balance
+  openeing_balance NUMERIC(19, 2) [NOT NULL, DEFAULT: 0.00]
+  open_recorded_on DATE           [NOT NULL] // default `account_opened_on`
+}
