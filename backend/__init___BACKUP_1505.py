@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 """
+<<<<<<< HEAD
 The Server Class (i.e. the backend) for the FinFolio-DB Application
 
 The server module presents one-stop solutions for backend jobs, like
@@ -74,10 +75,7 @@ def executescript(statement : str, engine : object) -> bool:
     engine.executescript(statement)
     engine.commit() # commit to database
     return True
-
-# -*- encoding: utf-8 -*-
-
-"""
+=======
 The Backend Application Layer for the **`finfolio`** Repository
 
 The backend application layer seperates the application from the
@@ -93,3 +91,4 @@ USER_HOME_DIRECTORY = os.path.join(pathlib.Path.home(), ".pOrgz")
 
 # ? the app version is defined and maybe used in the routes
 __version__ = open(os.path.join(APP_ROOT_DIRECTORY, "VERSION"), "r").read()
+>>>>>>> finfolio/master
