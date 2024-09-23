@@ -4,99 +4,103 @@ DBML - Database Markup Language for ERD & Documentation
 DBML is an unique language developed by the Holistics Software INC.
 (https://www.holistics.io/) designed to define and document database
 structures and schema (https://dbml.dbdiagram.io/home).
+
+The project schema and usages are described under the `project` tag
+which supports markdown syntax when the document is hosted using
+https://dbdocs.io/ website.
 ********************************************************************/
 
-PROJECT finfolio {
+project finfolio {
   database_type: 'PostgreSQL'
   document_name: 'Finace Portfolio Schema'
 
   note: '''
-    The schema is designed for personal financial analysis (for self
-    and other family members) that gives a quick glimpse on the
-    earnings and expenditure. The design is kept as simple as
-    possible, however it is recommended that people with a coding
+    The schema is designed for personal financial analysis (for self \
+    and other family members) that gives a quick glimpse on the \
+    earnings and expenditure. The design is kept as simple as \
+    possible, however it is recommended that people with a coding \
     background to use the same.
 
     More Information: https://github.com/ZenithClown/finfolio
 
     ## Adopted Schema Namespace & Definition
 
-    A single file approach is adopted for easier management,
-    documentation and understanding the schema layout. While any type
-    of database can be used to store the data, PostgreSQL is used as
-    the de-facto database by myself.
+    A single file approach is adopted for easier management, \
+    documentation and understanding the schema layout. While any \
+    type of database can be used to store the data, PostgreSQL is \
+    used as the de-facto database by myself.
 
     ### METADATA Schema Namespace
 
-    A special schema namespace to hold configuration and related
-    information that is being used in the database for various
+    A special schema namespace to hold configuration and related \
+    information that is being used in the database for various \
     reporting.
 
     ## Data Security & BI
 
-    The data security is left at the discretion of the end-user. Note
-    that the tool is developed for personal finance management and a
-    person with the knowledge of database and related tools used are
-    required to handle the same.
+    The data security is left at the discretion of the end-user. \
+    Note that the tool is developed for personal finance management \
+    and a person with the knowledge of database and related tools \
+    used are required to handle the same.
 
-    Typically, if an user uses secured client-server database like
-    MySQL or PostgreSQL then the same may suffice in terms of
+    Typically, if an user uses secured client-server database like \
+    MySQL or PostgreSQL then the same may suffice in terms of \
     security.
   '''
 }
 
 // ! METADATA Namespace - Configuration & Settings
-TABLE meta.user_account_detail {
-  username VARCHAR(16) [PK]
-  fullname VARCHAR(64) [UNIQUE, NOT NULL]
+table meta.user_account_detail {
+  username varchar(16) [pk]
+  fullname varchar(64) [unique, not null]
 
-  NOTE: '''
+  note: '''
     Table Schema for an User Account
 
-    The user account is the starting point for the personal
-    finance management application, where, the head of the
+    The user account is the starting point for the personal \
+    finance management application, where, the head of the \
     family may add more members account details.
   '''
 }
 
-TABLE meta.account_type_detail {
-  account_type_id VARCHAR(3) [PK]
+table meta.account_type_detail {
+  account_type_id varchar(3) [pk]
 
   // typically the additional column are for end user (internal)
-  account_type_name VARCHAR(16) [UNIQUE, NOT NULL]
-  account_type_desc VARCHAR(64) [UNIQUE, NOT NULL]
+  account_type_name varchar(16) [unique, not null]
+  account_type_desc varchar(64) [unique, not null]
 }
 
-TABLE meta.account_subtype_detail {
-  account_subtype_id VARCHAR(3) [PK]
-  account_type_id    VARCHAR(3) [NOT NULL, REF: > meta.account_type_detail.account_type_id]
+table meta.account_subtype_detail {
+  account_subtype_id varchar(3) [pk]
+  account_type_id    varchar(3) [not null, ref: > meta.account_type_detail.account_type_id]
 
   // typically the additional column are for end user (internal)
-  account_subtype_name VARCHAR(16) [UNIQUE, NOT NULL]
-  account_subtype_desc VARCHAR(64) [UNIQUE, NOT NULL]
+  account_subtype_name varchar(16) [unique, not null]
+  account_subtype_desc varchar(64) [unique, not null]
 }
 
-TABLE meta.ledger_account_detail {
+table meta.ledger_account_detail {
   // ? using randomly generated keys for account id
   // however, other end user may change the same as per need
-  ledger_account_id CHAR(5) [PK]
+  ledger_account_id char(5) [pk]
 
   // the following information is for identification by end user
-  account_name  VARCHAR(64) [UNIQUE, NOT NULL]
-  account_owner VARCHAR(16) [NOT NULL, REF: > meta.user_account_detail.username]
+  account_name  varchar(64) [unique, not null]
+  account_owner varchar(16) [not null, ref: > meta.user_account_detail.username]
   
   // the type of account has a significant impact on end calculation
-  account_type_id    VARCHAR(3) [UNIQUE, NOT NULL, REF: > meta.account_type_detail.account_type_id]
-  account_subtype_id VARCHAR(3) [REF: > meta.account_subtype_detail.account_subtype_id]
+  account_type_id    varchar(3) [unique, not null, ref: > meta.account_type_detail.account_type_id]
+  account_subtype_id varchar(3) [ref: > meta.account_subtype_detail.account_subtype_id]
 
   // ? account opening and closing information for future reference
-  account_opened_on DATE [NOT NULL]
-  account_closed_on DATE
+  account_opened_on date [not null]
+  account_closed_on date
 
   // an account may also be set as inactive even if the account is not closed
-  account_marked_inactive_on DATE
+  account_marked_inactive_on date
 
   // ? we may not have all the transactions, thus we can set an opening balance
-  openeing_balance NUMERIC(19, 2) [NOT NULL, DEFAULT: 0.00]
-  open_recorded_on DATE           [NOT NULL] // default `account_opened_on`
+  openeing_balance numeric(19, 2) [not null, default: 0.00]
+  open_recorded_on date           [not null] // default `account_opened_on`
 }
