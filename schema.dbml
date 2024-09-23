@@ -57,7 +57,7 @@ TABLE meta.mw_user_account {
 
     The user account is the starting point for the personal
     finance management application, where, the head of the
-    family may add more member's account details.
+    family may add more members account details.
   '''
 }
 
