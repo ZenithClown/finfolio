@@ -39,6 +39,9 @@ class UserAccounts(TimeStampedModel):
     user_role = Column(Integer, ForeignKey("ums.META_USER_ROLES.role_id", ondelete = "CASCADE"), nullable = False)
     user_subrole = Column(Integer, ForeignKey("ums.META_USER_SUBROLES.subrole_id", ondelete = "CASCADE"), nullable = True, default = None)
 
+    # internal accounts identified by the pre-defined flag `INT+` has a linked self account
+    linked_account = Column(VARCHAR(32), ForeignKey("ams.AccountPrimaryDetails.account_id", ondelete = "CASCADE"), default = None)
+
     # ..versionadded:: using a text field "login" that can be used on frontend
     # users who are typically external do not have a login credentials to the application
     login = Column(BOOLEAN, nullable = False, default = 1)

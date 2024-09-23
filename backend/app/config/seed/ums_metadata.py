@@ -41,12 +41,13 @@ def user_rubroles() -> list:
         "FRIENDS" : dict(subrole_desc = "A friend of a user."),
         "RELATIVES" : dict(subrole_desc = "A relative of a user, whose account is typically not tracked."),
         "OTHERS" : dict(subrole_desc = "An other type of external user whose relation does not fall into any other defined sub-category."),
-        "ENTITY" : dict(subrole_desc = "An organization who typically has a transactional relationship with the user.")
+        "ENTITY" : dict(subrole_desc = "An organization who typically has a transactional relationship with the user."),
+        "ENTITY" : dict(role_id = 5, subrole_desc = "An internal entity of the user who has a transactional relationship.")
     }
 
     return [
         META_USER_SUBROLES(
-            role_id = 4, # constant to external user; have not decided for a different subroles
+            role_id = data[key].get("role_id", 4), # constant to external user; have not decided for a different subroles
             subrole_name = key,
             subrole_desc = data[key]["subrole_desc"]
         ) for key in data.keys()
