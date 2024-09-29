@@ -15,22 +15,51 @@ project finfolio {
   document_name: 'Finace Portfolio Schema'
 
   note: '''
-    The schema is designed for personal financial analysis (for self \
-    and other family members) that gives a quick glimpse on the \
+    The schema is designed for **personal financial analysis** (for \
+    self and other family members) that gives a quick glimpse on the \
     earnings and expenditure. The design is kept as simple as \
     possible, however it is recommended that people with a coding \
     background to use the same.
 
     More Information: https://github.com/ZenithClown/finfolio
 
-    ## Adopted Schema Namespace & Definition
+    ## ERD Documentation Guide
 
     A single file approach is adopted for easier management, \
     documentation and understanding the schema layout. While any \
     type of database can be used to store the data, PostgreSQL is \
     used as the de-facto database by myself.
 
-    ### METADATA Schema Namespace
+    [DB Diagram](https://dbdiagram.io/) is used for documenting, and \
+    hosting the docs using the [DBML](https://dbml.dbdiagram.io/home) \
+    for visibility. The following notations are adopted.
+
+    ### SQL Name Notations
+
+    Typically, there is no standard (or universal) notation guide \
+    when it comes to SQL language, however the following must be \
+    maintained to keep a uniformity:
+
+      *  Object names should be easily understood,
+      * Table and column names are not pluraized, and are `snake_case`,
+      * Abbreviations should be self explanatory and should be kept \
+        uniform throught the database,
+      * Some prefixes are used for better understanding and readbility:
+        - `pk_` : primary key,
+        - `fk_` : foreign key,
+        - `uq_` : column with an unique constraint,
+        - `mw_` : master table name prefix,
+        - `vw_` : view table name prefix,
+        - `trx_` : transactional table name prefix,
+        - `usp_` : user defined stored procedures,
+        - `ufn_` : user defined functions,
+
+    ### Schema Defination
+
+    The database is seperated into the following schema for control \
+    and seperating different workloads:
+
+    #### METADATA (`meta`) Schema Namespace
 
     A special schema namespace to hold configuration and related \
     information that is being used in the database for various \
@@ -50,9 +79,36 @@ project finfolio {
 }
 
 // ! METADATA Namespace - Configuration & Settings
+table meta.user_role {
+  role_id serial [pk, note: 'pk_role_id']
+  
+  // the name and description to be fetched for decorations
+  role_name varchar(4)  [unique, not null, note: 'uq_role_name']
+  role_desc varchar(64) [unique, note: 'uq_role_description']
+}
+
+table meta.user_subrole {
+  subrole_id  serial  [pk, note: 'pk_subrole_id']
+  role_id     integer [not null, ref: > meta.user_role.role_id, note: 'fk_parent_role_id']
+
+  subrole_name  varchar(16) [unique, not null, note: 'uq_subrole_name']
+  subrole_desc  varchar(64) [unique, note: 'uq_subrole_description']
+}
+
 table meta.user_account_detail {
-  username varchar(16) [pk]
-  fullname varchar(64) [unique, not null]
+  username varchar(16) [pk, note: 'pk_username']
+  fullname varchar(64) [unique, not null, note: 'uq_user_fullname']
+
+  // good to have features, but not required to be maintained
+  email varchar(128)  [unique, note: 'uq_user_email_address']
+  phone varchar(16)   [unique, note: 'uq_user_phone_number']
+
+  // date of birth is crucial for certain calculations/projections
+  date_of_birth date
+
+  // the user role and subrole is controlled externally to group
+  user_role     integer [not null, ref: > meta.user_role.role_id, note: 'fk_user_role_id']
+  user_subrole  integer [ref: > meta.user_subrole.subrole_id, note: 'fk_user_subrole_id']
 
   note: '''
     Table Schema for an User Account
@@ -64,20 +120,20 @@ table meta.user_account_detail {
 }
 
 table meta.account_type_detail {
-  account_type_id varchar(3) [pk]
+  account_type_id varchar(3) [pk, note: 'pk_account_type_id']
 
   // typically the additional column are for end user (internal)
-  account_type_name varchar(16) [unique, not null]
-  account_type_desc varchar(64) [unique, not null]
+  account_type_name varchar(16) [unique, not null, note: 'uq_account_type_name']
+  account_type_desc varchar(64) [unique, not null, note: 'uq_account_type_desc']
 }
 
 table meta.account_subtype_detail {
-  account_subtype_id varchar(3) [pk]
-  account_type_id    varchar(3) [not null, ref: > meta.account_type_detail.account_type_id]
+  account_subtype_id varchar(3) [pk, note: 'pk_account_subtype_id']
+  account_type_id    varchar(3) [not null, ref: > meta.account_type_detail.account_type_id, note: 'fk_account_type_id']
 
   // typically the additional column are for end user (internal)
-  account_subtype_name varchar(16) [unique, not null]
-  account_subtype_desc varchar(64) [unique, not null]
+  account_subtype_name varchar(16) [unique, not null, note: 'uq_account_subtype_name']
+  account_subtype_desc varchar(64) [unique, not null, note: 'uq_account_subtype_desc']
 }
 
 table meta.ledger_account_detail {

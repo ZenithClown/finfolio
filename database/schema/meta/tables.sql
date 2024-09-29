@@ -7,6 +7,45 @@ this case is mostly the master tables) for finance management.
 Copywright © [2024] Debmalya Pramanik
 ********************************************************************/
 
+CREATE TABLE IF NOT EXISTS meta.user_role (
+  role_id
+    SERIAL
+    CONSTRAINT pk_role_id PRIMARY KEY,
+
+  role_name
+    VARCHAR(4)
+    CONSTRAINT uq_role_name UNIQUE
+    NOT NULL,
+
+  role_desc
+    VARCHAR(64)
+    CONSTRAINT uq_role_description UNIQUE
+    NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS meta.user_subrole (
+  subrole_id
+    SERIAL
+    CONSTRAINT pk_subrole_id PRIMARY KEY,
+
+  role_id
+    NOT NULL
+    CONSTRAINT fk_parent_role_id
+      REFERENCES meta.user_role (role_id)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
+
+  subrole_name
+    VARCHAR(4)
+    CONSTRAINT uq_subrole_name UNIQUE
+    NOT NULL,
+
+  subrole_desc
+    VARCHAR(64)
+    CONSTRAINT uq_subrole_description UNIQUE
+    NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS meta.user_account_detail (
   username
     VARCHAR(16)
@@ -14,7 +53,34 @@ CREATE TABLE IF NOT EXISTS meta.user_account_detail (
 
   fullname
     VARCHAR(64)
-    UNIQUE NOT NULL
+    CONSTRAINT uq_user_fullname UNIQUE
+    NOT NULL,
+
+  email
+    VARCHAR(128)
+    CONSTRAINT uq_user_email_address UNIQUE,
+
+  phone
+    VARCHAR(16)
+    CONSTRAINT uq_user_phone_number UNIQUE,
+
+  date_of_birth
+    DATE,
+
+  user_role
+    INTEGER
+    NOT NULL
+    CONSTRAINT fk_user_role_id
+      REFERENCES meta.user_role (role_id)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
+
+  user_subrole
+    INTEGER
+    CONSTRAINT fk_user_role_id
+      REFERENCES meta.user_subrole (subrole_id)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS meta.account_type_detail (
@@ -24,11 +90,13 @@ CREATE TABLE IF NOT EXISTS meta.account_type_detail (
 
   account_type_name
     VARCHAR(16)
-    UNIQUE NOT NULL,
+    CONSTRAINT uq_account_type_name UNIQUE
+    NOT NULL,
 
   account_type_desc
     VARCHAR(64)
-    UNIQUE NOT NULL
+    CONSTRAINT uq_account_type_desc UNIQUE
+    NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS meta.account_subtype_detail (
