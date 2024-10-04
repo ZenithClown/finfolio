@@ -154,5 +154,25 @@ CREATE TABLE IF NOT EXISTS meta.ledger_account_detail (
     CONSTRAINT fk_ledger_sub_account_type_id FOREIGN KEY
       REFERENCES meta.account_subtype_detail  (account_subtype_id)
       ON DELETE CASCADE
-      ON UPDATE CASCADE
+      ON UPDATE CASCADE,
+
+  account_opened_on
+    DATE
+    NOT NULL,
+
+  account_closed_on
+    DATE,
+
+  account_marked_inactive_on
+    DATE,
+
+  openeing_balance
+    NUMERIC(19, 2)
+    NOT NULL
+    DEFAULT 0.00,
+
+  openeing_balance_recorded_on
+    DATE
+    NOT NULL
+    DEFAULT openeing_balance
 );

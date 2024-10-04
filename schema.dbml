@@ -157,6 +157,6 @@ table meta.ledger_account_detail {
   account_marked_inactive_on date
 
   // ? we may not have all the transactions, thus we can set an opening balance
-  openeing_balance numeric(19, 2) [not null, default: 0.00]
-  open_recorded_on date           [not null] // default `account_opened_on`
+  opening_balance             numeric(19, 2) [not null, default: 0.00]
+  opening_balance_recorded_on date           [not null] // default `account_opened_on`
 }
