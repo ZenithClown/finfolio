@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS meta.user_account_detail (
 
   user_subrole
     INTEGER
-    CONSTRAINT fk_user_role_id
+    CONSTRAINT fk_user_subrole_id
       REFERENCES meta.user_subrole (subrole_id)
       ON DELETE CASCADE
       ON UPDATE CASCADE
