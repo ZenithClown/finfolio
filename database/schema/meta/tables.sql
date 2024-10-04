@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS meta.user_subrole (
     CONSTRAINT pk_subrole_id PRIMARY KEY,
 
   role_id
+    INTEGER
     NOT NULL
     CONSTRAINT fk_parent_role_id
       REFERENCES meta.user_role (role_id)
