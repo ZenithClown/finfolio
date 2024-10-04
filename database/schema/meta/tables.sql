@@ -115,11 +115,13 @@ CREATE TABLE IF NOT EXISTS meta.account_subtype_detail (
 
   account_subtype_name
     VARCHAR(16)
-    UNIQUE NOT NULL,
+    CONSTRAINT uq_account_subtype_name UNIQUE
+    NOT NULL,
 
   account_subtype_desc
     VARCHAR(64)
-    UNIQUE NOT NULL
+    CONSTRAINT uq_account_subtype_desc UNIQUE
+    NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS meta.ledger_account_detail (
