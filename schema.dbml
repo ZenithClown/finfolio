@@ -91,8 +91,8 @@ table meta.user_subrole {
   subrole_id  serial  [pk, note: 'pk_subrole_id']
   role_id     integer [not null, ref: > meta.user_role.role_id, note: 'fk_parent_role_id']
 
-  subrole_name  varchar(16) [unique, not null, note: 'uq_subrole_name']
-  subrole_desc  varchar(64) [unique, note: 'uq_subrole_description']
+  subrole_name  varchar(32) [unique, not null, note: 'uq_subrole_name']
+  subrole_desc  varchar(128) [unique, note: 'uq_subrole_description']
 }
 
 table meta.user_account_detail {

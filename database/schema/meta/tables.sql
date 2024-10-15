@@ -37,12 +37,12 @@ CREATE TABLE IF NOT EXISTS meta.user_subrole (
       ON UPDATE CASCADE,
 
   subrole_name
-    VARCHAR(4)
+    VARCHAR(32)
     CONSTRAINT uq_subrole_name UNIQUE
     NOT NULL,
 
   subrole_desc
-    VARCHAR(64)
+    VARCHAR(128)
     CONSTRAINT uq_subrole_description UNIQUE
     NOT NULL
 );
