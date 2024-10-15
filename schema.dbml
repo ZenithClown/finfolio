@@ -160,3 +160,8 @@ table meta.ledger_account_detail {
   opening_balance             numeric(19, 2) [not null, default: 0.00]
   opening_balance_recorded_on date           [not null] // default `account_opened_on`
 }
+
+table meta.transaction_method {
+  method_name varchar(7)  [pk, note: 'pk_trx_method_name']
+  method_desc varchar(16) [unique, not null, note: 'uq_trx_method_desc']
+}

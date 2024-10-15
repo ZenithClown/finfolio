@@ -175,3 +175,14 @@ CREATE TABLE IF NOT EXISTS meta.ledger_account_detail (
     DATE
     NOT NULL -- ? DEFAULT account_opened_on
 );
+
+CREATE TABLE IF NOT EXISTS meta.transaction_method (
+  method_name
+    VARCHAR(7)
+    CONSTRAINT pk_trx_method_name PRIMARY KEY,
+
+  method_desc
+    VARCHAR(16)
+    CONSTRAINT uq_trx_method_desc UNIQUE
+    NOT NULL
+);
