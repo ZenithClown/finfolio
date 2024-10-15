@@ -86,27 +86,27 @@ CREATE TABLE IF NOT EXISTS meta.user_account_detail (
 
 CREATE TABLE IF NOT EXISTS meta.account_type_detail (
   account_type_id
-    VARCHAR(3)
+    CHAR(3)
     CONSTRAINT pk_account_type_id PRIMARY KEY,
 
   account_type_name
-    VARCHAR(16)
+    VARCHAR(32)
     CONSTRAINT uq_account_type_name UNIQUE
     NOT NULL,
 
   account_type_desc
-    VARCHAR(64)
+    VARCHAR(128)
     CONSTRAINT uq_account_type_desc UNIQUE
     NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS meta.account_subtype_detail (
   account_subtype_id
-    VARCHAR(3)
+    CHAR(3)
     CONSTRAINT pk_sub_account_type_id PRIMARY KEY,
 
   account_type_id
-    VARCHAR(3)
+    CHAR(3)
     NOT NULL
     CONSTRAINT fk_account_type_id
       REFERENCES meta.account_type_detail (account_type_id)
@@ -114,14 +114,13 @@ CREATE TABLE IF NOT EXISTS meta.account_subtype_detail (
       ON UPDATE CASCADE,
 
   account_subtype_name
-    VARCHAR(16)
+    VARCHAR(34)
     CONSTRAINT uq_account_subtype_name UNIQUE
     NOT NULL,
 
   account_subtype_desc
     VARCHAR(64)
     CONSTRAINT uq_account_subtype_desc UNIQUE
-    NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS meta.ledger_account_detail (
@@ -143,7 +142,7 @@ CREATE TABLE IF NOT EXISTS meta.ledger_account_detail (
       ON UPDATE CASCADE,
 
   account_type_id
-    VARCHAR(3)
+    CHAR(3)
     NOT NULL
     CONSTRAINT fk_ledger_account_type_id
       REFERENCES meta.account_type_detail  (account_type_id)
@@ -151,7 +150,7 @@ CREATE TABLE IF NOT EXISTS meta.ledger_account_detail (
       ON UPDATE CASCADE,
 
   account_subtype_id
-    VARCHAR(3)
+    CHAR(3)
     CONSTRAINT fk_ledger_sub_account_type_id
       REFERENCES meta.account_subtype_detail  (account_subtype_id)
       ON DELETE CASCADE

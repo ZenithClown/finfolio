@@ -83,7 +83,7 @@ table meta.user_role {
   role_id serial [pk, note: 'pk_role_id']
   
   // the name and description to be fetched for decorations
-  role_name char(4)  [unique, not null, note: 'uq_role_name']
+  role_name char(4)     [unique, not null, note: 'uq_role_name']
   role_desc varchar(64) [unique, note: 'uq_role_description']
 }
 
@@ -91,7 +91,7 @@ table meta.user_subrole {
   subrole_id  serial  [pk, note: 'pk_subrole_id']
   role_id     integer [not null, ref: > meta.user_role.role_id, note: 'fk_parent_role_id']
 
-  subrole_name  varchar(32) [unique, not null, note: 'uq_subrole_name']
+  subrole_name  varchar(32)  [unique, not null, note: 'uq_subrole_name']
   subrole_desc  varchar(128) [unique, note: 'uq_subrole_description']
 }
 
@@ -100,8 +100,8 @@ table meta.user_account_detail {
   fullname varchar(64) [unique, not null, note: 'uq_user_fullname']
 
   // good to have features, but not required to be maintained
-  email varchar(128)  [unique, note: 'uq_user_email_address']
-  phone varchar(16)   [unique, note: 'uq_user_phone_number']
+  email varchar(128) [unique, note: 'uq_user_email_address']
+  phone varchar(16)  [unique, note: 'uq_user_phone_number']
 
   // date of birth is crucial for certain calculations/projections
   date_of_birth date
@@ -120,20 +120,20 @@ table meta.user_account_detail {
 }
 
 table meta.account_type_detail {
-  account_type_id varchar(3) [pk, note: 'pk_account_type_id']
+  account_type_id char(3) [pk, note: 'pk_account_type_id']
 
   // typically the additional column are for end user (internal)
-  account_type_name varchar(16) [unique, not null, note: 'uq_account_type_name']
-  account_type_desc varchar(64) [unique, not null, note: 'uq_account_type_desc']
+  account_type_name varchar(32)  [unique, not null, note: 'uq_account_type_name']
+  account_type_desc varchar(128) [unique, not null, note: 'uq_account_type_desc']
 }
 
 table meta.account_subtype_detail {
-  account_subtype_id varchar(3) [pk, note: 'pk_account_subtype_id']
-  account_type_id    varchar(3) [not null, ref: > meta.account_type_detail.account_type_id, note: 'fk_account_type_id']
+  account_subtype_id char(3) [pk, note: 'pk_account_subtype_id']
+  account_type_id    char(3) [not null, ref: > meta.account_type_detail.account_type_id, note: 'fk_account_type_id']
 
   // typically the additional column are for end user (internal)
-  account_subtype_name varchar(16) [unique, not null, note: 'uq_account_subtype_name']
-  account_subtype_desc varchar(64) [unique, not null, note: 'uq_account_subtype_desc']
+  account_subtype_name varchar(32) [unique, not null, note: 'uq_account_subtype_name']
+  account_subtype_desc varchar(64) [unique, note: 'uq_account_subtype_desc']
 }
 
 table meta.ledger_account_detail {
@@ -146,8 +146,8 @@ table meta.ledger_account_detail {
   account_owner varchar(16) [not null, ref: > meta.user_account_detail.username, note: 'fk_account_owner']
   
   // the type of account has a significant impact on end calculation
-  account_type_id    varchar(3) [unique, not null, ref: > meta.account_type_detail.account_type_id, note: 'fk_ledger_account_type_id']
-  account_subtype_id varchar(3) [ref: > meta.account_subtype_detail.account_subtype_id, note: 'fk_ledger_sub_account_type_id']
+  account_type_id    char(3) [unique, not null, ref: > meta.account_type_detail.account_type_id, note: 'fk_ledger_account_type_id']
+  account_subtype_id char(3) [ref: > meta.account_subtype_detail.account_subtype_id, note: 'fk_ledger_sub_account_type_id']
 
   // ? account opening and closing information for future reference
   account_opened_on date [not null]
