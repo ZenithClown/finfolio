@@ -182,7 +182,7 @@ CREATE TABLE IF NOT EXISTS meta.transaction_method (
     CONSTRAINT pk_trx_method_name PRIMARY KEY,
 
   method_desc
-    VARCHAR(16)
+    VARCHAR(64)
     CONSTRAINT uq_trx_method_desc UNIQUE
     NOT NULL
 );

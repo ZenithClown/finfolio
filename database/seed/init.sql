@@ -42,3 +42,10 @@ INSERT INTO meta.account_subtype_detail (account_subtype_id, account_type_id, ac
   ('NPS', 'RET', 'National Pension Schemes Account', NULL),
   ('LND', 'CDT', 'Personal Lending Account', 'Amount lended to a person based on terms and conditions.'),
   ('BRW', 'CDT', 'Personal Borrowed Account', 'Amount borrwed from a person based on terms and conditions.');
+
+INSERT INTO meta.transaction_method (method_name, method_desc) VALUES
+  ('NEFT', 'National Electronic Funds Transfer'),
+  ('IMPS', 'Immediate Payment Service'),
+  ('RTGS', 'Real Time Gross Settlement'),
+  ('UPI', 'United Payment Interface'),
+  ('MANDATE', 'Automatic Standing Instructions');
