@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS meta.user_role (
     CONSTRAINT pk_role_id PRIMARY KEY,
 
   role_name
-    VARCHAR(4)
+    CHAR(4)
     CONSTRAINT uq_role_name UNIQUE
     NOT NULL,
 

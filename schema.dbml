@@ -83,7 +83,7 @@ table meta.user_role {
   role_id serial [pk, note: 'pk_role_id']
   
   // the name and description to be fetched for decorations
-  role_name varchar(4)  [unique, not null, note: 'uq_role_name']
+  role_name char(4)  [unique, not null, note: 'uq_role_name']
   role_desc varchar(64) [unique, note: 'uq_role_description']
 }
 
