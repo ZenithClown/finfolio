@@ -43,6 +43,10 @@ INSERT INTO meta.account_subtype_detail (account_subtype_id, account_type_id, ac
   ('LND', 'CDT', 'Personal Lending Account', 'Amount lended to a person based on terms and conditions.'),
   ('BRW', 'CDT', 'Personal Borrowed Account', 'Amount borrwed from a person based on terms and conditions.');
 
+INSERT INTO meta.transaction_type (type_id, trx_type_detail) VALUES
+  ('D', 'Deposit into the Account'),
+  ('W', 'Withdraw from the Account');
+
 INSERT INTO meta.transaction_method (method_name, method_desc) VALUES
   ('NEFT', 'National Electronic Funds Transfer'),
   ('IMPS', 'Immediate Payment Service'),

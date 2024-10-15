@@ -161,6 +161,13 @@ table meta.ledger_account_detail {
   opening_balance_recorded_on date           [not null] // default `account_opened_on`
 }
 
+table meta.transaction_type {
+  type_id char(1) [pk, note: 'pk_trx_type_id']
+
+  // deposit and withdraw in different account have different meaning
+  trx_type_detail varchar(64) [unique, not null, note: 'uq_trx_type_detail']
+}
+
 table meta.transaction_method {
   method_name varchar(7)  [pk, note: 'pk_trx_method_name']
   method_desc varchar(64) [unique, not null, note: 'uq_trx_method_desc']
