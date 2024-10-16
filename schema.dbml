@@ -160,6 +160,31 @@ table public.user_account_detail {
   '''
 }
 
+table public.ledger_account_detail {
+  // ? using randomly generated keys for account id
+  // however, other end user may change the same as per need
+  ledger_account_id char(5) [pk, note: 'pk_ledger_account_id']
+
+  // the following information is for identification by end user
+  account_name  varchar(64) [unique, not null, note: 'uq_account_name']
+  account_owner varchar(16) [not null, ref: > public.user_account_detail.username, note: 'fk_account_owner']
+  
+  // the type of account has a significant impact on end calculation
+  account_type_id    char(3) [unique, not null, ref: > meta.account_type_detail.account_type_id, note: 'fk_ledger_account_type_id']
+  account_subtype_id char(3) [ref: > meta.account_subtype_detail.account_subtype_id, note: 'fk_ledger_sub_account_type_id']
+
+  // ? account opening and closing information for future reference
+  account_opened_on date [not null]
+  account_closed_on date
+
+  // an account may also be set as inactive even if the account is not closed
+  account_marked_inactive_on date
+
+  // ? we may not have all the transactions, thus we can set an opening balance
+  opening_balance             numeric(19, 2) [not null, default: 0.00]
+  opening_balance_recorded_on date           [not null] // default `account_opened_on`
+}
+
 // ! PRIVATE Namespace - Schema to hold user transaction informations
 table private.user_transaction {
   // ? primary table containing all the transactions for all tracked accounts
@@ -185,31 +210,6 @@ table private.user_transaction {
   // ? utility field for developer purpose and have no other usage
   created_on timestamp [not null, default: 'timezone(utc, now())']
   updated_at timestamp
-}
-
-table public.ledger_account_detail {
-  // ? using randomly generated keys for account id
-  // however, other end user may change the same as per need
-  ledger_account_id char(5) [pk, note: 'pk_ledger_account_id']
-
-  // the following information is for identification by end user
-  account_name  varchar(64) [unique, not null, note: 'uq_account_name']
-  account_owner varchar(16) [not null, ref: > public.user_account_detail.username, note: 'fk_account_owner']
-  
-  // the type of account has a significant impact on end calculation
-  account_type_id    char(3) [unique, not null, ref: > meta.account_type_detail.account_type_id, note: 'fk_ledger_account_type_id']
-  account_subtype_id char(3) [ref: > meta.account_subtype_detail.account_subtype_id, note: 'fk_ledger_sub_account_type_id']
-
-  // ? account opening and closing information for future reference
-  account_opened_on date [not null]
-  account_closed_on date
-
-  // an account may also be set as inactive even if the account is not closed
-  account_marked_inactive_on date
-
-  // ? we may not have all the transactions, thus we can set an opening balance
-  opening_balance             numeric(19, 2) [not null, default: 0.00]
-  opening_balance_recorded_on date           [not null] // default `account_opened_on`
 }
 
 table private.trx_sender_detail {
