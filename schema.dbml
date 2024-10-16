@@ -95,30 +95,6 @@ table meta.user_subrole {
   subrole_desc  varchar(128) [unique, note: 'uq_subrole_description']
 }
 
-table meta.user_account_detail {
-  username varchar(16) [pk, note: 'pk_username']
-  fullname varchar(64) [unique, not null, note: 'uq_user_fullname']
-
-  // good to have features, but not required to be maintained
-  email varchar(128) [unique, note: 'uq_user_email_address']
-  phone varchar(16)  [unique, note: 'uq_user_phone_number']
-
-  // date of birth is crucial for certain calculations/projections
-  date_of_birth date
-
-  // the user role and subrole is controlled externally to group
-  user_role     integer [not null, ref: > meta.user_role.role_id, note: 'fk_user_role_id']
-  user_subrole  integer [ref: > meta.user_subrole.subrole_id, note: 'fk_user_subrole_id']
-
-  note: '''
-    Table Schema for an User Account
-
-    The user account is the starting point for the personal \
-    finance management application, where, the head of the \
-    family may add more members account details.
-  '''
-}
-
 table meta.account_type_detail {
   account_type_id char(3) [pk, note: 'pk_account_type_id']
 
@@ -134,31 +110,6 @@ table meta.account_subtype_detail {
   // typically the additional column are for end user (internal)
   account_subtype_name varchar(32) [unique, not null, note: 'uq_account_subtype_name']
   account_subtype_desc varchar(64) [unique, note: 'uq_account_subtype_desc']
-}
-
-table meta.ledger_account_detail {
-  // ? using randomly generated keys for account id
-  // however, other end user may change the same as per need
-  ledger_account_id char(5) [pk, note: 'pk_ledger_account_id']
-
-  // the following information is for identification by end user
-  account_name  varchar(64) [unique, not null, note: 'uq_account_name']
-  account_owner varchar(16) [not null, ref: > meta.user_account_detail.username, note: 'fk_account_owner']
-  
-  // the type of account has a significant impact on end calculation
-  account_type_id    char(3) [unique, not null, ref: > meta.account_type_detail.account_type_id, note: 'fk_ledger_account_type_id']
-  account_subtype_id char(3) [ref: > meta.account_subtype_detail.account_subtype_id, note: 'fk_ledger_sub_account_type_id']
-
-  // ? account opening and closing information for future reference
-  account_opened_on date [not null]
-  account_closed_on date
-
-  // an account may also be set as inactive even if the account is not closed
-  account_marked_inactive_on date
-
-  // ? we may not have all the transactions, thus we can set an opening balance
-  opening_balance             numeric(19, 2) [not null, default: 0.00]
-  opening_balance_recorded_on date           [not null] // default `account_opened_on`
 }
 
 table meta.transaction_type {
@@ -184,12 +135,62 @@ table meta.expense_subcategory {
   expense_subcategory_desc varchar(96) [unique, not null, note: 'uq_expense_subcategory_desc']
 }
 
+// ! PUBLIC Namespace - Using the default schema of PostgreSQL to hold user's essential informations
+table public.user_account_detail {
+  username varchar(16) [pk, note: 'pk_username']
+  fullname varchar(64) [unique, not null, note: 'uq_user_fullname']
+
+  // good to have features, but not required to be maintained
+  email varchar(128) [unique, note: 'uq_user_email_address']
+  phone varchar(16)  [unique, note: 'uq_user_phone_number']
+
+  // date of birth is crucial for certain calculations/projections
+  date_of_birth date
+
+  // the user role and subrole is controlled externally to group
+  user_role     integer [not null, ref: > meta.user_role.role_id, note: 'fk_user_role_id']
+  user_subrole  integer [ref: > meta.user_subrole.subrole_id, note: 'fk_user_subrole_id']
+
+  note: '''
+    Table Schema for an User Account
+
+    The user account is the starting point for the personal \
+    finance management application, where, the head of the \
+    family may add more members account details.
+  '''
+}
+
+table public.ledger_account_detail {
+  // ? using randomly generated keys for account id
+  // however, other end user may change the same as per need
+  ledger_account_id char(5) [pk, note: 'pk_ledger_account_id']
+
+  // the following information is for identification by end user
+  account_name  varchar(64) [unique, not null, note: 'uq_account_name']
+  account_owner varchar(16) [not null, ref: > public.user_account_detail.username, note: 'fk_account_owner']
+  
+  // the type of account has a significant impact on end calculation
+  account_type_id    char(3) [unique, not null, ref: > meta.account_type_detail.account_type_id, note: 'fk_ledger_account_type_id']
+  account_subtype_id char(3) [ref: > meta.account_subtype_detail.account_subtype_id, note: 'fk_ledger_sub_account_type_id']
+
+  // ? account opening and closing information for future reference
+  account_opened_on date [not null]
+  account_closed_on date
+
+  // an account may also be set as inactive even if the account is not closed
+  account_marked_inactive_on date
+
+  // ? we may not have all the transactions, thus we can set an opening balance
+  opening_balance             numeric(19, 2) [not null, default: 0.00]
+  opening_balance_recorded_on date           [not null] // default `account_opened_on`
+}
+
 // ! PRIVATE Namespace - Schema to hold user transaction informations
 table private.user_transaction {
   // ? primary table containing all the transactions for all tracked accounts
   transaction_id bigserial [pk, note: 'pk_transaction_id']
 
-  account_id char(5) [not null, ref: > meta.ledger_account_detail.ledger_account_id, note: 'fk_trx_ledger_account_id']
+  account_id char(5) [not null, ref: > public.ledger_account_detail.ledger_account_id, note: 'fk_trx_ledger_account_id']
 
   // trx:: transaction short hand, created to reduce column name
   // all the below columns are important and is fetched/kept as available from the passbook
@@ -216,8 +217,8 @@ table private.trx_sender_detail {
   _id bigserial [pk, note: 'pk_dummy_trx_duality_id']
   transaction_id bigint [unique, not null, ref: > private.user_transaction.transaction_id, note: 'fk_ref_trx_id_sender']
 
-  sending_user      varchar(16) [ref: > meta.user_account_detail.username, note: 'fk_sending_username']
-  sending_account   char(5)     [ref: > meta.ledger_account_detail.ledger_account_id, note: 'fk_sending_account_id']
+  sending_user      varchar(16) [ref: > public.user_account_detail.username, note: 'fk_sending_username']
+  sending_account   char(5)     [ref: > public.ledger_account_detail.ledger_account_id, note: 'fk_sending_account_id']
 }
 
 table private.trx_receiver_detail {
@@ -225,6 +226,6 @@ table private.trx_receiver_detail {
   _id bigserial [pk, note: 'pk_dummy_trx_duality_id']
   transaction_id bigint [unique, not null, ref: > private.user_transaction.transaction_id, note: 'fk_ref_trx_id_sender']
 
-  receiving_user    varchar(16) [ref: > meta.user_account_detail.username, note: 'fk_receiving_username']
-  receiving_account char(5)     [ref: > meta.ledger_account_detail.ledger_account_id, note: 'fk_receiving_account_id']
+  receiving_user    varchar(16) [ref: > public.user_account_detail.username, note: 'fk_receiving_username']
+  receiving_account char(5)     [ref: > public.ledger_account_detail.ledger_account_id, note: 'fk_receiving_account_id']
 }
