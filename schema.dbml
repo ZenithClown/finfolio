@@ -179,9 +179,9 @@ table meta.expense_category {
 }
 
 table meta.expense_subcategory {
-  expense_subcategory_name varchar(16) [pk, note: 'pk_expense_subcategory_name']
+  expense_subcategory_name varchar(48) [pk, note: 'pk_expense_subcategory_name']
   primary_expense_category varchar(16) [not null, ref: > meta.expense_category.expense_category_name, note: 'fk_primary_expense_category']
-  expense_subcategory_desc varchar(64) [unique, not null, note: 'uq_expense_subcategory_desc']
+  expense_subcategory_desc varchar(96) [unique, not null, note: 'uq_expense_subcategory_desc']
 }
 
 // ! PRIVATE Namespace - Schema to hold user transaction informations
@@ -204,7 +204,7 @@ table private.user_transaction {
 
   // categorization of transactions based on different categories and sub categories
   expense_category_head    varchar(16) [ref: > meta.expense_category.expense_category_name, note: 'fk_expense_category_head']
-  expense_subcategory_head varchar(16) [ref: > meta.expense_subcategory.expense_subcategory_name, note: 'fk_expense_subcategory_head']
+  expense_subcategory_head varchar(48) [ref: > meta.expense_subcategory.expense_subcategory_name, note: 'fk_expense_subcategory_head']
 
   // ? utility field for developer purpose and have no other usage
   created_on timestamp [not null, default: 'timezone(utc, now())']

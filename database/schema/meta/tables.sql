@@ -197,3 +197,32 @@ CREATE TABLE IF NOT EXISTS meta.transaction_method (
     CONSTRAINT uq_trx_method_desc UNIQUE
     NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS meta.expense_category (
+  expense_category_name
+    VARCHAR(16)
+    CONSTRAINT pk_expense_category_name PRIMARY KEY,
+
+  expense_category_desc
+    VARCHAR(72)
+    CONSTRAINT uq_expense_category_desc UNIQUE
+    NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS meta.expense_subcategory (
+  expense_subcategory_name
+    VARCHAR(48)
+    CONSTRAINT pk_expense_subcategory_name PRIMARY KEY,
+
+  primary_expense_category
+    VARCHAR(16)
+    CONSTRAINT fk_primary_expense_category
+      REFERENCES meta.expense_category  (expense_category_name)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
+
+  expense_subcategory_desc
+    VARCHAR(96)
+    CONSTRAINT uq_expense_subcategory_desc UNIQUE
+    NOT NULL
+);
