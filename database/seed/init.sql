@@ -53,3 +53,20 @@ INSERT INTO meta.transaction_method (method_name, method_desc) VALUES
   ('RTGS', 'Real Time Gross Settlement'),
   ('UPI', 'United Payment Interface'),
   ('MANDATE', 'Automatic Standing Instructions');
+
+INSERT INTO meta.expense_category (expense_category_name, expense_category_desc) VALUES
+  ('HOUSING', 'House maintenance, rent, mortage, loan, etc.'),
+  ('FOODING', 'Amount spend on monthly food, grocery, including outside food.'),
+  ('TRANSPORTATION', 'Amount spent on fuel, car maintenance, rental veichles, etc.'),
+  ('UTILITY', 'Essential utility services like telephone bills, electricity bill, etc.'),
+  ('INSURANCE', 'Health/life/automobile insurance, etc.'),
+  ('MEDICAL', 'Medical expenditure like medicines, special care, hospitalization, etc.'),
+  ('PERSONAL CARE', 'Personal care like gym membership, clothes, home decor, etc.'),
+  ('ENTERTAINMENT', 'Entertainments like subscriptions, movies, etc.');
+
+INSERT INTO meta.expense_subcategory (expense_subcategory_name, expense_category_name, expense_subcategory_desc) VALUES
+  ('RENT', 'HOUSING', 'Money spent on rent.'),
+  ('HOME LOAN', 'HOUSING', 'Money spent on home loan.'),
+  ('HOME MAINTENANCE', 'HOUSING', 'Money spent on home maintenance, like repair, renovations, etc.'),
+  ('GROCERY', 'FOODING', 'Grocery spends.'),
+  ('FOOD ORDERING', 'FOODING', 'Spent on food ordering platforms like Zomato, Swiggy, etc.');
