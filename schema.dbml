@@ -172,3 +172,44 @@ table meta.transaction_method {
   method_name varchar(7)  [pk, note: 'pk_trx_method_name']
   method_desc varchar(64) [unique, not null, note: 'uq_trx_method_desc']
 }
+
+// ! PRIVATE Namespace - Schema to hold user transaction informations
+table private.user_transaction {
+  // ? primary table containing all the transactions for all tracked accounts
+  transaction_id bigserial [pk, note: 'pk_transaction_id']
+
+  account_id char(5) [not null, ref: > meta.ledger_account_detail.ledger_account_id, note: 'fk_trx_ledger_account_id']
+
+  // trx:: transaction short hand, created to reduce column name
+  // all the below columns are important and is fetched/kept as available from the passbook
+  trx_date   date           [not null]
+  trx_type   char(1)        [not null, ref: > meta.transaction_type.type_id, note: 'fk_trx_type_id']
+  trx_desc   varchar(512)   [not null]
+  trx_drvd   varchar(512)   [note: 'Derived transaction, this field is typically a cleaned text from the original description.']
+  trx_amount numeric(19, 2) [not null]
+
+  // additional fields which can either be auto populated by ai/ml or maybe updated manually by the user
+  transfer_method varchar(7) [ref: > meta.transaction_method.method_name, note: 'fk_trx_method_name']
+
+  // ? utility field for developer purpose and have no other usage
+  created_on timestamp [not null, default: 'timezone(utc, now())']
+  updated_at timestamp
+}
+
+table private.trx_sender_detail {
+  // captures the sender's information of the transaction - which can either be rule based or automated
+  _id bigserial [pk, note: 'pk_dummy_trx_duality_id']
+  transaction_id bigint [unique, not null, ref: > private.user_transaction.transaction_id, note: 'fk_ref_trx_id_sender']
+
+  sending_user      varchar(16) [ref: > meta.user_account_detail.username, note: 'fk_sending_username']
+  sending_account   char(5)     [ref: > meta.ledger_account_detail.ledger_account_id, note: 'fk_sending_account_id']
+}
+
+table private.trx_receiver_detail {
+  // captures the receiver's information of the transaction - which can either be rule based or automated
+  _id bigserial [pk, note: 'pk_dummy_trx_duality_id']
+  transaction_id bigint [unique, not null, ref: > private.user_transaction.transaction_id, note: 'fk_ref_trx_id_sender']
+
+  receiving_user    varchar(16) [ref: > meta.user_account_detail.username, note: 'fk_receiving_username']
+  receiving_account char(5)     [ref: > meta.ledger_account_detail.ledger_account_id, note: 'fk_receiving_account_id']
+}
