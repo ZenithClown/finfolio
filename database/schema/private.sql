@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS private.user_transaction (
     VARCHAR(512),
 
   trx_amount
-    NUMERIC(19, 2)
+    NUMERIC(12, 2)
     NOT NULL,
 
   transfer_method

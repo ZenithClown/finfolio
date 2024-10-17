@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS public.ledger_account_detail (
     DATE,
 
   opening_balance
-    NUMERIC(19, 2)
+    NUMERIC(12, 2)
     NOT NULL
     DEFAULT 0.00,
 
