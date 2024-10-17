@@ -36,7 +36,6 @@ CREATE TABLE IF NOT EXISTS private.user_transaction (
 
   transfer_method
     VARCHAR(7)
-    NOT NULL
     CONSTRAINT fk_trx_method_name
       REFERENCES meta.transaction_method (method_name)
       ON DELETE SET NULL
