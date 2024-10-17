@@ -181,7 +181,7 @@ table public.ledger_account_detail {
   account_marked_inactive_on date
 
   // ? we may not have all the transactions, thus we can set an opening balance
-  opening_balance             numeric(19, 2) [not null, default: 0.00]
+  opening_balance             numeric(12, 2) [not null, default: 0.00]
   opening_balance_recorded_on date           [not null] // default `account_opened_on`
 }
 
@@ -198,7 +198,7 @@ table private.user_transaction {
   trx_type   char(1)        [not null, ref: > meta.transaction_type.type_id, note: 'fk_trx_type_id']
   trx_desc   varchar(512)   [not null]
   trx_drvd   varchar(512)   [note: 'Derived transaction, this field is typically a cleaned text from the original description.']
-  trx_amount numeric(19, 2) [not null]
+  trx_amount numeric(12, 2) [not null]
 
   // additional fields which can either be auto populated by ai/ml or maybe updated manually by the user
   transfer_method varchar(7) [ref: > meta.transaction_method.method_name, note: 'fk_trx_method_name']
