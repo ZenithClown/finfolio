@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS private.user_transaction (
     CHAR(5)
     NOT NULL
     CONSTRAINT fk_trx_ledger_account_id
-      REFERENCES meta.ledger_account_detail (ledger_account_id)
+      REFERENCES public.ledger_account_detail (ledger_account_id)
       ON DELETE SET NULL
       ON UPDATE SET NULL,
 
