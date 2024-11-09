@@ -19,14 +19,17 @@ CREATE TABLE IF NOT EXISTS public.user_account_detail (
 
   email
     VARCHAR(128)
+    DEFAULT NULL
     CONSTRAINT uq_user_email_address UNIQUE,
 
   phone
     VARCHAR(16)
+    DEFAULT NULL
     CONSTRAINT uq_user_phone_number UNIQUE,
 
   date_of_birth
-    DATE,
+    DATE
+    DEFAULT NULL,
 
   user_role
     INTEGER
@@ -38,6 +41,7 @@ CREATE TABLE IF NOT EXISTS public.user_account_detail (
 
   user_subrole
     INTEGER
+    DEFAULT NULL
     CONSTRAINT fk_user_subrole_id
       REFERENCES meta.user_subrole (subrole_id)
       ON DELETE CASCADE
@@ -72,6 +76,7 @@ CREATE TABLE IF NOT EXISTS public.ledger_account_detail (
 
   account_subtype_id
     CHAR(3)
+    DEFAULT NULL
     CONSTRAINT fk_ledger_sub_account_type_id
       REFERENCES meta.account_subtype_detail  (account_subtype_id)
       ON DELETE CASCADE
@@ -82,10 +87,12 @@ CREATE TABLE IF NOT EXISTS public.ledger_account_detail (
     NOT NULL,
 
   account_closed_on
-    DATE,
+    DATE
+    DEFAULT NULL,
 
   account_marked_inactive_on
-    DATE,
+    DATE
+    DEFAULT NULL,
 
   opening_balance
     NUMERIC(12, 2)
