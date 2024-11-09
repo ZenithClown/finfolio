@@ -214,7 +214,7 @@ table private.user_transaction {
 
 table private.trx_sender_detail {
   // captures the sender's information of the transaction - which can either be rule based or automated
-  _id bigserial [pk, note: 'pk_dummy_trx_duality_id']
+  _id bigserial [pk, note: '_pk_trx_duality_id_sender']
   transaction_id bigint [unique, not null, ref: > private.user_transaction.transaction_id, note: 'fk_ref_trx_id_sender']
 
   sending_user      varchar(16) [ref: > public.user_account_detail.username, note: 'fk_sending_username']
@@ -223,8 +223,8 @@ table private.trx_sender_detail {
 
 table private.trx_receiver_detail {
   // captures the receiver's information of the transaction - which can either be rule based or automated
-  _id bigserial [pk, note: 'pk_dummy_trx_duality_id']
-  transaction_id bigint [unique, not null, ref: > private.user_transaction.transaction_id, note: 'fk_ref_trx_id_sender']
+  _id bigserial [pk, note: '_pk_trx_duality_id_receiver']
+  transaction_id bigint [unique, not null, ref: > private.user_transaction.transaction_id, note: 'fk_ref_trx_id_receiver']
 
   receiving_user    varchar(16) [ref: > public.user_account_detail.username, note: 'fk_receiving_username']
   receiving_account char(5)     [ref: > public.ledger_account_detail.ledger_account_id, note: 'fk_receiving_account_id']
