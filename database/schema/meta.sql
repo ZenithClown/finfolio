@@ -34,7 +34,9 @@ CREATE TABLE IF NOT EXISTS meta.user_subrole (
     CONSTRAINT fk_parent_role_id
       REFERENCES meta.user_role (role_id)
       ON DELETE CASCADE
-      ON UPDATE CASCADE,
+      ON UPDATE CASCADE
+    CONSTRAINT ck_role_id_valid
+      CHECK (role_id IN (4, 5)),
 
   subrole_name
     VARCHAR(32)
