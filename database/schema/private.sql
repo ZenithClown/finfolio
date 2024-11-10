@@ -78,14 +78,6 @@ sending_user
     CONSTRAINT fk_sending_username
       REFERENCES public.user_account_detail (username)
       ON DELETE NO ACTION
-      ON UPDATE NO ACTION,
-
-  sending_account
-    CHAR(5)
-    DEFAULT NULL
-    CONSTRAINT fk_sending_account_id
-      REFERENCES public.ledger_account_detail (ledger_account_id)
-      ON DELETE NO ACTION
       ON UPDATE NO ACTION
 );
 
@@ -105,14 +97,6 @@ sending_user
   VARCHAR(16)
     CONSTRAINT fk_receiving_username
       REFERENCES public.user_account_detail (username)
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION,
-
-  sending_account
-    CHAR(5)
-    DEFAULT NULL
-    CONSTRAINT fk_receiving_account_id
-      REFERENCES public.ledger_account_detail (ledger_account_id)
       ON DELETE NO ACTION
       ON UPDATE NO ACTION
 );
