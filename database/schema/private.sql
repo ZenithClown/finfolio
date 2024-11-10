@@ -27,9 +27,6 @@ CREATE TABLE IF NOT EXISTS private.user_transaction (
     VARCHAR(512)
     NOT NULL,
 
-  trx_drvd
-    VARCHAR(512),
-
   trx_amount
     NUMERIC(12, 2)
     NOT NULL,
