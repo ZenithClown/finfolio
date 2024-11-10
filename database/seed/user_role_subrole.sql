@@ -15,4 +15,5 @@ INSERT INTO meta.user_subrole (subrole_id, role_id, subrole_name, subrole_desc) 
   (1, 5, 'FAMILY', 'The user is part of the family, and his account may be tracked.'),
   (2, 5, 'RELATIVE', 'The user is part of the extended family and typically does not have a tracked account.'),
   (3, 5, 'FRIENDS', 'A friend of the user, who typically has a transactional relationship.'),
-  (4, 5, 'ORGANIZATION', 'An organization which has a transactional relationship, example companies where the user has worked.');
+  (4, 5, 'ORGANIZATION', 'An organization which has a transactional relationship, example companies where the user has worked.'),
+  (5, 5, 'EXTERNAL', 'An external user who is not a friend, relative, family or an organization.');
