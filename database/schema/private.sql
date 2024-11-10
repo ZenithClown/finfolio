@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS private.trx_receiver_detail (
       ON DELETE NO ACTION
       ON UPDATE NO ACTION,
 
-sending_user
+receiving_user
   VARCHAR(16)
     CONSTRAINT fk_receiving_username
       REFERENCES public.user_account_detail (username)
