@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE public.set_transfer_method(
+CREATE OR REPLACE PROCEDURE public.set_transfer_method (
   methodname VARCHAR(7)
   , wpattern VARCHAR(64)
 )
