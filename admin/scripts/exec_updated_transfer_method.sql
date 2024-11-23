@@ -26,3 +26,7 @@ CALL public.usp_set_transfer_method('UPI', '%TRANSFER%UPI%');
 -- ? mandate transaction method
 SELECT * FROM public.udf_pattern_filter_for_transfer_method('%MANDATE%');
 CALL public.usp_set_transfer_method('MANDATE', '%MANDATE%');
+
+-- ? cash transaction method
+SELECT * FROM public.udf_pattern_filter_for_transfer_method('%NACH%');
+CALL public.usp_set_transfer_method('NACH', '%NACH%');
