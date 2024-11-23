@@ -32,7 +32,7 @@ CREATE OR REPLACE FUNCTION public.udf_pattern_filter_for_transfer_method (wpatte
       , t.trx_amount
     FROM private.user_transaction t
     WHERE
-      t.trx_desc LIKE reference
+      t.trx_desc LIKE wpattern
       AND t.transfer_method IS NULL
     ORDER BY
       t.account_id
