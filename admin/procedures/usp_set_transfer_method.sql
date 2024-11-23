@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE public.set_transfer_method (
+CREATE OR REPLACE PROCEDURE public.usp_set_transfer_method (
   methodname VARCHAR(7)
   , wpattern VARCHAR(64)
 )
@@ -10,6 +10,6 @@ $$
       transfer_method = methodname
       , updated_at = current_timestamp_
     WHERE transaction_id IN
-    (SELECT transaction_id FROM public.udf_get_to_update_record_for_transaction_method(wpattern));
+    (SELECT transaction_id FROM public.udf_pattern_filter_for_transfer_method(wpattern));
   END
 $$
