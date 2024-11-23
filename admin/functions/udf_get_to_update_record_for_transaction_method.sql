@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION udf_get_to_update_record_for_transaction_method (reference VARCHAR(64))
+CREATE OR REPLACE FUNCTION public.udf_get_to_update_record_for_transaction_method (reference VARCHAR(64))
   RETURNS TABLE (
     transaction_id BIGINT
     , account_id   CHAR(5)
