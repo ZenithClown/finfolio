@@ -53,23 +53,3 @@ CREATE TABLE IF NOT EXISTS private.user_transaction (
   updated_on
     TIMESTAMPTZ
 );
-
-CREATE TABLE IF NOT EXISTS private.trx_sender_detail (
-  _id
-    BIGSERIAL
-    CONSTRAINT _pk_trx_duality_id_sender PRIMARY KEY,
-
-  transaction_id
-    BIGINT
-    CONSTRAINT fk_ref_trx_id_sender
-      REFERENCES private.user_transaction (transaction_id)
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION,
-
-sending_user
-  VARCHAR(16)
-    CONSTRAINT fk_sending_username
-      REFERENCES public.user_account_detail (username)
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION
-);
