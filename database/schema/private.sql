@@ -80,23 +80,3 @@ sending_user
       ON DELETE NO ACTION
       ON UPDATE NO ACTION
 );
-
-CREATE TABLE IF NOT EXISTS private.trx_receiver_detail (
-  _id
-    BIGSERIAL
-    CONSTRAINT _pk_trx_duality_id_receiver PRIMARY KEY,
-
-  transaction_id
-    BIGINT
-    CONSTRAINT fk_ref_trx_id_receiver
-      REFERENCES private.user_transaction (transaction_id)
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION,
-
-receiving_user
-  VARCHAR(16)
-    CONSTRAINT fk_receiving_username
-      REFERENCES public.user_account_detail (username)
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION
-);
