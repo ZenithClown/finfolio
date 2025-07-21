@@ -1,14 +1,20 @@
 /********************************************************************
 Personal Finance DB (finfolio) Initialization Statement (PostgreSQL)
 
-The initialization statement is to be triggered by a new user to
-create necessary structures. The database name defaults to `finfolio`
-same as that of the repository name.
+The initialize statement for getting started with the personal finance
+management application. The table structure are defined under the
+``database/schema`` directory, while the initial seed data are defined
+under the ``database/seed`` directory.
+
+The system is so defined that it is upto an end user to maintain the
+security of the tables and data. The owner/maintainer of the project
+is not responsible for any data loss or data corruption and should not
+be held liable for any data leakage.
 
 Author  : Debmalya Pramanik
 Contact : dpramanik.official@gmail.com
 
-Copywright © [2024] Debmalya Pramanik
+Copywright © [2024] Debmalya Pramanik (ZenithClown)
 ********************************************************************/
 
 CREATE DATABASE finfolio WITH
