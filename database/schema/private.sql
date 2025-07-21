@@ -1,35 +1,30 @@
 CREATE TABLE IF NOT EXISTS private.user_transaction (
-  transaction_id
-    BIGSERIAL
-    CONSTRAINT pk_transaction_id PRIMARY KEY,
+  _idkey
+    BIGINT GENERATED ALWAYS AS IDENTITY
+    CONSTRAINT pk_transaction_idkey PRIMARY KEY,
 
   account_id
-    CHAR(5)
-    NOT NULL
+    CHAR(5) NOT NULL
     CONSTRAINT fk_trx_ledger_account_id
       REFERENCES public.ledger_account_detail (ledger_account_id)
       ON DELETE SET NULL
       ON UPDATE SET NULL,
 
   trx_date
-    DATE
-    NOT NULL,
+    DATE NOT NULL,
 
   trx_type
-    CHAR(1)
-    NOT NULL
+    CHAR(1) NOT NULL
     CONSTRAINT fk_trx_type_id
       REFERENCES meta.transaction_type (type_id)
       ON DELETE SET NULL
       ON UPDATE SET NULL,
 
   trx_desc
-    VARCHAR(512)
-    NOT NULL,
+    VARCHAR(512) NOT NULL,
 
   trx_amount
-    NUMERIC(12, 2)
-    NOT NULL,
+    NUMERIC(12, 2) NOT NULL,
 
   transfer_method
     VARCHAR(7)
@@ -53,12 +48,10 @@ CREATE TABLE IF NOT EXISTS private.user_transaction (
       ON UPDATE SET NULL,
 
   created_on
-    TIMESTAMP
-    NOT NULL
-    DEFAULT (timezone('utc', now())),
+    TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-  updated_at
-    TIMESTAMP
+  updated_on
+    TIMESTAMPTZ
 );
 
 CREATE TABLE IF NOT EXISTS private.trx_sender_detail (
