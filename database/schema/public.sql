@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS public.user_account_detail (
     DATE,
 
   user_role
-    meta.user_role NOT NULL
+    meta.user_role NOT NULL DEFAULT 'USER'
 );
 
 
