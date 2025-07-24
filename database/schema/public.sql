@@ -42,52 +42,46 @@ CREATE TABLE IF NOT EXISTS public.ledger_account_detail (
     CONSTRAINT pk_ledger_account_id PRIMARY KEY,
 
   account_name
-    VARCHAR(64)
-    CONSTRAINT uq_account_name UNIQUE
-    NOT NULL,
+    VARCHAR(64) NOT NULL
+    CONSTRAINT uq_account_name UNIQUE,
 
   account_owner
-    VARCHAR(16)
-    NOT NULL
+    VARCHAR(16) NOT NULL
     CONSTRAINT fk_account_owner
       REFERENCES public.user_account_detail (username)
       ON DELETE CASCADE
       ON UPDATE CASCADE,
 
   account_type_id
-    CHAR(3)
-    NOT NULL
+    CHAR(3) NOT NULL
     CONSTRAINT fk_ledger_account_type_id
       REFERENCES meta.account_type_detail  (account_type_id)
       ON DELETE CASCADE
       ON UPDATE CASCADE,
 
   account_subtype_id
-    CHAR(3)
-    DEFAULT NULL
-    CONSTRAINT fk_ledger_sub_account_type_id
-      REFERENCES meta.account_subtype_detail  (account_subtype_id)
-      ON DELETE CASCADE
-      ON UPDATE CASCADE,
+    CHAR(3),
 
   account_opened_on
-    DATE
-    NOT NULL,
+    DATE NOT NULL,
 
   account_closed_on
-    DATE
-    DEFAULT NULL,
+    DATE,
 
   account_marked_inactive_on
-    DATE
-    DEFAULT NULL,
+    DATE,
 
   opening_balance
-    NUMERIC(12, 2)
-    NOT NULL
-    DEFAULT 0.00,
+    NUMERIC(12, 2) NOT NULL DEFAULT 0.00,
 
+  -- ? field is useful if you do not have complete historical data
+  -- default should be `account_opened_on` date
   opening_balance_recorded_on
-    DATE
-    NOT NULL -- ? DEFAULT account_opened_on
+    DATE NOT NULL,
+
+  CONSTRAINT fk_ledger_sub_account_type_id
+    FOREIGN KEY (account_type_id, account_subtype_id)
+    REFERENCES meta.account_subtype_detail (account_type_id, account_subtype_id)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE
 );
