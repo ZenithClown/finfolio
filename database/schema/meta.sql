@@ -7,17 +7,6 @@ this case is mostly the master tables) for finance management.
 Copywright © [2024] Debmalya Pramanik
 ********************************************************************/
 
-CREATE TABLE IF NOT EXISTS meta.user_role (
-  role_name
-    CHAR(4)
-    CONSTRAINT pk_role_id PRIMARY KEY,
-
-  role_desc
-    VARCHAR(64) NOT NULL
-    CONSTRAINT uq_role_description UNIQUE
-);
-
-
 CREATE TABLE IF NOT EXISTS meta.account_type_detail (
   account_type_id
     CHAR(3)
