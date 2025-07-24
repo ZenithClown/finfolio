@@ -24,15 +24,14 @@ CREATE TABLE IF NOT EXISTS meta.account_type_detail (
     CONSTRAINT pk_account_type_id PRIMARY KEY,
 
   account_type_name
-    VARCHAR(32)
-    CONSTRAINT uq_account_type_name UNIQUE
-    NOT NULL,
+    VARCHAR(32) NOT NULL
+    CONSTRAINT uq_account_type_name UNIQUE,
 
   account_type_desc
-    VARCHAR(128)
+    VARCHAR(128) NOT NULL
     CONSTRAINT uq_account_type_desc UNIQUE
-    NOT NULL
 );
+
 
 CREATE TABLE IF NOT EXISTS meta.account_subtype_detail (
   account_subtype_id
@@ -40,22 +39,21 @@ CREATE TABLE IF NOT EXISTS meta.account_subtype_detail (
     CONSTRAINT pk_sub_account_type_id PRIMARY KEY,
 
   account_type_id
-    CHAR(3)
-    NOT NULL
+    CHAR(3) NOT NULL
     CONSTRAINT fk_account_type_id
       REFERENCES meta.account_type_detail (account_type_id)
       ON DELETE CASCADE
       ON UPDATE CASCADE,
 
   account_subtype_name
-    VARCHAR(34)
-    CONSTRAINT uq_account_subtype_name UNIQUE
-    NOT NULL,
+    VARCHAR(34) NOT NULL
+    CONSTRAINT uq_account_subtype_name UNIQUE,
 
   account_subtype_desc
     VARCHAR(64)
     CONSTRAINT uq_account_subtype_desc UNIQUE
 );
+
 
 CREATE TABLE IF NOT EXISTS meta.transaction_type (
   type_id
