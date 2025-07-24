@@ -10,43 +10,31 @@ Copywright © [2024] Debmalya Pramanik
 CREATE TABLE IF NOT EXISTS public.user_account_detail (
   username
     VARCHAR(16)
-    CONSTRAINT pk_username PRIMARY KEY,
+    CONSTRAINT pk_username PRIMARY KEY
+    CONSTRAINT ck_username_length CHECK (LENGTH(username) > 3),
 
+  -- ? typically users can share names, but since this is a decentralized
+  -- it is highly unlikely; if you need to share names, remove constraint
   fullname
-    VARCHAR(64)
-    CONSTRAINT uq_user_fullname UNIQUE
-    NOT NULL,
+    VARCHAR(128) NOT NULL
+    CONSTRAINT uq_user_fullname UNIQUE,
 
   email
     VARCHAR(128)
-    DEFAULT NULL
     CONSTRAINT uq_user_email_address UNIQUE,
 
   phone
     VARCHAR(16)
-    DEFAULT NULL
-    CONSTRAINT uq_user_phone_number UNIQUE,
+    CONSTRAINT uq_user_phone_number UNIQUE
+    CONSTRAINT ck_phone_number CHECK (phone ~ '^[0-9+\- ]*$'),
 
   date_of_birth
-    DATE
-    DEFAULT NULL,
+    DATE,
 
   user_role
-    INTEGER
-    NOT NULL
-    CONSTRAINT fk_user_role_id
-      REFERENCES meta.user_role (role_id)
-      ON DELETE CASCADE
-      ON UPDATE CASCADE,
-
-  user_subrole
-    INTEGER
-    DEFAULT NULL
-    CONSTRAINT fk_user_subrole_id
-      REFERENCES meta.user_subrole (subrole_id)
-      ON DELETE CASCADE
-      ON UPDATE CASCADE
+    meta.user_role NOT NULL
 );
+
 
 CREATE TABLE IF NOT EXISTS public.ledger_account_detail (
   ledger_account_id
