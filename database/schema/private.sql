@@ -14,11 +14,7 @@ CREATE TABLE IF NOT EXISTS private.user_transaction (
     DATE NOT NULL,
 
   trx_type
-    CHAR(1) NOT NULL
-    CONSTRAINT fk_trx_type_id
-      REFERENCES meta.transaction_type (type_id)
-      ON DELETE SET NULL
-      ON UPDATE SET NULL,
+    meta.transaction_type NOT NULL,
 
   trx_desc
     VARCHAR(512) NOT NULL,
@@ -30,6 +26,20 @@ CREATE TABLE IF NOT EXISTS private.user_transaction (
     VARCHAR(7)
     CONSTRAINT fk_trx_method_name
       REFERENCES meta.transaction_method (method_name)
+      ON DELETE SET NULL
+      ON UPDATE SET NULL,
+
+  income_category_head
+    VARCHAR(16)
+    CONSTRAINT fk_income_category_head
+      REFERENCES meta.income_category (income_category_name)
+      ON DELETE SET NULL
+      ON UPDATE SET NULL,
+
+  income_subcategory_head
+    VARCHAR(48)
+    CONSTRAINT fk_income_subcategory_head
+      REFERENCES meta.income_subcategory (income_subcategory_name)
       ON DELETE SET NULL
       ON UPDATE SET NULL,
 
@@ -51,5 +61,10 @@ CREATE TABLE IF NOT EXISTS private.user_transaction (
     TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
   updated_on
-    TIMESTAMPTZ
+    TIMESTAMPTZ,
+
+  CONSTRAINT ck_either_income_or_expense CHECK (
+    income_category_head IS NULL
+    OR expense_category_head IS NULL
+  )
 );
