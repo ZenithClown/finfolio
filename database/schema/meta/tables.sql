@@ -40,7 +40,9 @@ CREATE TABLE IF NOT EXISTS meta.account_subtype_detail (
 
   account_subtype_desc
     VARCHAR(64)
-    CONSTRAINT uq_account_subtype_desc UNIQUE
+    CONSTRAINT uq_account_subtype_desc UNIQUE,
+
+  CONSTRAINT uq_account_type_subtype UNIQUE (account_type_id, account_subtype_id)
 );
 
 
