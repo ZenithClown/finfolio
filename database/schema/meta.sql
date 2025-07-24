@@ -43,16 +43,17 @@ CREATE TABLE IF NOT EXISTS meta.account_subtype_detail (
     CONSTRAINT uq_account_subtype_desc UNIQUE
 );
 
+
 CREATE TABLE IF NOT EXISTS meta.transaction_method (
   method_name
     VARCHAR(7)
     CONSTRAINT pk_trx_method_name PRIMARY KEY,
 
   method_desc
-    VARCHAR(64)
+    VARCHAR(64) NOT NULL
     CONSTRAINT uq_trx_method_desc UNIQUE
-    NOT NULL
 );
+
 
 CREATE TABLE IF NOT EXISTS meta.expense_category (
   expense_category_name
@@ -60,10 +61,10 @@ CREATE TABLE IF NOT EXISTS meta.expense_category (
     CONSTRAINT pk_expense_category_name PRIMARY KEY,
 
   expense_category_desc
-    VARCHAR(72)
+    VARCHAR(72) NOT NULL
     CONSTRAINT uq_expense_category_desc UNIQUE
-    NOT NULL
 );
+
 
 CREATE TABLE IF NOT EXISTS meta.expense_subcategory (
   expense_subcategory_name
@@ -71,14 +72,13 @@ CREATE TABLE IF NOT EXISTS meta.expense_subcategory (
     CONSTRAINT pk_expense_subcategory_name PRIMARY KEY,
 
   primary_expense_category
-    VARCHAR(16)
+    VARCHAR(16) NOT NULL
     CONSTRAINT fk_primary_expense_category
       REFERENCES meta.expense_category  (expense_category_name)
       ON DELETE CASCADE
       ON UPDATE CASCADE,
 
   expense_subcategory_desc
-    VARCHAR(96)
+    VARCHAR(96) NOT NULL
     CONSTRAINT uq_expense_subcategory_desc UNIQUE
-    NOT NULL
 );
