@@ -28,12 +28,10 @@ CREATE SCHEMA meta; -- schema for configuration values
 CREATE SCHEMA private; -- schema to hold user transaction values
 
 -- ? create master tables, typically under the ``meta`` schema
-\i database/schema/meta.sql
+\i database/schema/meta/types.sql
+\i database/schema/meta/tables.sql
 
-\i database/seed/user_role_subrole.sql
-\i database/seed/account_type_subtype.sql
-\i database/seed/transaction_type_method.sql
-\i database/seed/expense_category_subcategory.sql
+\i database/schema/meta/seed.sql
 
 -- ? create public tables, typically under the ``public`` schema
 \i database/schema/public.sql
