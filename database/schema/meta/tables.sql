@@ -82,3 +82,32 @@ CREATE TABLE IF NOT EXISTS meta.expense_subcategory (
     VARCHAR(96) NOT NULL
     CONSTRAINT uq_expense_subcategory_desc UNIQUE
 );
+
+
+CREATE TABLE IF NOT EXISTS meta.income_category (
+  income_category_name
+    VARCHAR(16)
+    CONSTRAINT pk_income_category_name PRIMARY KEY,
+
+  income_category_desc
+    VARCHAR(72) NOT NULL
+    CONSTRAINT uq_income_category_desc UNIQUE
+);
+
+
+CREATE TABLE IF NOT EXISTS meta.income_subcategory (
+  income_subcategory_name
+    VARCHAR(48)
+    CONSTRAINT pk_income_subcategory_name PRIMARY KEY,
+
+  primary_income_category
+    VARCHAR(16) NOT NULL
+    CONSTRAINT fk_primary_income_category
+      REFERENCES meta.income_category  (income_category_name)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
+
+  income_subcategory_desc
+    VARCHAR(96) NOT NULL
+    CONSTRAINT uq_income_subcategory_desc UNIQUE
+);
