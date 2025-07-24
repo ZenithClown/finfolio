@@ -11,19 +11,19 @@ security of the tables and data. The owner/maintainer of the project
 is not responsible for any data loss or data corruption and should not
 be held liable for any data leakage.
 
+.. code-block:: sql
+
+  CREATE DATABASE finfolio WITH
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    CONNECTION LIMIT = -1;
+
 Author  : Debmalya Pramanik
 Contact : dpramanik.official@gmail.com
 
 Copywright © [2024] Debmalya Pramanik (ZenithClown)
 ********************************************************************/
 
-CREATE DATABASE finfolio WITH
-  OWNER = postgres
-  ENCODING = 'UTF8'
-  CONNECTION LIMIT = -1;
-
--- ? as per documentation, the following schemas are created in db
--- postgres default schema is `public` and usage is still under dev.
 CREATE SCHEMA meta; -- schema for configuration values
 CREATE SCHEMA private; -- schema to hold user transaction values
 
