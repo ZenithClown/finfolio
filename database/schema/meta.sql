@@ -43,18 +43,6 @@ CREATE TABLE IF NOT EXISTS meta.account_subtype_detail (
     CONSTRAINT uq_account_subtype_desc UNIQUE
 );
 
-
-CREATE TABLE IF NOT EXISTS meta.transaction_type (
-  type_id
-    CHAR(1)
-    CONSTRAINT pk_trx_type_id PRIMARY KEY,
-
-  trx_type_detail
-    VARCHAR(64)
-    CONSTRAINT uq_trx_type_detail UNIQUE
-    NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS meta.transaction_method (
   method_name
     VARCHAR(7)
