@@ -88,3 +88,16 @@ INSERT INTO meta.expense_subcategory (expense_subcategory_name, primary_expense_
   ('VIDEO GAMES', 'ENTERTAINMENT', 'Spends on video games and other in-app game purchases.'),
   ('EVENT TICKET', 'ENTERTAINMENT', 'Events like sports, concert tickets, etc.'),
   ('HOBBIES', 'ENTERTAINMENT', 'Hobbies like books, coins, etc.');
+
+
+INSERT INTO meta.income_category (income_category_name, income_category_desc) VALUES
+  ('SALARY', 'Regular compensation from employer.'),
+  ('BUSINESS', 'Income from self-employment or business'),
+  ('INVENTMENT', 'Income from investments like stocks, bonds, etc.'),
+  ('RENTAL INCOME', 'Income from rental property.');
+
+
+INSERT INTO meta.income_subcategory (income_subcategory_name, primary_income_category, income_subcategory_desc) VALUES
+  ('CONSULTING', 'BUSINESS', 'Income from self-consulting, moonlighting, part-time jobs, etc.'),
+  ('INTEREST', 'INVENTMENT', 'Interest income from savings, fixed deposits, etc.'),
+  ('DIVIDEND', 'INVENTMENT', 'Dividend income from stocks, bonds, etc.');
