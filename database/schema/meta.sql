@@ -8,46 +8,15 @@ Copywright © [2024] Debmalya Pramanik
 ********************************************************************/
 
 CREATE TABLE IF NOT EXISTS meta.user_role (
-  role_id
-    SERIAL
-    CONSTRAINT pk_role_id PRIMARY KEY,
-
   role_name
     CHAR(4)
-    CONSTRAINT uq_role_name UNIQUE
-    NOT NULL,
+    CONSTRAINT pk_role_id PRIMARY KEY,
 
   role_desc
-    VARCHAR(64)
+    VARCHAR(64) NOT NULL
     CONSTRAINT uq_role_description UNIQUE
-    NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS meta.user_subrole (
-  subrole_id
-    SERIAL
-    CONSTRAINT pk_subrole_id PRIMARY KEY,
-
-  role_id
-    INTEGER
-    NOT NULL
-    CONSTRAINT fk_parent_role_id
-      REFERENCES meta.user_role (role_id)
-      ON DELETE CASCADE
-      ON UPDATE CASCADE
-    CONSTRAINT ck_role_id_valid
-      CHECK (role_id IN (4, 5)),
-
-  subrole_name
-    VARCHAR(32)
-    CONSTRAINT uq_subrole_name UNIQUE
-    NOT NULL,
-
-  subrole_desc
-    VARCHAR(128)
-    CONSTRAINT uq_subrole_description UNIQUE
-    NOT NULL
-);
 
 CREATE TABLE IF NOT EXISTS meta.account_type_detail (
   account_type_id
