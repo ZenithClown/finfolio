@@ -92,6 +92,17 @@ CREATE TABLE IF NOT EXISTS public.points_account_detail (
     CHAR(5)
     CONSTRAINT pk_points_account_id PRIMARY KEY,
 
+  points_account_name
+    VARCHAR(64) NOT NULL
+    CONSTRAINT uq_points_account_name UNIQUE,
+
+  points_account_owner
+    VARCHAR(16) NOT NULL
+    CONSTRAINT fk_points_account_owner
+      REFERENCES public.user_account_detail (username)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
+
   ledger_account_id
     CHAR(5)
     CONSTRAINT fk_points_ledger_account_id
