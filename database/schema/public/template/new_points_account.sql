@@ -7,4 +7,4 @@ INSERT INTO public.points_account_detail (
   , account_subtype_id
   , conversion_factor
 ) VALUES
-  (LEFT(UPPER(GEN_RANDOM_UUID()::VARCHAR(36)), 5), ?, ?, ?, ?);
+  (LEFT(UPPER(GEN_RANDOM_UUID()::VARCHAR(36)), 5), ?, ?, ?, ?, ?, ?);
