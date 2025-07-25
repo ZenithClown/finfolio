@@ -28,6 +28,7 @@ INSERT INTO meta.account_subtype_detail (account_subtype_id, account_type_id, ac
   ('PPF', 'RET', 'Personal Providend Funds Account', NULL),
   ('VPF', 'RET', 'Voluntary Providend Funds Account', NULL),
   ('NPS', 'RET', 'National Pension Schemes Account', NULL),
+  ('CCD', 'CDT', 'Credit Card Account', NULL),
   ('LND', 'CDT', 'Personal Lending Account', 'Amount lended to a person based on terms and conditions.'),
   ('BRW', 'CDT', 'Personal Borrowed Account', 'Amount borrwed from a person based on terms and conditions.');
 
