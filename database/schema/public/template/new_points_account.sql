@@ -1,5 +1,7 @@
 INSERT INTO public.points_account_detail (
   points_account_id
+  , account_name
+  , account_owner
   , ledger_account_id
   , account_type_id
   , account_subtype_id
