@@ -85,3 +85,36 @@ CREATE TABLE IF NOT EXISTS public.ledger_account_detail (
       ON DELETE CASCADE
       ON UPDATE CASCADE
 );
+
+
+CREATE TABLE IF NOT EXISTS public.points_account_detail (
+  points_account_id
+    CHAR(5)
+    CONSTRAINT pk_points_account_id PRIMARY KEY,
+
+  ledger_account_id
+    CHAR(5)
+    CONSTRAINT fk_points_ledger_account_id
+      REFERENCES public.ledger_account_detail (ledger_account_id)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
+
+  account_type_id
+    CHAR(3) NOT NULL
+    CONSTRAINT fk_points_account_type_id
+      REFERENCES meta.account_type_detail  (account_type_id)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
+
+  account_subtype_id
+    CHAR(3),
+
+  conversion_factor
+    NUMERIC(9, 5) NOT NULL DEFAULT 1.00000,
+
+  CONSTRAINT fk_points_sub_account_type_id
+    FOREIGN KEY (account_type_id, account_subtype_id)
+    REFERENCES meta.account_subtype_detail (account_type_id, account_subtype_id)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE
+);
