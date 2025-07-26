@@ -68,3 +68,35 @@ CREATE TABLE IF NOT EXISTS private.user_transaction (
     OR expense_category_head IS NULL
   )
 );
+
+
+CREATE TABLE IF NOT EXISTS private.user_points_transaction (
+  _idkey
+    BIGINT GENERATED ALWAYS AS IDENTITY
+    CONSTRAINT pk_points_transaction_idkey PRIMARY KEY,
+
+  account_id
+    CHAR(5) NOT NULL
+    CONSTRAINT fk_points_ledger_account_id
+      REFERENCES public.ledger_account_detail (ledger_account_id)
+      ON DELETE SET NULL
+      ON UPDATE SET NULL,
+
+  trx_date
+    DATE NOT NULL,
+
+  trx_type
+    meta.points_transaction_type NOT NULL,
+
+  trx_desc
+    VARCHAR(512) NOT NULL,
+
+  trx_points_amount
+    NUMERIC(12, 2) NOT NULL,
+
+  created_on
+    TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  updated_on
+    TIMESTAMPTZ
+);
