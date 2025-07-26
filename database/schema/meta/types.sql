@@ -11,3 +11,4 @@ Copywright © [2024] Debmalya Pramanik
 
 CREATE TYPE meta.user_role AS ENUM ('ROOT', 'SUDO', 'USER');
 CREATE TYPE meta.transaction_type AS ENUM ('DEPOSIT', 'WITHDRAW');
+CREATE TYPE meta.points_transaction_type AS ENUM ('EARNED', 'SPENT', 'ADJUSTED', 'LAPSED');
