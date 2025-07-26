@@ -7,61 +7,20 @@ this case is mostly the master tables) for finance management.
 Copywright © [2024] Debmalya Pramanik
 ********************************************************************/
 
-CREATE TABLE IF NOT EXISTS meta.user_role (
-  role_id
-    SERIAL
-    CONSTRAINT pk_role_id PRIMARY KEY,
-
-  role_name
-    CHAR(4)
-    CONSTRAINT uq_role_name UNIQUE
-    NOT NULL,
-
-  role_desc
-    VARCHAR(64)
-    CONSTRAINT uq_role_description UNIQUE
-    NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS meta.user_subrole (
-  subrole_id
-    SERIAL
-    CONSTRAINT pk_subrole_id PRIMARY KEY,
-
-  role_id
-    INTEGER
-    NOT NULL
-    CONSTRAINT fk_parent_role_id
-      REFERENCES meta.user_role (role_id)
-      ON DELETE CASCADE
-      ON UPDATE CASCADE,
-
-  subrole_name
-    VARCHAR(32)
-    CONSTRAINT uq_subrole_name UNIQUE
-    NOT NULL,
-
-  subrole_desc
-    VARCHAR(128)
-    CONSTRAINT uq_subrole_description UNIQUE
-    NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS meta.account_type_detail (
   account_type_id
     CHAR(3)
     CONSTRAINT pk_account_type_id PRIMARY KEY,
 
   account_type_name
-    VARCHAR(32)
-    CONSTRAINT uq_account_type_name UNIQUE
-    NOT NULL,
+    VARCHAR(32) NOT NULL
+    CONSTRAINT uq_account_type_name UNIQUE,
 
   account_type_desc
-    VARCHAR(128)
+    VARCHAR(128) NOT NULL
     CONSTRAINT uq_account_type_desc UNIQUE
-    NOT NULL
 );
+
 
 CREATE TABLE IF NOT EXISTS meta.account_subtype_detail (
   account_subtype_id
@@ -69,33 +28,23 @@ CREATE TABLE IF NOT EXISTS meta.account_subtype_detail (
     CONSTRAINT pk_sub_account_type_id PRIMARY KEY,
 
   account_type_id
-    CHAR(3)
-    NOT NULL
+    CHAR(3) NOT NULL
     CONSTRAINT fk_account_type_id
       REFERENCES meta.account_type_detail (account_type_id)
       ON DELETE CASCADE
       ON UPDATE CASCADE,
 
   account_subtype_name
-    VARCHAR(34)
-    CONSTRAINT uq_account_subtype_name UNIQUE
-    NOT NULL,
+    VARCHAR(34) NOT NULL
+    CONSTRAINT uq_account_subtype_name UNIQUE,
 
   account_subtype_desc
     VARCHAR(64)
-    CONSTRAINT uq_account_subtype_desc UNIQUE
+    CONSTRAINT uq_account_subtype_desc UNIQUE,
+
+  CONSTRAINT uq_account_type_subtype UNIQUE (account_type_id, account_subtype_id)
 );
 
-CREATE TABLE IF NOT EXISTS meta.transaction_type (
-  type_id
-    CHAR(1)
-    CONSTRAINT pk_trx_type_id PRIMARY KEY,
-
-  trx_type_detail
-    VARCHAR(64)
-    CONSTRAINT uq_trx_type_detail UNIQUE
-    NOT NULL
-);
 
 CREATE TABLE IF NOT EXISTS meta.transaction_method (
   method_name
@@ -103,10 +52,10 @@ CREATE TABLE IF NOT EXISTS meta.transaction_method (
     CONSTRAINT pk_trx_method_name PRIMARY KEY,
 
   method_desc
-    VARCHAR(64)
+    VARCHAR(64) NOT NULL
     CONSTRAINT uq_trx_method_desc UNIQUE
-    NOT NULL
 );
+
 
 CREATE TABLE IF NOT EXISTS meta.expense_category (
   expense_category_name
@@ -114,10 +63,10 @@ CREATE TABLE IF NOT EXISTS meta.expense_category (
     CONSTRAINT pk_expense_category_name PRIMARY KEY,
 
   expense_category_desc
-    VARCHAR(72)
+    VARCHAR(72) NOT NULL
     CONSTRAINT uq_expense_category_desc UNIQUE
-    NOT NULL
 );
+
 
 CREATE TABLE IF NOT EXISTS meta.expense_subcategory (
   expense_subcategory_name
@@ -125,14 +74,42 @@ CREATE TABLE IF NOT EXISTS meta.expense_subcategory (
     CONSTRAINT pk_expense_subcategory_name PRIMARY KEY,
 
   primary_expense_category
-    VARCHAR(16)
+    VARCHAR(16) NOT NULL
     CONSTRAINT fk_primary_expense_category
       REFERENCES meta.expense_category  (expense_category_name)
       ON DELETE CASCADE
       ON UPDATE CASCADE,
 
   expense_subcategory_desc
-    VARCHAR(96)
+    VARCHAR(96) NOT NULL
     CONSTRAINT uq_expense_subcategory_desc UNIQUE
-    NOT NULL
+);
+
+
+CREATE TABLE IF NOT EXISTS meta.income_category (
+  income_category_name
+    VARCHAR(16)
+    CONSTRAINT pk_income_category_name PRIMARY KEY,
+
+  income_category_desc
+    VARCHAR(72) NOT NULL
+    CONSTRAINT uq_income_category_desc UNIQUE
+);
+
+
+CREATE TABLE IF NOT EXISTS meta.income_subcategory (
+  income_subcategory_name
+    VARCHAR(48)
+    CONSTRAINT pk_income_subcategory_name PRIMARY KEY,
+
+  primary_income_category
+    VARCHAR(16) NOT NULL
+    CONSTRAINT fk_primary_income_category
+      REFERENCES meta.income_category  (income_category_name)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
+
+  income_subcategory_desc
+    VARCHAR(96) NOT NULL
+    CONSTRAINT uq_income_subcategory_desc UNIQUE
 );

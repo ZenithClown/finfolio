@@ -181,7 +181,7 @@ table public.ledger_account_detail {
   account_marked_inactive_on date
 
   // ? we may not have all the transactions, thus we can set an opening balance
-  opening_balance             numeric(19, 2) [not null, default: 0.00]
+  opening_balance             numeric(12, 2) [not null, default: 0.00]
   opening_balance_recorded_on date           [not null] // default `account_opened_on`
 }
 
@@ -198,7 +198,7 @@ table private.user_transaction {
   trx_type   char(1)        [not null, ref: > meta.transaction_type.type_id, note: 'fk_trx_type_id']
   trx_desc   varchar(512)   [not null]
   trx_drvd   varchar(512)   [note: 'Derived transaction, this field is typically a cleaned text from the original description.']
-  trx_amount numeric(19, 2) [not null]
+  trx_amount numeric(12, 2) [not null]
 
   // additional fields which can either be auto populated by ai/ml or maybe updated manually by the user
   transfer_method varchar(7) [ref: > meta.transaction_method.method_name, note: 'fk_trx_method_name']
@@ -214,7 +214,7 @@ table private.user_transaction {
 
 table private.trx_sender_detail {
   // captures the sender's information of the transaction - which can either be rule based or automated
-  _id bigserial [pk, note: 'pk_dummy_trx_duality_id']
+  _id bigserial [pk, note: '_pk_trx_duality_id_sender']
   transaction_id bigint [unique, not null, ref: > private.user_transaction.transaction_id, note: 'fk_ref_trx_id_sender']
 
   sending_user      varchar(16) [ref: > public.user_account_detail.username, note: 'fk_sending_username']
@@ -223,8 +223,8 @@ table private.trx_sender_detail {
 
 table private.trx_receiver_detail {
   // captures the receiver's information of the transaction - which can either be rule based or automated
-  _id bigserial [pk, note: 'pk_dummy_trx_duality_id']
-  transaction_id bigint [unique, not null, ref: > private.user_transaction.transaction_id, note: 'fk_ref_trx_id_sender']
+  _id bigserial [pk, note: '_pk_trx_duality_id_receiver']
+  transaction_id bigint [unique, not null, ref: > private.user_transaction.transaction_id, note: 'fk_ref_trx_id_receiver']
 
   receiving_user    varchar(16) [ref: > public.user_account_detail.username, note: 'fk_receiving_username']
   receiving_account char(5)     [ref: > public.ledger_account_detail.ledger_account_id, note: 'fk_receiving_account_id']
