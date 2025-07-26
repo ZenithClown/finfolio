@@ -123,6 +123,14 @@ CREATE TABLE IF NOT EXISTS public.points_account_detail (
   conversion_factor
     NUMERIC(9, 5) NOT NULL DEFAULT 1.00000,
 
+  opening_balance
+    NUMERIC(12, 2) NOT NULL DEFAULT 0.00,
+
+  -- ? field is useful if you do not have complete historical data
+  -- default should be `account_opened_on` date; same like ledger a/c
+  opening_balance_recorded_on
+    DATE NOT NULL,
+
   CONSTRAINT fk_points_sub_account_type_id
     FOREIGN KEY (account_type_id, account_subtype_id)
     REFERENCES meta.account_subtype_detail (account_type_id, account_subtype_id)
