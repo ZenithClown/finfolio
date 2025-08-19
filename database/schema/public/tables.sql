@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS public.user_account_detail (
     DATE,
 
   user_role
-    meta.user_role NOT NULL
+    meta.user_role NOT NULL DEFAULT 'USER'
 );
 
 
@@ -80,6 +80,58 @@ CREATE TABLE IF NOT EXISTS public.ledger_account_detail (
     DATE NOT NULL,
 
   CONSTRAINT fk_ledger_sub_account_type_id
+    FOREIGN KEY (account_type_id, account_subtype_id)
+    REFERENCES meta.account_subtype_detail (account_type_id, account_subtype_id)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE
+);
+
+
+CREATE TABLE IF NOT EXISTS public.points_account_detail (
+  points_account_id
+    CHAR(5)
+    CONSTRAINT pk_points_account_id PRIMARY KEY,
+
+  points_account_name
+    VARCHAR(64) NOT NULL
+    CONSTRAINT uq_points_account_name UNIQUE,
+
+  points_account_owner
+    VARCHAR(16) NOT NULL
+    CONSTRAINT fk_points_account_owner
+      REFERENCES public.user_account_detail (username)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
+
+  ledger_account_id
+    CHAR(5)
+    CONSTRAINT fk_points_ledger_account_id
+      REFERENCES public.ledger_account_detail (ledger_account_id)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
+
+  account_type_id
+    CHAR(3) NOT NULL
+    CONSTRAINT fk_points_account_type_id
+      REFERENCES meta.account_type_detail  (account_type_id)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
+
+  account_subtype_id
+    CHAR(3),
+
+  conversion_factor
+    NUMERIC(9, 5) NOT NULL DEFAULT 1.00000,
+
+  opening_balance
+    NUMERIC(12, 2) NOT NULL DEFAULT 0.00,
+
+  -- ? field is useful if you do not have complete historical data
+  -- default should be `account_opened_on` date; same like ledger a/c
+  opening_balance_recorded_on
+    DATE NOT NULL,
+
+  CONSTRAINT fk_points_sub_account_type_id
     FOREIGN KEY (account_type_id, account_subtype_id)
     REFERENCES meta.account_subtype_detail (account_type_id, account_subtype_id)
       ON DELETE CASCADE
