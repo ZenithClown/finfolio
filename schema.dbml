@@ -79,77 +79,61 @@ project finfolio {
 }
 
 // ! METADATA Namespace - Configuration & Settings
-table meta.user_role {
-  role_id serial [pk, note: 'pk_role_id']
-  
-  // the name and description to be fetched for decorations
-  role_name char(4)     [unique, not null, note: 'uq_role_name']
-  role_desc varchar(64) [unique, note: 'uq_role_description']
-}
-
-table meta.user_subrole {
-  subrole_id  serial  [pk, note: 'pk_subrole_id']
-  role_id     integer [not null, ref: > meta.user_role.role_id, note: 'fk_parent_role_id']
-
-  subrole_name  varchar(32)  [unique, not null, note: 'uq_subrole_name']
-  subrole_desc  varchar(128) [unique, note: 'uq_subrole_description']
-}
-
 table meta.account_type_detail {
-  account_type_id char(3) [pk, note: 'pk_account_type_id']
+  account_type_id char(3) [pk]
 
   // typically the additional column are for end user (internal)
-  account_type_name varchar(32)  [unique, not null, note: 'uq_account_type_name']
-  account_type_desc varchar(128) [unique, not null, note: 'uq_account_type_desc']
+  account_type_name varchar(32)  [unique, not null]
+  account_type_desc varchar(128) [unique, not null]
 }
 
 table meta.account_subtype_detail {
-  account_subtype_id char(3) [pk, note: 'pk_account_subtype_id']
-  account_type_id    char(3) [not null, ref: > meta.account_type_detail.account_type_id, note: 'fk_account_type_id']
+  account_subtype_id char(3) [pk]
+  account_type_id    char(3) [not null, ref: > meta.account_type_detail.account_type_id]
 
   // typically the additional column are for end user (internal)
-  account_subtype_name varchar(32) [unique, not null, note: 'uq_account_subtype_name']
-  account_subtype_desc varchar(64) [unique, note: 'uq_account_subtype_desc']
+  account_subtype_name varchar(32) [unique, not null]
+  account_subtype_desc varchar(64) [unique]
 }
 
 table meta.transaction_type {
-  type_id char(1) [pk, note: 'pk_trx_type_id']
+  type_id char(1) [pk]
 
   // deposit and withdraw in different account have different meaning
-  trx_type_detail varchar(64) [unique, not null, note: 'uq_trx_type_detail']
+  trx_type_detail varchar(64) [unique, not null]
 }
 
 table meta.transaction_method {
-  method_name varchar(7)  [pk, note: 'pk_trx_method_name']
-  method_desc varchar(64) [unique, not null, note: 'uq_trx_method_desc']
+  method_name varchar(7)  [pk]
+  method_desc varchar(64) [unique, not null]
 }
 
 table meta.expense_category {
-  expense_category_name varchar(16) [pk, note: 'pk_expense_category_name']
-  expense_category_desc varchar(72) [unique, not null, note: 'uq_expense_category_desc']
+  expense_category_name varchar(16) [pk]
+  expense_category_desc varchar(72) [unique, not null]
 }
 
 table meta.expense_subcategory {
-  expense_subcategory_name varchar(48) [pk, note: 'pk_expense_subcategory_name']
-  primary_expense_category varchar(16) [not null, ref: > meta.expense_category.expense_category_name, note: 'fk_primary_expense_category']
-  expense_subcategory_desc varchar(96) [unique, not null, note: 'uq_expense_subcategory_desc']
+  expense_subcategory_name varchar(48) [pk]
+  primary_expense_category varchar(16) [not null, ref: > meta.expense_category.expense_category_name]
+  expense_subcategory_desc varchar(96) [unique, not null]
 }
 
 // ! PUBLIC Namespace - Using the default schema of PostgreSQL to hold user's essential informations
 table public.user_account_detail {
-  username varchar(16) [pk, note: 'pk_username']
-  fullname varchar(64) [unique, not null, note: 'uq_user_fullname']
+  username varchar(16) [pk]
+  fullname varchar(64) [unique, not null]
 
   // good to have features, but not required to be maintained
-  email varchar(128) [unique, note: 'uq_user_email_address']
-  phone varchar(16)  [unique, note: 'uq_user_phone_number']
+  email varchar(128) [unique]
+  phone varchar(16)  [unique]
 
   // date of birth is crucial for certain calculations/projections
   date_of_birth date
 
   // the user role and subrole is controlled externally to group
-  user_role     integer [not null, ref: > meta.user_role.role_id, note: 'fk_user_role_id']
-  user_subrole  integer [ref: > meta.user_subrole.subrole_id, note: 'fk_user_subrole_id']
+  user_role     integer [not null, ref: > meta.user_role.role_id]
+  user_subrole  integer [ref: > meta.user_subrole.subrole_id]
 
   note: '''
     Table Schema for an User Account
@@ -163,15 +147,15 @@ table public.user_account_detail {
 table public.ledger_account_detail {
   // ? using randomly generated keys for account id
   // however, other end user may change the same as per need
-  ledger_account_id char(5) [pk, note: 'pk_ledger_account_id']
+  ledger_account_id char(5) [pk]
 
   // the following information is for identification by end user
-  account_name  varchar(64) [unique, not null, note: 'uq_account_name']
-  account_owner varchar(16) [not null, ref: > public.user_account_detail.username, note: 'fk_account_owner']
+  account_name  varchar(64) [unique, not null]
+  account_owner varchar(16) [not null, ref: > public.user_account_detail.username]
   
   // the type of account has a significant impact on end calculation
-  account_type_id    char(3) [unique, not null, ref: > meta.account_type_detail.account_type_id, note: 'fk_ledger_account_type_id']
-  account_subtype_id char(3) [ref: > meta.account_subtype_detail.account_subtype_id, note: 'fk_ledger_sub_account_type_id']
+  account_type_id    char(3) [unique, not null, ref: > meta.account_type_detail.account_type_id]
+  account_subtype_id char(3) [ref: > meta.account_subtype_detail.account_subtype_id]
 
   // ? account opening and closing information for future reference
   account_opened_on date [not null]
@@ -188,24 +172,24 @@ table public.ledger_account_detail {
 // ! PRIVATE Namespace - Schema to hold user transaction informations
 table private.user_transaction {
   // ? primary table containing all the transactions for all tracked accounts
-  transaction_id bigserial [pk, note: 'pk_transaction_id']
+  transaction_id bigserial [pk]
 
-  account_id char(5) [not null, ref: > public.ledger_account_detail.ledger_account_id, note: 'fk_trx_ledger_account_id']
+  account_id char(5) [not null, ref: > public.ledger_account_detail.ledger_account_id]
 
   // trx:: transaction short hand, created to reduce column name
   // all the below columns are important and is fetched/kept as available from the passbook
   trx_date   date           [not null]
-  trx_type   char(1)        [not null, ref: > meta.transaction_type.type_id, note: 'fk_trx_type_id']
+  trx_type   char(1)        [not null, ref: > meta.transaction_type.type_id]
   trx_desc   varchar(512)   [not null]
   trx_drvd   varchar(512)   [note: 'Derived transaction, this field is typically a cleaned text from the original description.']
   trx_amount numeric(12, 2) [not null]
 
   // additional fields which can either be auto populated by ai/ml or maybe updated manually by the user
-  transfer_method varchar(7) [ref: > meta.transaction_method.method_name, note: 'fk_trx_method_name']
+  transfer_method varchar(7) [ref: > meta.transaction_method.method_name]
 
   // categorization of transactions based on different categories and sub categories
-  expense_category_head    varchar(16) [ref: > meta.expense_category.expense_category_name, note: 'fk_expense_category_head']
-  expense_subcategory_head varchar(48) [ref: > meta.expense_subcategory.expense_subcategory_name, note: 'fk_expense_subcategory_head']
+  expense_category_head    varchar(16) [ref: > meta.expense_category.expense_category_name]
+  expense_subcategory_head varchar(48) [ref: > meta.expense_subcategory.expense_subcategory_name]
 
   // ? utility field for developer purpose and have no other usage
   created_on timestamp [not null, default: 'timezone(utc, now())']
@@ -215,17 +199,17 @@ table private.user_transaction {
 table private.trx_sender_detail {
   // captures the sender's information of the transaction - which can either be rule based or automated
   _id bigserial [pk, note: '_pk_trx_duality_id_sender']
-  transaction_id bigint [unique, not null, ref: > private.user_transaction.transaction_id, note: 'fk_ref_trx_id_sender']
+  transaction_id bigint [unique, not null, ref: > private.user_transaction.transaction_id]
 
-  sending_user      varchar(16) [ref: > public.user_account_detail.username, note: 'fk_sending_username']
-  sending_account   char(5)     [ref: > public.ledger_account_detail.ledger_account_id, note: 'fk_sending_account_id']
+  sending_user      varchar(16) [ref: > public.user_account_detail.username]
+  sending_account   char(5)     [ref: > public.ledger_account_detail.ledger_account_id]
 }
 
 table private.trx_receiver_detail {
   // captures the receiver's information of the transaction - which can either be rule based or automated
   _id bigserial [pk, note: '_pk_trx_duality_id_receiver']
-  transaction_id bigint [unique, not null, ref: > private.user_transaction.transaction_id, note: 'fk_ref_trx_id_receiver']
+  transaction_id bigint [unique, not null, ref: > private.user_transaction.transaction_id]
 
-  receiving_user    varchar(16) [ref: > public.user_account_detail.username, note: 'fk_receiving_username']
-  receiving_account char(5)     [ref: > public.ledger_account_detail.ledger_account_id, note: 'fk_receiving_account_id']
+  receiving_user    varchar(16) [ref: > public.user_account_detail.username]
+  receiving_account char(5)     [ref: > public.ledger_account_detail.ledger_account_id]
 }
