@@ -135,9 +135,9 @@ table public.user_account_detail {
   // date of birth is crucial for certain calculations/projections
   date_of_birth date
 
-  // the user role and subrole is controlled externally to group
-  user_role     integer [not null, ref: > meta.user_role.role_id]
-  user_subrole  integer [ref: > meta.user_subrole.subrole_id]
+  // ..versionchanged:: d747086d28cfb562936618fd6df7f7df91d10b44
+  // get user role from custom enum data type, this is present in db
+  user_role     meta.user_role [not null, default: "USER"]
 
   note: '''
     Table Schema for an User Account
