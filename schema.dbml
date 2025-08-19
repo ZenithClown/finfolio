@@ -112,6 +112,17 @@ table meta.expense_subcategory {
   expense_subcategory_desc varchar(96) [unique, not null]
 }
 
+table meta.income_category {
+  income_category_name varchar(16) [pk]
+  income_category_desc varchar(72) [unique, not null]
+}
+
+table meta.income_subcategory {
+  income_subcategory_name varchar(48) [pk]
+  primary_income_category varchar(16) [not null, ref: > meta.income_category.income_category_name]
+  income_subcategory_desc varchar(96) [unique, not null]
+}
+
 // ! PUBLIC Namespace - Using the default schema of PostgreSQL to hold user's essential informations
 table public.user_account_detail {
   username varchar(16) [pk]
