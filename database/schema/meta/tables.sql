@@ -57,24 +57,6 @@ CREATE TABLE IF NOT EXISTS meta.transaction_method (
 );
 
 
-CREATE TABLE IF NOT EXISTS meta.transaction_submethod (
-  submethod_name
-    VARCHAR(7)
-    CONSTRAINT pk_trx_submethod_name PRIMARY KEY,
-
-  method_name
-    VARCHAR(7) NOT NULL
-    CONSTRAINT fk_trx_method_name
-      REFERENCES meta.transaction_method (method_name)
-      ON DELETE CASCADE
-      ON UPDATE CASCADE,
-
-  submethod_desc
-    VARCHAR(64) NOT NULL
-    CONSTRAINT uq_trx_submethod_desc UNIQUE
-);
-
-
 CREATE TABLE IF NOT EXISTS meta.expense_category (
   expense_category_name
     VARCHAR(16)
