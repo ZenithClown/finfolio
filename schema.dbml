@@ -173,6 +173,13 @@ table public.ledger_account_detail {
   opening_balance_recorded_on date           [not null] // default `account_opened_on`
 }
 
+table public.points_account_detail {
+  // TODO:: This table is currently under development
+  points_account_id   char(5)     [pk]
+  points_account_name varchar(64) [unique, not null]
+  ledger_account_id   char(5)     [not null, ref: > public.ledger_account_detail.ledger_account_id]
+}
+
 // ! PRIVATE Namespace - Schema to hold user transaction informations
 table private.user_transaction {
   // ? primary table containing all the transactions for all tracked accounts
