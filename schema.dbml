@@ -96,13 +96,6 @@ table meta.account_subtype_detail {
   account_subtype_desc varchar(64) [unique]
 }
 
-table meta.transaction_type {
-  type_id char(1) [pk]
-
-  // deposit and withdraw in different account have different meaning
-  trx_type_detail varchar(64) [unique, not null]
-}
-
 table meta.transaction_method {
   method_name varchar(7)  [pk]
   method_desc varchar(64) [unique, not null]
