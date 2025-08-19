@@ -183,20 +183,24 @@ table public.points_account_detail {
 // ! PRIVATE Namespace - Schema to hold user transaction informations
 table private.user_transaction {
   // ? primary table containing all the transactions for all tracked accounts
-  transaction_id bigserial [pk]
+  transaction_idkey bigint [pk]
 
   account_id char(5) [not null, ref: > public.ledger_account_detail.ledger_account_id]
 
   // trx:: transaction short hand, created to reduce column name
   // all the below columns are important and is fetched/kept as available from the passbook
-  trx_date   date           [not null]
-  trx_type   char(1)        [not null, ref: > meta.transaction_type.type_id]
-  trx_desc   varchar(512)   [not null]
-  trx_drvd   varchar(512)   [note: 'Derived transaction, this field is typically a cleaned text from the original description.']
-  trx_amount numeric(12, 2) [not null]
+  trx_date   date                  [not null]
+  trx_type   meta.transaction_type [not null]
+  trx_desc   varchar(512)          [not null]
+  trx_drvd   varchar(512)          [note: 'Derived transaction, this field is typically a cleaned text from the original description.']
+  trx_amount numeric(12, 2)        [not null]
 
   // additional fields which can either be auto populated by ai/ml or maybe updated manually by the user
   transfer_method varchar(7) [ref: > meta.transaction_method.method_name]
+
+  // categorization of income based on different categories and sub-categories
+  income_category_head    varchar(16) [ref: > meta.income_category.income_category_name]
+  income_subcategory_head varchar(48) [ref: > meta.income_subcategory.income_subcategory_name]
 
   // categorization of transactions based on different categories and sub categories
   expense_category_head    varchar(16) [ref: > meta.expense_category.expense_category_name]
@@ -205,22 +209,4 @@ table private.user_transaction {
   // ? utility field for developer purpose and have no other usage
   created_on timestamp [not null, default: 'timezone(utc, now())']
   updated_at timestamp
-}
-
-table private.trx_sender_detail {
-  // captures the sender's information of the transaction - which can either be rule based or automated
-  _id bigserial [pk, note: '_pk_trx_duality_id_sender']
-  transaction_id bigint [unique, not null, ref: > private.user_transaction.transaction_id]
-
-  sending_user      varchar(16) [ref: > public.user_account_detail.username]
-  sending_account   char(5)     [ref: > public.ledger_account_detail.ledger_account_id]
-}
-
-table private.trx_receiver_detail {
-  // captures the receiver's information of the transaction - which can either be rule based or automated
-  _id bigserial [pk, note: '_pk_trx_duality_id_receiver']
-  transaction_id bigint [unique, not null, ref: > private.user_transaction.transaction_id]
-
-  receiving_user    varchar(16) [ref: > public.user_account_detail.username]
-  receiving_account char(5)     [ref: > public.ledger_account_detail.ledger_account_id]
 }
