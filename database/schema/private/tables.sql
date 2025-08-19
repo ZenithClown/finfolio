@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS private.user_transaction (
-  _idkey
+  transaction_idkey
     BIGINT GENERATED ALWAYS AS IDENTITY
     CONSTRAINT pk_transaction_idkey PRIMARY KEY,
 
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS private.user_transaction (
 
 
 CREATE TABLE IF NOT EXISTS private.user_points_transaction (
-  _idkey
+  pts_transaction_idkey
     BIGINT GENERATED ALWAYS AS IDENTITY
     CONSTRAINT pk_points_transaction_idkey PRIMARY KEY,
 
