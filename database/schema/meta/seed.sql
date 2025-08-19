@@ -33,17 +33,6 @@ INSERT INTO meta.account_subtype_detail (account_subtype_id, account_type_id, ac
   ('BRW', 'CDT', 'Personal Borrowed Account', 'Amount borrwed from a person based on terms and conditions.');
 
 
-INSERT INTO meta.transaction_method (method_name, method_desc) VALUES
-  ('NEFT', 'National Electronic Funds Transfer'),
-  ('IMPS', 'Immediate Payment Service'),
-  ('RTGS', 'Real Time Gross Settlement'),
-  ('UPI', 'United Payment Interface'),
-  ('MANDATE', 'Automatic Standing Instructions'),
-  ('CASH', 'Cash Withdrawl/Deposit'),
-	('CREDIT', 'Transactions via a Credit Card'),
-  ('NACH', 'National Automated Clearing House');
-
-
 INSERT INTO meta.expense_category (expense_category_name, expense_category_desc) VALUES
   ('HOUSING', 'House maintenance, rent, mortage, loan, etc.'),
   ('FOODING', 'Amount spend on monthly food, grocery, including outside food.'),

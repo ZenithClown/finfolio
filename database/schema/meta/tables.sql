@@ -46,17 +46,6 @@ CREATE TABLE IF NOT EXISTS meta.account_subtype_detail (
 );
 
 
-CREATE TABLE IF NOT EXISTS meta.transaction_method (
-  method_name
-    VARCHAR(7)
-    CONSTRAINT pk_trx_method_name PRIMARY KEY,
-
-  method_desc
-    VARCHAR(64) NOT NULL
-    CONSTRAINT uq_trx_method_desc UNIQUE
-);
-
-
 CREATE TABLE IF NOT EXISTS meta.expense_category (
   expense_category_name
     VARCHAR(16)

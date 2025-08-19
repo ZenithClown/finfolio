@@ -23,11 +23,7 @@ CREATE TABLE IF NOT EXISTS private.user_transaction (
     NUMERIC(12, 2) NOT NULL,
 
   transfer_method
-    VARCHAR(7)
-    CONSTRAINT fk_trx_method_name
-      REFERENCES meta.transaction_method (method_name)
-      ON DELETE SET NULL
-      ON UPDATE SET NULL,
+    meta.transaction_method,
 
   income_category_head
     VARCHAR(16)
