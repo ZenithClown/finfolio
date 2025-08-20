@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS private.user_transaction (
     VARCHAR(48) NOT NULL,
 
   trx_month
-    CHAR(3) NOT NULL,
+    CHAR(7) NOT NULL,
 
   trx_type
     meta.transaction_type NOT NULL,
