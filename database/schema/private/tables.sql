@@ -12,6 +12,12 @@ CREATE TABLE IF NOT EXISTS private.user_transaction (
 
   trx_date
     DATE NOT NULL,
+  
+  trx_fiscalyear
+    VARCHAR(48) NOT NULL,
+
+  trx_month
+    CHAR(3) NOT NULL,
 
   trx_type
     meta.transaction_type NOT NULL,
