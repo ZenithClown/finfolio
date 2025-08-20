@@ -9,8 +9,7 @@ Copywright © [2025] Debmalya Pramanik (ZenithClown)
 ********************************************************************/
 
 INSERT INTO public.ledger_account_detail (
-  ledger_account_id
-  , account_name
+  account_name
   , account_owner
   , account_type_id
   , account_subtype_id
@@ -20,4 +19,4 @@ INSERT INTO public.ledger_account_detail (
   , opening_balance
   , opening_balance_recorded_on
 ) VALUES
-  (LEFT(UPPER(GEN_RANDOM_UUID()::VARCHAR(36)), 5), ?, ?, ?, ?, ?, ?, ?, ?, ?);
+  (?, ?, ?, ?, ?, ?, ?, ?, ?);

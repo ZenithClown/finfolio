@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS public.user_account_detail (
 
 CREATE TABLE IF NOT EXISTS public.ledger_account_detail (
   ledger_account_id
-    CHAR(5)
+    CHAR(5) DEFAULT LEFT(UPPER(GEN_RANDOM_UUID()::VARCHAR(36)), 5)
     CONSTRAINT pk_ledger_account_id PRIMARY KEY,
 
   account_name
