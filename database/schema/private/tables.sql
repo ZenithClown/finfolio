@@ -69,6 +69,20 @@ CREATE TABLE IF NOT EXISTS private.user_transaction (
       ON DELETE SET NULL
       ON UPDATE SET NULL,
 
+  -- ..versionadded:: 2025-08-24 Self Account Transactions
+  -- A self account transfer is from one account to another for the
+  -- same person, typically useful for tracking credit card payments,
+  -- and/or calculations of rewards from merchants, etc.
+  self_account_id
+    CHAR(5)
+    CONSTRAINT fk_self_account_id
+      REFERENCES public.ledger_account_detail (ledger_account_id)
+      ON DELETE SET NULL
+      ON UPDATE SET NULL
+    CONSTRAINT ck_self_account_id CHECK (
+      self_account_id != account_id
+    ),
+
   created_on
     TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
