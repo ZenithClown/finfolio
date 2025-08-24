@@ -18,10 +18,16 @@ CREATE TABLE IF NOT EXISTS private.user_transaction (
   -- as pandas directly interacts with db at lower level thus, bypass
   -- the defined triggers during bulk insert of records
   trx_fiscalyear
-    VARCHAR(48) NOT NULL,
+    VARCHAR(12) NOT NULL
+    CONSTRAINT ck_fy_pattern CHECK (
+      trx_fiscalyear ~* 'F.Y. \d{4}-\d{2}'
+    ),
 
   trx_month
-    CHAR(7) NOT NULL,
+    CHAR(7) NOT NULL
+    CONSTRAINT ck_month_pattern CHECK (
+      trx_month ~* '\d{4}-\d{2}'
+    ),
 
   trx_type
     meta.transaction_type NOT NULL,
