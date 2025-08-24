@@ -42,7 +42,9 @@ CREATE TABLE IF NOT EXISTS meta.account_subtype_detail (
     VARCHAR(64)
     CONSTRAINT uq_account_subtype_desc UNIQUE,
 
-  CONSTRAINT uq_account_type_subtype UNIQUE (account_type_id, account_subtype_id)
+  CONSTRAINT uq_account_type_subtype UNIQUE (
+    account_type_id, account_subtype_id
+  )
 );
 
 
@@ -71,7 +73,11 @@ CREATE TABLE IF NOT EXISTS meta.expense_subcategory (
 
   expense_subcategory_desc
     VARCHAR(96) NOT NULL
-    CONSTRAINT uq_expense_subcategory_desc UNIQUE
+    CONSTRAINT uq_expense_subcategory_desc UNIQUE,
+
+  CONSTRAINT uq_expense_category_subcategory UNIQUE (
+    primary_expense_category, expense_subcategory_name
+  )
 );
 
 
@@ -100,5 +106,9 @@ CREATE TABLE IF NOT EXISTS meta.income_subcategory (
 
   income_subcategory_desc
     VARCHAR(96) NOT NULL
-    CONSTRAINT uq_income_subcategory_desc UNIQUE
+    CONSTRAINT uq_income_subcategory_desc UNIQUE,
+
+  CONSTRAINT uq_income_category_subcategory UNIQUE (
+    primary_income_category, income_subcategory_name
+  )
 );
