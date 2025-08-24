@@ -92,7 +92,23 @@ CREATE TABLE IF NOT EXISTS private.user_transaction (
   CONSTRAINT ck_either_income_or_expense CHECK (
     income_category_head IS NULL
     OR expense_category_head IS NULL
-  )
+  ),
+
+  CONSTRAINT ck_income_category_strict FOREIGN KEY
+    (income_category_head, income_subcategory_head)
+    REFERENCES meta.income_subcategory (
+      primary_income_category, income_subcategory_name
+    )
+    ON DELETE SET NULL
+    ON UPDATE SET NULL,
+
+  CONSTRAINT ck_expense_category_strict FOREIGN KEY
+    (expense_category_head, expense_subcategory_head)
+    REFERENCES meta.expense_subcategory (
+      primary_expense_category, expense_subcategory_name
+    )
+    ON DELETE SET NULL
+    ON UPDATE SET NULL
 );
 
 
