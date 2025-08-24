@@ -12,7 +12,11 @@ CREATE TABLE IF NOT EXISTS private.user_transaction (
 
   trx_date
     DATE NOT NULL,
-  
+
+  -- ? Fiscal Year & Month are Calculated from Transaction Date
+  -- the fields are not triggered when inserted using pd.to_sql(...)
+  -- as pandas directly interacts with db at lower level thus, bypass
+  -- the defined triggers during bulk insert of records
   trx_fiscalyear
     VARCHAR(48) NOT NULL,
 
