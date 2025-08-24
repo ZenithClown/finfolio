@@ -48,6 +48,7 @@ INSERT INTO meta.expense_subcategory (expense_subcategory_name, primary_expense_
   ('RENT', 'HOUSING', 'Money spent on rent.'),
   ('HOME LOAN', 'HOUSING', 'Money spent on home loan.'),
   ('HOME MAINTENANCE', 'HOUSING', 'Money spent on home maintenance, like repair, renovations, etc.'),
+  ('SECURITY DEPOSIT', 'HOUSING', 'Money spent on security deposit, typically against home loan, rental period, etc..'),
   ('GROCERY', 'FOODING', 'Grocery spends.'),
   ('FOOD ORDERING', 'FOODING', 'Spent on food ordering platforms like Zomato, Swiggy, etc.'),
   ('DINING OUT', 'FOODING', 'Spent occured while dining out in restaurants, etc.'),
