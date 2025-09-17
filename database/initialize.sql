@@ -27,6 +27,9 @@ Copywright © [2024] Debmalya Pramanik (ZenithClown)
 CREATE SCHEMA meta; -- schema for configuration values
 CREATE SCHEMA private; -- schema to hold user transaction values
 
+-- ..versionadded:: 2025-09-17 add the ``stocks`` schema for market
+CREATE SCHEMA stocks;
+
 -- ? create master tables, typically under the ``meta`` schema
 \i database/schema/meta/types.sql
 \i database/schema/meta/tables.sql
