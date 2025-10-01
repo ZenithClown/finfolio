@@ -1,4 +1,6 @@
 import { Roboto_Mono } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
+
 import "./globals.css";
 
 import HeaderComponent from "@/components/header";
@@ -42,22 +44,24 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={defaultFont.className}>
-        {/* header-component */}
-        < HeaderComponent />
+    <ClerkProvider>
+      <html lang="en">
+        <body className={defaultFont.className}>
+          {/* header-component */}
+          < HeaderComponent />
 
-        <main className="min-h-screen">
-          {children}
-        </main>
+          <main className="min-h-screen">
+            {children}
+          </main>
 
-        {/* footer-component */}
-        <footer className="bg-blue-50 py-12">
-          <div className="container mx-auto text-center text-gray-600">
-            <p>Copyright &copy; 2025 Project Finfolio, Debmalya Pramanik</p>
-          </div>
-        </footer>
-      </body>
-    </html>
+          {/* footer-component */}
+          <footer className="bg-blue-50 py-12">
+            <div className="container mx-auto text-center text-gray-600">
+              <p>Copyright &copy; 2025 Project Finfolio, Debmalya Pramanik</p>
+            </div>
+          </footer>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
