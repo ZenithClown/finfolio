@@ -14,10 +14,14 @@ investments with **Python**, **PostgreSQL**, and interactive **Power BI dashboar
 
 Most personal finance tools in the market depend on **third-party integrations** such as email parsing, SMS reading, or
 automatic syncing with bank accounts. While convenient, these approaches often come at the cost of **privacy** — data is shared
-across multiple platforms, leaving users with little control over how their financial information is stored or used.
+across multiple platforms, leaving users with little to no control over how their financial information is stored or used. In
+addition, most of these apps share personal information which leads to unnecessary telemarketing calls and may trigger other
+fradulent activities.
 
-This application takes a **privacy-first approach** to personal finance management, ensuring that users maintain complete
-ownership of their data.
+To resolve this, meet **`finfolio`** a project designed with a **privacy-first approach**, ensuring that users maintain complete
+ownership of their data. The robust database design makes the application suitable for personal usage that let's you track
+expenses, incomes and even plugins added for tracking share market investments (like stocks, mutual funds) and generate summary
+notes with LLM powered third-party applications (optional) and other paid tools built on top of the project as an extensions.
 
 ### 🔑 Key Objectives
 
