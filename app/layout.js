@@ -12,7 +12,6 @@ const defaultFont = Roboto_Mono({
 
 export const metadata = {
   title: "FINFOLIO | Personal Offline Finance Management System",
-
   description: `
     Project Finfolio - A personal finance management and analysis system that
     is built with Next.js and Tailwind CSS. The system provides the latest AI
@@ -21,7 +20,6 @@ export const metadata = {
     private by default by storing the data in the user's local system or a cloud
     database of choice.
   `,
-
   keywords: [
     "finfolio",
     "personal finance",
@@ -30,14 +28,12 @@ export const metadata = {
     "self-hosted finance management application",
     "self-managed finance management application",
   ],
-
   authors: [
     {
       name: "Debmalya Pramanik",
       url: "https://www.linkedin.com/in/dpramanik/",
     },
   ],
-
   openGraph: {
     title: "FINFOLIO | Personal Offline Finance Management System",
     description: `
@@ -53,18 +49,19 @@ export default function RootLayout({ children }) {
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
         <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
       </head>
 
       <body className={defaultFont.className}>
-        {/* header-component */}
+        {/* Header */}
         <HeaderComponent />
 
-        <main className="min-h-screen">{children}</main>
+        {/* Main content with top padding to avoid overlap */}
+        <main className="min-h-screen pt-20">{children}</main>
+
         <Toaster richColors />
 
-        {/* footer-component */}
+        {/* Footer */}
         <footer className="bg-blue-50 py-12">
           <div className="container mx-auto text-center text-gray-600">
             <p>Copyright &copy; 2025 Project Finfolio - Personal Finance Management System</p>
