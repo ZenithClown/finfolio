@@ -392,6 +392,3 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,python,node,nextjs,vercel
 
 # Custom rules (everything added below won't be overriden by 'Generate .gitignore File' if you use 'Update' option)
-
-# clerk configuration (can include secrets)
-/.clerk/
