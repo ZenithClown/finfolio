@@ -1,7 +1,5 @@
 import { Toaster } from "sonner";
-
 import { Roboto_Mono } from "next/font/google";
-import { ClerkProvider } from "@clerk/nextjs";
 
 import "./globals.css";
 
@@ -51,31 +49,29 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <head>
-          <meta charSet="UTF-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <html lang="en">
+      <head>
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-          <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
-        </head>
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
+      </head>
 
-        <body className={defaultFont.className}>
-          {/* header-component */}
-          <HeaderComponent />
+      <body className={defaultFont.className}>
+        {/* header-component */}
+        <HeaderComponent />
 
-          <main className="min-h-screen">{children}</main>
-          <Toaster richColors />
+        <main className="min-h-screen">{children}</main>
+        <Toaster richColors />
 
-          {/* footer-component */}
-          <footer className="bg-blue-50 py-12">
-            <div className="container mx-auto text-center text-gray-600">
-              <p>Copyright &copy; 2025 Project Finfolio - Personal Finance Management System</p>
-              <small className="text-xs">Made with 💗 by Debmalya Pramanik</small>
-            </div>
-          </footer>
-        </body>
-      </html>
-    </ClerkProvider>
+        {/* footer-component */}
+        <footer className="bg-blue-50 py-12">
+          <div className="container mx-auto text-center text-gray-600">
+            <p>Copyright &copy; 2025 Project Finfolio - Personal Finance Management System</p>
+            <small className="text-xs">Made with 💗 by Debmalya Pramanik</small>
+          </div>
+        </footer>
+      </body>
+    </html>
   );
 }
