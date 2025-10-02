@@ -39,4 +39,17 @@ are as follows:
 
 </div>
 
+## 📜 Getting Started
+
+This is now a [next.js](https://nextjs.org) project using [prisma](https://www.prisma.io/) to ship scalable database API to
+handle user requests. Initialize the project and first run the project under development server like:
+
+```bash
+$ npm install # install dependencies with npm
+$ npm run dev # run the development server in http://localhost:3000
+```
+
+The project uses the [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) and is configured
+globally with the constant `defaultFont` to switch between fonts easily as per user's preferences.
+
 </div>
