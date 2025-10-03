@@ -11,7 +11,7 @@ more details on GH#8 for more informations.
 Copyright © [2025] Debmalya Pramanik (ZenithClown)
 ********************************************************************/
 
-CREATE TABLE stocks.assets_master (
+CREATE TABLE IF NOT EXISTS stocks.assets_master (
   isin_code
     CHAR(12) NOT NULL
     CONSTRAINT pk_isin_code PRIMARY KEY,
@@ -24,7 +24,7 @@ CREATE TABLE stocks.assets_master (
 );
 
 
-CREATE TABLE stocks.asset_symbol_master (
+CREATE TABLE IF NOT EXISTS stocks.asset_symbol_master (
   hexdigest
     CHAR(64) NOT NULL
     CONSTRAINT pk_hex_asset_symbol PRIMARY KEY,
