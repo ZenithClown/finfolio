@@ -226,7 +226,7 @@ table public.points_account_detail {
 
   // conversion factor to user's locale base currency; currently multi-currency
   // support is not designed in the database and only one is allowed globally
-  conversion_factor numeric(9, 5) [not null, default 1.00000]
+  conversion_factor numeric(9, 5) [not null, default: 1.00000]
 
   // ? we may not have all the transactions, thus we can set an opening balance
   opening_balance             numeric(12, 2) [not null, default: 0.00]
@@ -239,7 +239,7 @@ table public.points_account_detail {
 
 table private.user_transaction {
   // ? primary table containing all the transactions for all tracked accounts
-  transaction_idkey bigint [pk, identity]
+  transaction_idkey bigint [pk]
 
   account_id char(5) [not null, ref: > public.ledger_account_detail.ledger_account_id]
 
@@ -251,7 +251,7 @@ table private.user_transaction {
   trx_amount numeric(12, 2)        [not null]
 
   // additional fields which can either be auto populated by ai/ml or maybe updated manually by the user
-  transfer_method varchar(7) [ref: > meta.transaction_method.method_name]
+  transfer_method meta.transaction_method
 
   // categorization of income based on different categories and sub-categories
   income_category_head    varchar(16) [ref: > meta.income_category.income_category_name]
@@ -271,7 +271,7 @@ table private.user_transaction {
 
 
 table private.user_points_transaction {
-  pts_transaction_idkey bigint [pk, identity]
+  pts_transaction_idkey bigint [pk]
 
   // a points transaction table must be associated with a ledger account
   // ? todo check feasibility on this, and create a account w/o constraint
@@ -304,7 +304,7 @@ table stocks.assets_master {
 
 table stocks.asset_symbol_master {
   hexdigest char(64) [pk] // this will be sript generated
-  isin_code char(12) [not nul, ref: > stocks.assets_master.isin_code]
+  isin_code char(12) [not null, ref: > stocks.assets_master.isin_code]
 
   // register any or required stock exchanges for tracking as enum type
   stock_exchange stocks.stock_exchange [not null]
@@ -342,7 +342,7 @@ table stocks.historic_public_offering {
 
 table stocks.user_transaction {
   // ? primary table containing all the transactions for all tracked accounts
-  transaction_idkey bigint [pk, identity]
+  transaction_idkey bigint [pk]
 
   account_id char(5) [not null, ref: > public.ledger_account_detail.ledger_account_id]
 
