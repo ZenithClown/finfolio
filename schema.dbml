@@ -30,6 +30,13 @@ project finfolio {
     type of database can be used to store the data, PostgreSQL is \
     used as the de-facto database by myself.
 
+    The project is designed with a "privacy first" approach, and no \
+    data is stored in a cloud server and is not shared with any \
+    third-party applications. It is upto the end user to maintain \
+    security of the database. Any platform that supports PostgreSQL \
+    database architecture like FireBase, by Google INC. or Aurora DB \
+    by Amazon Web Services, or SupaBase (FOSS), etc. can be used.
+
     [DB Diagram](https://dbdiagram.io/) is used for documenting, and \
     hosting the docs using the [DBML](https://dbml.dbdiagram.io/home) \
     for visibility. The following notations are adopted.
@@ -44,15 +51,20 @@ project finfolio {
       * Table and column names are not pluraized, and are `snake_case`,
       * Abbreviations should be self explanatory and should be kept \
         uniform throught the database,
-      * Some prefixes are used for better understanding and readbility:
-        - `pk_` : primary key,
-        - `fk_` : foreign key,
-        - `uq_` : column with an unique constraint,
-        - `mw_` : master table name prefix,
-        - `vw_` : view table name prefix,
-        - `trx_` : transactional table name prefix,
-        - `usp_` : user defined stored procedures,
-        - `ufn_` : user defined functions,
+      * Some prefixes are used for constraint names for \
+        better understanding and readbility:
+        - `pk_` : prefix for constraint name that are primary key,
+        - `fk_` : prefix for constraint name that are foreign key,
+        - `uq_` : prefix for constraint name that is unque.
+      * Tables are optionally given a suffix to understand the type \
+        of table:
+        - `_mw` or `_master` : master table name suffix,
+        - `_vw` : view table name suffix,
+        - `_trx` : transactional table name suffix.
+      * Other database elements like functions, stored procedures are \
+        optionally suffixed as below:
+        - `_usp` : user defined stored procedures,
+        - `_udf` : user defined functions,
 
     ### Schema Defination
 
@@ -64,6 +76,28 @@ project finfolio {
     A special schema namespace to hold configuration and related \
     information that is being used in the database for various \
     reporting.
+
+    #### PRIVATE (`private`) Schema Namespace
+
+    A schema to hold private informations like user transactions, and \
+    any other personal information. Typically, if on a self-hosted or \
+    in a managed cloud this schema needs to be provided the maximum \
+    security by the end user.
+
+    #### PUBLIC (`public`) Schema Namespace
+
+    The PostgreSQL default schema `public` is used to store user \
+    typical information like name, email, account details etc. While \
+    the name of the schema suggests `public` but security should be \
+    maintained as many personal information may otherwise be exposed.
+
+    #### Other Extended Schema
+
+    Some other extended features are also available for analysis and \
+    is available as an extension pack. The schema are as below:
+
+      * `stocks` - if a user wish to track stock market transactions \
+        like mutual funds, shares, etc. then this extension is useful.
 
     ## Data Security & BI
 
@@ -78,7 +112,10 @@ project finfolio {
   '''
 }
 
-// ! METADATA Namespace - Configuration & Settings
+/********************************************************************
+  // ! METADATA Schema Table(s)
+********************************************************************/
+
 table meta.account_type_detail {
   account_type_id char(3) [pk]
 
