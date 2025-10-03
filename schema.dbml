@@ -268,3 +268,23 @@ table private.user_transaction {
   created_on timestamp [not null, default: 'timezone(utc, now())']
   updated_at timestamp
 }
+
+
+table private.user_points_transaction {
+  pts_transaction_idkey bigint [pk, identity]
+
+  // a points transaction table must be associated with a ledger account
+  // ? todo check feasibility on this, and create a account w/o constraint
+  account_id char(5) [not null, ref: > public.ledger_account_detail.ledger_account_id]
+
+  // trx:: transaction short hand, created to reduce column name
+  // all the below columns are important and is fetched/kept as available from the passbook
+  trx_date   date                         [not null]
+  trx_type   meta.points_transaction_type [not null]
+  trx_desc   varchar(512)                 [not null]
+  trx_amount numeric(12, 2)               [not null]
+
+  // ? utility field for developer purpose and have no other usage
+  created_on timestamp [not null, default: 'timezone(utc, now())']
+  updated_at timestamp
+}
