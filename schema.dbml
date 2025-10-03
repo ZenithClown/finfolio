@@ -155,7 +155,10 @@ table meta.income_subcategory {
   income_subcategory_desc varchar(96) [unique, not null]
 }
 
-// ! PUBLIC Namespace - Using the default schema of PostgreSQL to hold user's essential informations
+/********************************************************************
+  // ! PUBLIC Schema Table(s)
+********************************************************************/
+
 table public.user_account_detail {
   username varchar(16) [pk]
   fullname varchar(64) [unique, not null]
@@ -177,6 +180,10 @@ table public.user_account_detail {
     The user account is the starting point for the personal \
     finance management application, where, the head of the \
     family may add more members account details.
+
+    A model scope is under development to provide row level security \
+    based on a user role. A super administrator (`sudo` or `admin`) \
+    has all the access follows by others as in a *nix based system.
   '''
 }
 
@@ -190,6 +197,7 @@ table public.ledger_account_detail {
   account_owner varchar(16) [not null, ref: > public.user_account_detail.username]
   
   // the type of account has a significant impact on end calculation
+  // a composite foreign key is used (account_type_id, account_subtype_id)
   account_type_id    char(3) [unique, not null, ref: > meta.account_type_detail.account_type_id]
   account_subtype_id char(3) [ref: > meta.account_subtype_detail.account_subtype_id]
 
@@ -210,6 +218,19 @@ table public.points_account_detail {
   points_account_id   char(5)     [pk]
   points_account_name varchar(64) [unique, not null]
   ledger_account_id   char(5)     [not null, ref: > public.ledger_account_detail.ledger_account_id]
+  
+  // the type of account has a significant impact on end calculation
+  // a composite foreign key is used (account_type_id, account_subtype_id)
+  account_type_id    char(3) [unique, not null, ref: > meta.account_type_detail.account_type_id]
+  account_subtype_id char(3) [ref: > meta.account_subtype_detail.account_subtype_id]
+
+  // conversion factor to user's locale base currency; currently multi-currency
+  // support is not designed in the database and only one is allowed globally
+  conversion_factor numeric(9, 5) [not null, default 1.00000]
+
+  // ? we may not have all the transactions, thus we can set an opening balance
+  opening_balance             numeric(12, 2) [not null, default: 0.00]
+  opening_balance_recorded_on date           [not null] // default `account_opened_on`
 }
 
 // ! PRIVATE Namespace - Schema to hold user transaction informations
