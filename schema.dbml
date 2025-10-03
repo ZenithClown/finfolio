@@ -96,11 +96,6 @@ table meta.account_subtype_detail {
   account_subtype_desc varchar(64) [unique]
 }
 
-table meta.transaction_method {
-  method_name varchar(7)  [pk]
-  method_desc varchar(64) [unique, not null]
-}
-
 table meta.expense_category {
   expense_category_name varchar(16) [pk]
   expense_category_desc varchar(72) [unique, not null]
