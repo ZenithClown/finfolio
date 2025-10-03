@@ -233,10 +233,13 @@ table public.points_account_detail {
   opening_balance_recorded_on date           [not null] // default `account_opened_on`
 }
 
-// ! PRIVATE Namespace - Schema to hold user transaction informations
+/********************************************************************
+  // ! PRIVATE Schema Table(s)
+********************************************************************/
+
 table private.user_transaction {
   // ? primary table containing all the transactions for all tracked accounts
-  transaction_idkey bigint [pk]
+  transaction_idkey bigint [pk, identity]
 
   account_id char(5) [not null, ref: > public.ledger_account_detail.ledger_account_id]
 
@@ -245,7 +248,6 @@ table private.user_transaction {
   trx_date   date                  [not null]
   trx_type   meta.transaction_type [not null]
   trx_desc   varchar(512)          [not null]
-  trx_drvd   varchar(512)          [note: 'Derived transaction, this field is typically a cleaned text from the original description.']
   trx_amount numeric(12, 2)        [not null]
 
   // additional fields which can either be auto populated by ai/ml or maybe updated manually by the user
@@ -258,6 +260,9 @@ table private.user_transaction {
   // categorization of transactions based on different categories and sub categories
   expense_category_head    varchar(16) [ref: > meta.expense_category.expense_category_name]
   expense_subcategory_head varchar(48) [ref: > meta.expense_subcategory.expense_subcategory_name]
+
+  // self account id, check 5e08526ef2cc89cb4acf5252a2520515d47bcc9d
+  self_account_id char(5) [ref: > public.ledger_account_detail.ledger_account_id]
 
   // ? utility field for developer purpose and have no other usage
   created_on timestamp [not null, default: 'timezone(utc, now())']
