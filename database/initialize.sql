@@ -34,10 +34,19 @@ CREATE SCHEMA stocks;
 \i database/schema/meta/types.sql
 \i database/schema/meta/tables.sql
 
-\i database/schema/meta/seed.sql
-
 -- ? create public tables, typically under the ``public`` schema
-\i database/schema/public.sql
+\i database/schema/public/tables.sql
+
+\i database/schema/public/functions/fiscalyear.sql
+\i database/schema/public/functions/onupdate.sql
 
 -- ? create private tables, typically under the ``private`` schema
-\i database/schema/private.sql
+\i database/schema/private/tables.sql
+
+\i database/schema/private/functions/set_datefields.sql
+\i database/schema/private/triggers/user_transaction.sql
+\i database/schema/private/triggers/user_points_transaction.sql
+
+-- ? populate all the tables with the seed data, only allow when all
+-- the above table creation succeds then proceed for constraint checks
+\i database/schema/meta/seed.sql
