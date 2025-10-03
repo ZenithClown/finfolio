@@ -288,3 +288,76 @@ table private.user_points_transaction {
   created_on timestamp [not null, default: 'timezone(utc, now())']
   updated_at timestamp
 }
+
+/********************************************************************
+  // ! Extended Schema - Stocks Master Table(s)
+********************************************************************/
+
+table stocks.assets_master {
+  isin_code char(12) [pk]
+
+  // each stock has an assocuated name, which can be duplicate
+  // always reference stocks, mutual funds, etc. usiing isin code
+  asset_name  varchar(128)       [not null]
+  asset_class stocks.asset_class [not null]
+}
+
+table stocks.asset_symbol_master {
+  hexdigest char(64) [pk] // this will be sript generated
+  isin_code char(12) [not nul, ref: > stocks.assets_master.isin_code]
+
+  // register any or required stock exchanges for tracking as enum type
+  stock_exchange stocks.stock_exchange [not null]
+
+  // a same stock/mutual fund/symbol may have different name based
+  // on a different exchange, store data as rows; typically naster
+  stock_symbol varchar(32) [not null]
+}
+
+table stocks.historic_public_offering {
+  isin_code char(12) [pk, ref: > stocks.assets_master.isin_code]
+
+  // this can be useful to check the luck factor in an ipo and also
+  // how the ipo has performed before and after, and the total profit
+  // make from the ipo/ofs/etc. if allotted or bought with a strategy
+  opening_date date [not null]
+  closing_date date [not null]
+  listing_date date [not null]
+
+  // a typical share has a floor and a ceiling price, if only one
+  // value is present then insert the same value twice in the fields
+  floor_price   numeric(12, 2) [not null]
+  ceiling_price numeric(12, 2) [not null]
+
+  // ipo/ofs issue amount, this value is currently under development
+  issue_amount_in_cr numeric(12, 2)
+
+  // public offering type can be any of the defined type in an enum
+  po_type stocks.public_offering_type [not null]
+}
+
+/********************************************************************
+  // ! Extended Schema - Stocks Transaction Table(s)
+********************************************************************/
+
+table stocks.user_transaction {
+  // ? primary table containing all the transactions for all tracked accounts
+  transaction_idkey bigint [pk, identity]
+
+  account_id char(5) [not null, ref: > public.ledger_account_detail.ledger_account_id]
+
+  // all the below columns are important and is fetched/kept as available from the passbook
+  trade_date     date                  [not null]
+  isin_code      char(12)              [not null, ref: > stocks.assets_master.isin_code]
+  exchange_name  stocks.stock_exchange [not null]
+  trade_type     stocks.trade_type     [not null]
+  trade_quantity numeric(12, 2)        [not null]
+  trade_price    numeric(12, 2)        [not null]
+
+  // ? utility field for developer purpose and have no other usage
+  created_on timestamp [not null, default: 'timezone(utc, now())']
+  updated_at timestamp
+
+  // check special flag enum type for more details
+  trade_special_flag stocks.trade_special_flag
+}
