@@ -1,8 +1,23 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+/********************************************************************
+Prisma Schema File for Model ORM for Project Finfolio Application
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+The ``schema.prisma`` file is generated using node prisma initialize
+command, and the environment variables are auto-populated. More
+information about it in the docs: https://pris.ly/d/prisma-schema.
+
+More information on speeding up queries using serverless/edge design
+then use accelerate: https://pris.ly/cli/accelerate-init.
+
+The schema files are seperated into multiple files based on the schema
+design. For more information, check ``../database/schema/`` for code
+documentation, or follow https://dbdocs.io/dpramanik.official/finfolio
+for database documentation.
+
+By database design, multiple schemas were used based on the type of
+table and the needed security purposes.
+
+Copywright © [2025] Debmalya Pramanik (ZenithClown)
+********************************************************************/
 
 generator client {
   provider = "prisma-client-js"
