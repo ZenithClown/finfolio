@@ -33,8 +33,8 @@ const HeaderComponent = () => {
         <div className="hidden md:flex items-center space-x-8">
           {!isLoggedIn ? (
             <>
-              <a href="#manual" className="text-gray-600 hover:text-blue-600">
-                User Manual
+              <a href="/swagger" className="text-gray-600 hover:text-blue-600">
+                Swagger UI
               </a>
               <a href="https://github.com/ZenithClown/finfolio" className="text-gray-600 hover:text-blue-600" target="_blank">
                 Source Code
