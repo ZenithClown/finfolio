@@ -41,12 +41,24 @@ are as follows:
 
 ## 📜 Getting Started
 
-This is now a [next.js](https://nextjs.org) project using [prisma](https://www.prisma.io/) to ship scalable database API to
-handle user requests. Initialize the project and first run the project under development server like:
+This is now a [NextJS](https://nextjs.org) project using [PostgREST](https://docs.postgrest.org/en/v13/) that automatically
+provides REST API for the underlying tables and data.
 
 ```bash
 $ npm install # install dependencies with npm
 $ npm run dev # run the development server in http://localhost:3000
+
+# create suitable environment variables that hosts your database
+# and this is referenced in the shell script to initialize and host service
+export ORACLE_POSTGRES_HOST=localhost
+export ORACLE_POSTGRES_PORT=5432
+
+export ORACLE_POSTGRES_USERNAME=webanon
+export ORACLE_POSTGRES_PASSWORD=password
+
+# run the postgrest using the ./postgrest.sh
+# the configuration is defined under the postgrest.conf
+./postgrest.sh
 ```
 
 The project uses the [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) and is configured
