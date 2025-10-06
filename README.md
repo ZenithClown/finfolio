@@ -42,14 +42,17 @@ are as follows:
 ## 📜 Getting Started
 
 This is now a [NextJS](https://nextjs.org) project using [PostgREST](https://docs.postgrest.org/en/v13/) that automatically
-provides REST API for the underlying tables and data.
+provides REST API for the underlying tables and data. Since the data is hosted in a secured cloud of choice by the end user,
+so any new changes in the database can automatically reflect in the RESTful API design without updating the underlying ORM
+models giving the felxibility and reducing coding dependency when the underying is updated.
 
-```bash
-$ npm install # install dependencies with npm
-$ npm run dev # run the development server in http://localhost:3000
+```shell
+npm install # install dependencies with npm
+npm run dev # run the development server in http://localhost:3000
 
 # create suitable environment variables that hosts your database
 # and this is referenced in the shell script to initialize and host service
+# check https://docs.postgrest.org/en/v13/ for more information
 export ORACLE_POSTGRES_HOST=localhost
 export ORACLE_POSTGRES_PORT=5432
 
@@ -58,10 +61,17 @@ export ORACLE_POSTGRES_PASSWORD=password
 
 # run the postgrest using the ./postgrest.sh
 # the configuration is defined under the postgrest.conf
-./postgrest.sh
+# not the shell script name is same as the service, so ./ is used
+./postgrest.sh # API server runs in http://localhost:3100
 ```
 
 The project uses the [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) and is configured
 globally with the constant `defaultFont` to switch between fonts easily as per user's preferences.
+
+### RESTful API & Swagger UI Documentation
+
+The PostgREST comes in-built with Swagger UI 2.0 and is available in the root path as per the configuration file. The
+file is designed to handle all the necessary schemas that are required currently defined under the `./database` directory
+and all the tables have `GET, POST, UPDATE` defined along with.
 
 </div>
