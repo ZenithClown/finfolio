@@ -65,6 +65,15 @@ export ORACLE_POSTGRES_PASSWORD=password
 ./postgrest.sh # API server runs in http://localhost:3100
 ```
 
+In addition, if you are using a windows machine, then the same can be done by installing PostgREST ZIP file from
+[source code](https://github.com/PostgREST/postgrest) and then adding the unzipped file under environment variables. The
+script can be run as below:
+
+```powershell
+set PGRST_DB_URI=postgres://postgres:password@localhost:port/finfolio
+postgrest postgrest.conf
+```
+
 The project uses the [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) and is configured
 globally with the constant `defaultFont` to switch between fonts easily as per user's preferences.
 
