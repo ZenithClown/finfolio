@@ -15,6 +15,7 @@ export default function DynamicDataTable({
   endpoint,
   query = {},
   title = "Data Table",
+  subtitle = null, // 👈 NEW PARAMETRIC SUBTITLE
   idField = "id",
   maxVisibleRows, // 👈 PARAMETRIC (user-defined per instance)
   className = "",
@@ -56,7 +57,6 @@ export default function DynamicDataTable({
   }, [data]);
 
   // 📏 Dynamically compute max height based on maxVisibleRows param
-  // Roughly assume 3rem per row (including padding)
   const bodyMaxHeight = maxVisibleRows ? `${maxVisibleRows * 3.1}rem` : "auto";
 
   // --- UI States ---
@@ -79,7 +79,11 @@ export default function DynamicDataTable({
   // --- MAIN TABLE RENDER ---
   return (
     <div className={`w-full max-w-6xl mx-auto bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-6 ${className}`}>
-      <h2 className="text-xl font-semibold mb-4 text-gray-800">{title}</h2>
+      {/* Title */}
+      <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
+
+      {/* Optional Subtitle */}
+      {subtitle && <p className="text-sm text-gray-500 mb-4 mt-1 leading-snug">{subtitle}</p>}
 
       {/* Outer scrollable container */}
       <div className="min-w-[700px] overflow-x-auto">
@@ -118,6 +122,7 @@ DynamicDataTable.propTypes = {
   endpoint: PropTypes.string.isRequired,
   query: PropTypes.object,
   title: PropTypes.string,
+  subtitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]), // 👈 NEW
   idField: PropTypes.string,
   maxVisibleRows: PropTypes.number, // 👈 Parametric prop
   className: PropTypes.string,
