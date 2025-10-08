@@ -36,7 +36,6 @@ CREATE OR REPLACE FUNCTION api.net_worth(
 )
 RETURNS JSON AS $$
 BEGIN
-
   RETURN (
       SELECT ROW_TO_JSON(t) FROM
       (
@@ -57,6 +56,36 @@ BEGIN
           END
       ) t
   );
+END
+$$ LANGUAGE plpgsql;
 
+
+CREATE OR REPLACE FUNCTION api.net_value_by_account(
+  p_account_id CHAR(5)[]
+)
+RETURNS JSON AS $$
+BEGIN
+  RETURN (
+      SELECT JSON_AGG(ROW_TO_JSON(t)) FROM
+      (
+        SELECT
+          tbl.account_id
+          , SUM(
+            CASE
+              WHEN tbl.trx_type = 'DEPOSIT' THEN tbl.trx_amount
+              WHEN tbl.trx_type = 'WITHDRAW' THEN tbl.trx_amount * -1
+              ELSE 0 END
+          ) AS net_value
+          , MAX(tbl.trx_date) AS last_updated
+        FROM private.user_transaction tbl
+        WHERE CASE
+          WHEN
+            ARRAY_LENGTH(p_account_id, 1) IS NULL
+            OR ARRAY_LENGTH(p_account_id, 1) = 0 THEN TRUE
+          ELSE tbl.account_id = ANY(p_account_id)
+          END
+        GROUP BY tbl.account_id
+      ) t
+  );
 END
 $$ LANGUAGE plpgsql;
