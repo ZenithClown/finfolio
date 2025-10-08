@@ -23,12 +23,6 @@ const DashboardPage = () => {
       <p className="mt-2 text-gray-600">
         Welcome back, <span className="font-medium">{user.fullName || user.username}</span> 🎉
       </p>
-
-      {/* Dynamic table for account types */}
-      <DynamicDataTable endpoint="http://localhost:3100/expense_category" title="Account Types" />
-
-      {/* Another example: Different endpoint with filters */}
-      <DynamicDataTable endpoint="http://localhost:3100/expense_subcategory" title="Account Types" />
     </div>
   );
 };
