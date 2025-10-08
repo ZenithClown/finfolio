@@ -44,7 +44,7 @@ const HeaderComponent = () => {
             <>
               <Link href="/dashboard" className="text-gray-600 hover:text-blue-600 flex items-center gap-2">
                 <LayoutDashboard size={18} />
-                <span>Dashboard</span>
+                <span>My Dashboard</span>
               </Link>
               <Link href="/profile" className="text-gray-600 hover:text-blue-600">
                 My Profile
