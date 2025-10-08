@@ -193,7 +193,7 @@ export default function DashboardPage() {
         </Card>
 
         {/* Bar Chart */}
-        <Card className="w-full h-[300px] shadow-md border border-gray-300">
+        <Card className="w-full shadow-md border border-gray-300">
           <CardHeader className="pb-2">
             <CardTitle className="text-md font-semibold text-gray-800 uppercase tracking-wide">Net Value by Account</CardTitle>
           </CardHeader>
