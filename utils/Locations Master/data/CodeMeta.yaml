@@ -1,0 +1,18 @@
+version: 1.1.0 # this is meta (this) file version
+
+# The CodeMeta can be used to Populate `template` File
+# by convention, anythin below this is seperated as:
+# Sheet Name (as key), followed by {"Cell #" : value}
+about:
+  B1: Master DB
+  C5: Location Master DB
+  C6: pOrgz-dev
+  C7: ZenithClown (Debmalya Pramanik)
+
+  C10: Location Master Table Data
+  D16: pandas, sqlalchemy
+  D17: 
+
+  J5: xlsxwriter, xlwings
+  J7: open("VERSION", 'rt').read() # use `eval()` to read from VERSIONFILE
+  J8: development phase

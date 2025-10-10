@@ -1,0 +1,34 @@
+{
+    "status": {
+        "code": 200,
+        "desc": {
+            "category": "success",
+            "information": "OK"
+        },
+        "error": null,
+        "message": null
+    },
+    "info": {
+        "api_version": "v0.0.1",
+        "project_env": "dev",
+        "request_summary": {
+            "type": "get",
+            "time": "Sun Apr 30 01:57:42 2023",
+            "source": {
+                "host": "localhost:5000",
+                "agent": "PostmanRuntime/7.32.2"
+            },
+            "authorization": null
+        }
+    },
+    "data": {
+        "BANKNIFTY": [
+            "2023-05-04",
+            "2023-05-11"
+        ],
+        "NIFTY": [
+            "2023-05-04",
+            "2023-05-11"
+        ]
+    }
+}

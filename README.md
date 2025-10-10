@@ -1,71 +1,55 @@
-<h1 align = "center">
-  Finance Portfolio Management DB Schema <img src = "./logo.png" height = "190" width = "175" align = "right" /><br>
-  <code>finfolio</code><br>
-  <a href = "https://www.linkedin.com/in/dpramanik/"><img height="16" width="16" src="https://unpkg.com/simple-icons@v3/icons/linkedin.svg"/></a>
-  <a href = "https://github.com/ZenithClown"><img height="16" width="16" src="https://unpkg.com/simple-icons@v3/icons/github.svg"/></a>
-  <a href = "https://gitlab.com/ZenithClown/"><img height="16" width="16" src="https://unpkg.com/simple-icons@v3/icons/gitlab.svg"/></a>
-  <a href = "https://www.researchgate.net/profile/Debmalya_Pramanik2"><img height="16" width="16" src="https://unpkg.com/simple-icons@v3/icons/researchgate.svg"/></a>
-  <a href = "https://www.kaggle.com/dPramanik/"><img height="16" width="16" src="https://unpkg.com/simple-icons@v3/icons/kaggle.svg"/></a>
-  <a href = "https://app.pluralsight.com/profile/Debmalya-Pramanik/"><img height="16" width="16" src="https://unpkg.com/simple-icons@v3/icons/pluralsight.svg"/></a>
-  <a href = "https://stackoverflow.com/users/6623589/"><img height="16" width="16" src="https://unpkg.com/simple-icons@v3/icons/stackoverflow.svg"/></a>
-</h1>
+<h1 align = "center">pOrgz</h1>
 
 <div align = "justify">
 
-The **`finfolio`** is designed to be a standard schema for maintaining and storing financial information at a personal
-level and also provisions for holding information for a group of people belonging to the same family/organization. The database
-is designed to serve as the backend for the [personal finance management application](https://github.com/pOrgz-dev).
+[**pOrgz**](https://github.com/pOrgz-dev) is a cross-platform, AI/ML-enabled open-source, modern, secure financial application to analyze, monitor, and track expenses at an individual, group, or organization level.
+The application is built for people with extremely high secure personal data management demands and can be used in Windows, macOS, and Linux systems.
+It saves different types of information like account details, account owner, and financial transactions which can be managed/edited/updated by an administrator or a privileged user.
 
-The application uses [**`SQLite`**](https://sqlite.org/index.html) as the de facto database, which is lightweight, and a
-serverless, self-contained full-featured database engine. The backend is still under development and choosing the
-right libraries is being discussed internally ([more information](https://www.youtube.com/watch?v=x1fCJ7sUXCM)
-on choosing the right method to communicate with a database).
+## Quick Start Guide
 
-## Adapted Notations
+The application is currently in development phase, and people with a background of coding knowledge are preferred to test the application. The quick start guide is yet in the development phase and will be released with the first project release.
 
-The database module controls both `ams` and `ums` module and any related table is prefixed by `ams.*` or `ums.*` respectively.
-In addition, master tables are prefixed as `mw*` while the transactional tables are referenced as `trx*`, and the table names
-are written in `camelCase` format. New developers are requested to follow the same convention, or the PR will be rejected.
-In addition, please note the following:
-  * `COMPOSITE_KEY` is avoided in tables, and for transactional tables the default primary key is set as
-    `_id(sa.Integer, primary_key = True, autoincrement = True)`, and
-  * All `date` is formatted as `YYYY-MM-DD` while `datetime` is formatted as `YYYY-MM-DD HH:MM:SS.SSS` formatting.
+### User Management System (UMS)
 
-Since there are different types of accounts types which have unrelated properties, like savings account typically has a branch
-while a demat/mutual fund account does not have one, but they have portfolio information and service providers. For this, an
-"extended table" is used with the prefix `ext*` to denote an extension typically of a master table. By definition, the extended
-table definition is in the same file as the primary table.
+The application can be either used by an individual, or can be used by a group/organization. To facilitate this, a user management system is developed which is controlled and maintained seperately than the accounts management system. Each session has a super administrator (`root`) who by default has all the access, while one/multiple administrators, and users can be defined. Secondary administrators also has the facility to create their own users and can leverage permissions.
 
-The key notations (PK, FK, and Composite Key) used in the system are designed considering the best use cases of both
-[OLAP and OLTP](https://www.youtube.com/watch?v=iw-5kFzIdgY), and thus tables with primary key defined as `_id` are specifically
-designed to retrieve and perform analytical functions faster. In addition, if a composite key mapping is required, then a `RecordHash`
-is generated (to be implemented) so that each record can be uniquely identified and duplicate records can be deleted using
-simple `COUNT(*) GROUP BY RecordHash` logic.
+At an individual level, a single user (i.e., `root`) is can control, understand, analyze and modify the table. When a individual is responsible to manage more than one user he has the option to either create seperate users (`U1`, `U2`, ..., `Un`) under him, or may also assign a *"group"* to check combined information. Typically, at an individual level, the session can be structured as:
 
-SQLite uses a more general dynamic type system and thus does not have an in-built `datetime` data type (among others) and all are stored
-as `TEXT`, for more information check the [data types](https://www.sqlite.org/datatype3.html) documentation. Strict database design is
-avoided and may be incorporated in the future.
-
-## Getting Started
-
-A standard structure ([help](https://www.geeksforgeeks.org/structure-of-database-management-system/)) is (established like an 
-[`symfony`](https://github.com/symfony/demo) application [to:]) developed to structure the [**`database`**](./database/) and
-is seperated into the following sub-directories:
-  * [`models`](./database/models) - contains master and transaction tables definitions,
-  * [`views`](./database/views/) - definitions of table views derived from masters and transactional tables, and
-  * [`queries`](./database/queries/) - parameterized queries to interact with the database.
-
-By convention, the name of the file (in `models`, `views`) is the same as that of the table/view name defined within, while a more
-descriptive name is associated with the `queries` statements. In addition, for any static content for the master tables, the
-data is populated using the `INSERT INTO *` statement associated with the same file as the master table.
-
-```python
->>> import pandas as pd # retreive, barebone library
->>> import sqlite3 as db
->>> source = db.connect(r"C:\Users\debmalya\pOrgz\pOrgz.db")
->>> destination = db.connect(r"D:\FinFolioDB\finDB.db")
->>> mwAccountProperty = pd.read_sql("SELECT * FROM 'ams.mwAccountProperty'", source)
->>> mwAccountProperty.to_sql("ams.mwAccountProperty", destination, index = False, if_exists = "append")
+```mermaid
+mindmap
+  root((ROOT))
+    U1
+    U2
+    U3
 ```
+
+However, at an organization level different admins (`A1`, `A2`, ..., `An`) can be assigned who can seperately create their own users, and does not have sharing privileges. A typical architecture can be like:
+
+```mermaid
+mindmap
+  root((ROOT))
+    A1
+      U1
+      U2
+    A2
+      U3
+    A3
+      U4
+      U5
+      U6
+    A4
+    U7
+```
+
+Any of the above mentioned entities (i.e., `root`, `admins` or `users`) can have one/more accounts mapped to them. Permissions to view/edit the information is by default provided to `root` while `admins` are added to `sudoers` by `root` (as in `*nix` systems). Finally, an `user` can be assigned functionalities by either `root` or `admins` which has top-to-bottom approach.
+
+### Accounts Management System (AMS)
+
+Accounts are the core of the financial management tool. An account is identified by an unique identity number generated seperately in the system and is referenced in all the columns. Check more information and types of pre-defined types under master tables [defination](./database/models/ams.mwAccountType.sql).
+
+## Contribution
+
+We are always looking for suggestions to improve the services, and to include new features into the application. The application is primarily developed in [`python`](https://www.python.org/) and [`SQLite`](https://sqlite.org/index.html) is considered the default database.
 
 </div>
