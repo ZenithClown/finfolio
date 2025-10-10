@@ -78,23 +78,6 @@ CREATE TABLE IF NOT EXISTS meta.expense_category_master (
 );
 
 
-CREATE TABLE IF NOT EXISTS meta.expense_subcategory (
-    CONSTRAINT  PRIMARY KEY,
-
-  primary_expense_category
-    VARCHAR(16) NOT NULL
-    CONSTRAINT 
-      REFERENCES meta.expense_category  (expense_category_name)
-      ON DELETE CASCADE
-      ON UPDATE CASCADE NOT NULL
-    CONSTRAINT  UNIQUE,
-
-  CONSTRAINT uq_expense_category_subcategory UNIQUE (
-    primary_expense_category, expense_subcategory_name
-  )
-);
-
-
 CREATE TABLE IF NOT EXISTS meta.income_category (
   income_category_name
     VARCHAR(16)
