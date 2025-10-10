@@ -49,32 +49,45 @@ CREATE TABLE IF NOT EXISTS meta.account_type_master (
 );
 
 
-CREATE TABLE IF NOT EXISTS meta.expense_category (
+CREATE TABLE IF NOT EXISTS meta.expense_category_master (
+  expense_category_key
+    VARCHAR(65)
+    CONSTRAINT pk_expense_category_key PRIMARY KEY,
+
   expense_category_name
-    VARCHAR(16)
-    CONSTRAINT pk_expense_category_name PRIMARY KEY,
+    VARCHAR(16) NOT NULL,
 
   expense_category_desc
-    VARCHAR(72) NOT NULL
-    CONSTRAINT uq_expense_category_desc UNIQUE
+    VARCHAR(72) NOT NULL,
+
+  expense_subcategory_name
+    VARCHAR(48),
+
+  expense_subcategory_desc
+    VARCHAR(96),
+
+  CONSTRAINT uq_expense_category UNIQUE(
+    expense_category_name
+    , expense_subcategory_name
+  ),
+
+  CONSTRAINT uq_expense_category_desc UNIQUE(
+    expense_category_desc
+    , expense_subcategory_desc
+  )
 );
 
 
 CREATE TABLE IF NOT EXISTS meta.expense_subcategory (
-  expense_subcategory_name
-    VARCHAR(48)
-    CONSTRAINT pk_expense_subcategory_name PRIMARY KEY,
+    CONSTRAINT  PRIMARY KEY,
 
   primary_expense_category
     VARCHAR(16) NOT NULL
-    CONSTRAINT fk_primary_expense_category
+    CONSTRAINT 
       REFERENCES meta.expense_category  (expense_category_name)
       ON DELETE CASCADE
-      ON UPDATE CASCADE,
-
-  expense_subcategory_desc
-    VARCHAR(96) NOT NULL
-    CONSTRAINT uq_expense_subcategory_desc UNIQUE,
+      ON UPDATE CASCADE NOT NULL
+    CONSTRAINT  UNIQUE,
 
   CONSTRAINT uq_expense_category_subcategory UNIQUE (
     primary_expense_category, expense_subcategory_name
