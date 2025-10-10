@@ -67,14 +67,11 @@ VALUES
   ('ENTERTAINMENT/OTT SUBSCRIPTION', 'ENTERTAINMENT', 'Entertainments like subscriptions, movies, etc.', 'OTT SUBSCRIPTION', 'OTT subscription charges like Netflix/Prime/etc.'),;
 
 
-INSERT INTO meta.income_category (income_category_name, income_category_desc) VALUES
-  ('SALARY', 'Regular compensation from employer.'),
-  ('BUSINESS', 'Income from self-employment or business'),
-  ('INVENTMENT', 'Income from investments like stocks, bonds, etc.'),
-  ('RENTAL INCOME', 'Income from rental property.');
-
-
-INSERT INTO meta.income_subcategory (income_subcategory_name, primary_income_category, income_subcategory_desc) VALUES
-  ('CONSULTING', 'BUSINESS', 'Income from self-consulting, moonlighting, part-time jobs, etc.'),
-  ('INTEREST', 'INVENTMENT', 'Interest income from savings, fixed deposits, etc.'),
-  ('DIVIDEND', 'INVENTMENT', 'Dividend income from stocks, bonds, etc.');
+INSERT INTO meta.income_category_master
+  (income_category_key, income_category_name, income_category_desc, income_subcategory_name, income_subcategory_desc)
+VALUES
+  ('SALARY', 'SALARY', 'Regular compensation from employer.', '', ''),
+  ('BUSINESS/CONSULTING', 'BUSINESS', 'Income from self-employment or business', 'CONSULTING', 'Income from self-consulting, moonlighting, part-time jobs, etc.'),
+  ('INVENTMENT/DIVIDEND', 'INVENTMENT', 'Income from investments like stocks, bonds, etc.', 'DIVIDEND', 'Dividend income from stocks, bonds, etc.'),
+  ('INVENTMENT/INTEREST', 'INVENTMENT', 'Income from investments like stocks, bonds, etc.', 'INTEREST', 'Interest income from savings, fixed deposits, etc.'),
+  ('RENTAL INCOME', 'RENTAL INCOME', 'Income from rental property.', '', '');

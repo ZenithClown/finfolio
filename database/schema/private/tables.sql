@@ -25,22 +25,15 @@ CREATE TABLE IF NOT EXISTS private.user_transaction (
   transfer_method
     meta.transaction_method,
 
-  income_category_head
-    VARCHAR(16)
-    CONSTRAINT fk_income_category_head
-      REFERENCES meta.income_category (income_category_name)
-      ON DELETE SET NULL
-      ON UPDATE SET NULL,
-
-  income_subcategory_head
-    VARCHAR(48)
-    CONSTRAINT fk_income_subcategory_head
-      REFERENCES meta.income_subcategory (income_subcategory_name)
+  income_category_key
+    VARCHAR(65)
+    CONSTRAINT fk_income_category_key
+      REFERENCES meta.income_category_master (income_category_key)
       ON DELETE SET NULL
       ON UPDATE SET NULL,
 
   expense_category_key
-    VARCHAR(16)
+    VARCHAR(65)
     CONSTRAINT fk_expense_category_key
       REFERENCES meta.expense_category_master (expense_category_key)
       ON DELETE SET NULL
@@ -69,15 +62,7 @@ CREATE TABLE IF NOT EXISTS private.user_transaction (
   CONSTRAINT ck_either_income_or_expense CHECK (
     income_category_head IS NULL
     OR expense_category_head IS NULL
-  ),
-
-  CONSTRAINT ck_income_category_strict FOREIGN KEY
-    (income_category_head, income_subcategory_head)
-    REFERENCES meta.income_subcategory (
-      primary_income_category, income_subcategory_name
-    )
-    ON DELETE SET NULL
-    ON UPDATE SET NULL
+  )
 );
 
 
