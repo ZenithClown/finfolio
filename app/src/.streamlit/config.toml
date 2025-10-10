@@ -1,6 +1,0 @@
-[theme]
-    # change primary elements using theming elements of streamlit:
-    # https://github.com/streamlit/theming-showcase
-    primaryColor = "#6C86AD"
-    backgroundColor = "#DCE0E6"
-    secondaryBackgroundColor = "#A3E3B6"
