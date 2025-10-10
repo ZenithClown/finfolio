@@ -52,10 +52,10 @@ CREATE TABLE IF NOT EXISTS public.ledger_account_detail (
       ON DELETE CASCADE
       ON UPDATE CASCADE,
 
-  account_type_id
-    CHAR(3) NOT NULL
-    CONSTRAINT fk_ledger_account_type_id
-      REFERENCES meta.account_type_detail  (account_type_id)
+  account_type_key
+    VARCHAR(7) NOT NULL
+    CONSTRAINT fk_ledger_account_type_key
+      REFERENCES meta.account_type_master  (account_type_key)
       ON DELETE CASCADE
       ON UPDATE CASCADE,
 
@@ -77,13 +77,7 @@ CREATE TABLE IF NOT EXISTS public.ledger_account_detail (
   -- ? field is useful if you do not have complete historical data
   -- default should be `account_opened_on` date
   opening_balance_recorded_on
-    DATE NOT NULL,
-
-  CONSTRAINT fk_ledger_sub_account_type_id
-    FOREIGN KEY (account_type_id, account_subtype_id)
-    REFERENCES meta.account_subtype_detail (account_type_id, account_subtype_id)
-      ON DELETE CASCADE
-      ON UPDATE CASCADE
+    DATE NOT NULL
 );
 
 
@@ -103,15 +97,12 @@ CREATE TABLE IF NOT EXISTS public.points_account_detail (
       ON DELETE CASCADE
       ON UPDATE CASCADE,
 
-  account_type_id
-    CHAR(3) NOT NULL
-    CONSTRAINT fk_points_account_type_id
-      REFERENCES meta.account_type_detail  (account_type_id)
+  account_type_key
+    VARCHAR(7) NOT NULL
+    CONSTRAINT fk_ledger_account_type_key
+      REFERENCES meta.account_type_master  (account_type_key)
       ON DELETE CASCADE
       ON UPDATE CASCADE,
-
-  account_subtype_id
-    CHAR(3),
 
   conversion_factor
     NUMERIC(9, 5) NOT NULL DEFAULT 1.00000,
@@ -122,11 +113,5 @@ CREATE TABLE IF NOT EXISTS public.points_account_detail (
   -- ? field is useful if you do not have complete historical data
   -- default should be `account_opened_on` date; same like ledger a/c
   opening_balance_recorded_on
-    DATE NOT NULL,
-
-  CONSTRAINT fk_points_sub_account_type_id
-    FOREIGN KEY (account_type_id, account_subtype_id)
-    REFERENCES meta.account_subtype_detail (account_type_id, account_subtype_id)
-      ON DELETE CASCADE
-      ON UPDATE CASCADE
+    DATE NOT NULL
 );
