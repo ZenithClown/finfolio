@@ -2,48 +2,49 @@
 META Table Schema Structure and Table Create Statement Defination
 
 The metadata table namespace holds special configurations (which in
-this case is mostly the master tables) for finance management.
+this case is mostly the master tables) for finance management. The
+tables are designed to be simple and uses composite foreign key to
+map any transaction tables with one single source of truth.
 
 Copywright © [2024] Debmalya Pramanik
 ********************************************************************/
 
-CREATE TABLE IF NOT EXISTS meta.account_type_detail (
+CREATE TABLE IF NOT EXISTS meta.account_type_master (
+  account_type_key
+    VARCHAR(7)
+    CONSTRAINT pk_account_type_key PRIMARY KEY,
+
   account_type_id
-    CHAR(3)
-    CONSTRAINT pk_account_type_id PRIMARY KEY,
+    CHAR(3) NOT NULL,
 
   account_type_name
-    VARCHAR(32) NOT NULL
-    CONSTRAINT uq_account_type_name UNIQUE,
+    VARCHAR(32) NOT NULL,
 
   account_type_desc
-    VARCHAR(128) NOT NULL
-    CONSTRAINT uq_account_type_desc UNIQUE
-);
+    VARCHAR(128) NOT NULL,
 
-
-CREATE TABLE IF NOT EXISTS meta.account_subtype_detail (
   account_subtype_id
-    CHAR(3)
-    CONSTRAINT pk_sub_account_type_id PRIMARY KEY,
-
-  account_type_id
-    CHAR(3) NOT NULL
-    CONSTRAINT fk_account_type_id
-      REFERENCES meta.account_type_detail (account_type_id)
-      ON DELETE CASCADE
-      ON UPDATE CASCADE,
+    CHAR(3),
 
   account_subtype_name
-    VARCHAR(34) NOT NULL
-    CONSTRAINT uq_account_subtype_name UNIQUE,
+    VARCHAR(34),
 
   account_subtype_desc
-    VARCHAR(64)
-    CONSTRAINT uq_account_subtype_desc UNIQUE,
+    VARCHAR(64),
 
-  CONSTRAINT uq_account_type_subtype UNIQUE (
-    account_type_id, account_subtype_id
+  CONSTRAINT cpk_account_type UNIQUE (
+    account_type_id
+    , account_subtype_id
+  ),
+
+  CONSTRAINT uq_account_type_name UNIQUE(
+    account_type_name
+    , account_subtype_name
+  ),
+
+  CONSTRAINT uq_account_type_desc UNIQUE(
+    account_type_desc
+    , account_subtype_desc
   )
 );
 
