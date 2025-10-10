@@ -24,13 +24,37 @@ Contact : dpramanik.official@gmail.com
 Copywright © [2024] Debmalya Pramanik (ZenithClown)
 ********************************************************************/
 
-CREATE SCHEMA api; -- default endpoints for rest api
-
 CREATE SCHEMA meta; -- schema for configuration values
 CREATE SCHEMA private; -- schema to hold user transaction values
 
--- ..versionadded:: 2025-09-17 add the ``stocks`` schema for market
+/********************************************************************
+  API Schema Namespace for PostgREST Configuration - RESTful API
+
+PostgREST configuration is set on the default schema namespace `api`
+for all types of queries, stored procedures, functions, etc. Check the
+configuration file for more details and usages.
+********************************************************************/
+
+CREATE SCHEMA api; -- default endpoints for rest api
+
+/********************************************************************
+  Optional Schema Namespace(s) - Create and/not Initialize Schema
+
+Optional schemas can be initialized and tables added into the database
+if the extension is required by the end user. This must be provided
+in a dropdown to take necessary actions during setup.
+
+  -- ..versionadded:: 2025-09-17 add the ``stocks`` schema for market
+
+The stocks schema represents stocks market data (mutual funds, shares,
+etc.) which can be tracked and analyzed.
+********************************************************************/
+
 CREATE SCHEMA stocks;
+
+/********************************************************************
+  Order of Initialization of the Schema Objects
+********************************************************************/
 
 -- ? create master tables, typically under the ``meta`` schema
 \i database/schema/meta/types.sql
