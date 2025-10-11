@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS meta.account_type_master (
   account_subtype_desc
     VARCHAR(64),
 
-  CONSTRAINT cpk_account_type UNIQUE (
+  CONSTRAINT uq_account_type UNIQUE (
     account_type_id
     , account_subtype_id
   ),
