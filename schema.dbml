@@ -114,45 +114,48 @@ project finfolio {
 
 /********************************************************************
   // ! METADATA Schema Table(s)
+
+Simple master data table, to maintain simplicity the table uses a
+single monolithic approach (removed normalization) as static data and
+does not change over time.
 ********************************************************************/
 
-table meta.account_type_detail {
-  account_type_id char(3) [pk]
+table meta.account_type_master {
+  account_type_key varchar(7) [pk]
 
-  // typically the additional column are for end user (internal)
-  account_type_name varchar(32)  [unique, not null]
-  account_type_desc varchar(128) [unique, not null]
+  // account primary type - this field are must required for reference
+  account_type_id char(3) [not null]
+
+  account_type_name varchar(32)  [not null]
+  account_type_desc varchar(128) [not null]
+
+  // account subtype details, added for further classification
+  account_subtype_id char(3)
+
+  account_subtype_name varchar(34)
+  account_subtype_desc varchar(64)
 }
 
-table meta.account_subtype_detail {
-  account_subtype_id char(3) [pk]
-  account_type_id    char(3) [not null, ref: > meta.account_type_detail.account_type_id]
+table meta.expense_category_master {
+  expense_category_key  varchar(65) [pk]
 
-  // typically the additional column are for end user (internal)
-  account_subtype_name varchar(32) [unique, not null]
-  account_subtype_desc varchar(64) [unique]
+  expense_category_name varchar(16) [not null]
+  expense_category_desc varchar(72) [not null]
+
+  // expense sub category integration into one table
+  expense_subcategory_name varchar(48)
+  expense_subcategory_desc varchar(96)
 }
 
-table meta.expense_category {
-  expense_category_name varchar(16) [pk]
-  expense_category_desc varchar(72) [unique, not null]
-}
+table meta.income_category_master {
+  income_category_key varchar(65) [pk]
 
-table meta.expense_subcategory {
-  expense_subcategory_name varchar(48) [pk]
-  primary_expense_category varchar(16) [not null, ref: > meta.expense_category.expense_category_name]
-  expense_subcategory_desc varchar(96) [unique, not null]
-}
+  income_category_name varchar(16) [not null]
+  income_category_desc varchar(72) [not null]
 
-table meta.income_category {
-  income_category_name varchar(16) [pk]
-  income_category_desc varchar(72) [unique, not null]
-}
-
-table meta.income_subcategory {
-  income_subcategory_name varchar(48) [pk]
-  primary_income_category varchar(16) [not null, ref: > meta.income_category.income_category_name]
-  income_subcategory_desc varchar(96) [unique, not null]
+  // income sub category integration into one table
+  income_subcategory_name varchar(48)
+  income_subcategory_desc varchar(96)
 }
 
 /********************************************************************
@@ -195,11 +198,10 @@ table public.ledger_account_detail {
   // the following information is for identification by end user
   account_name  varchar(64) [unique, not null]
   account_owner varchar(16) [not null, ref: > public.user_account_detail.username]
-  
+
   // the type of account has a significant impact on end calculation
-  // a composite foreign key is used (account_type_id, account_subtype_id)
-  account_type_id    char(3) [unique, not null, ref: > meta.account_type_detail.account_type_id]
-  account_subtype_id char(3) [ref: > meta.account_subtype_detail.account_subtype_id]
+  // a single account key is used to identify the type of account and calculation
+  account_type_key char(3) [not null, ref: > meta.account_type_master.account_type_key]
 
   // ? account opening and closing information for future reference
   account_opened_on date [not null]
@@ -207,26 +209,6 @@ table public.ledger_account_detail {
 
   // an account may also be set as inactive even if the account is not closed
   account_marked_inactive_on date
-
-  // ? we may not have all the transactions, thus we can set an opening balance
-  opening_balance             numeric(12, 2) [not null, default: 0.00]
-  opening_balance_recorded_on date           [not null] // default `account_opened_on`
-}
-
-table public.points_account_detail {
-  // TODO:: This table is currently under development
-  points_account_id   char(5)     [pk]
-  points_account_name varchar(64) [unique, not null]
-  ledger_account_id   char(5)     [not null, ref: > public.ledger_account_detail.ledger_account_id]
-  
-  // the type of account has a significant impact on end calculation
-  // a composite foreign key is used (account_type_id, account_subtype_id)
-  account_type_id    char(3) [unique, not null, ref: > meta.account_type_detail.account_type_id]
-  account_subtype_id char(3) [ref: > meta.account_subtype_detail.account_subtype_id]
-
-  // conversion factor to user's locale base currency; currently multi-currency
-  // support is not designed in the database and only one is allowed globally
-  conversion_factor numeric(9, 5) [not null, default: 1.00000]
 
   // ? we may not have all the transactions, thus we can set an opening balance
   opening_balance             numeric(12, 2) [not null, default: 0.00]
@@ -254,35 +236,13 @@ table private.user_transaction {
   transfer_method meta.transaction_method
 
   // categorization of income based on different categories and sub-categories
-  income_category_head    varchar(16) [ref: > meta.income_category.income_category_name]
-  income_subcategory_head varchar(48) [ref: > meta.income_subcategory.income_subcategory_name]
+  income_category_key varchar(16) [ref: > meta.income_category_master.income_category_key]
 
   // categorization of transactions based on different categories and sub categories
-  expense_category_head    varchar(16) [ref: > meta.expense_category.expense_category_name]
-  expense_subcategory_head varchar(48) [ref: > meta.expense_subcategory.expense_subcategory_name]
+  expense_category_key varchar(16) [ref: > meta.expense_category_master.expense_category_key]
 
   // self account id, check 5e08526ef2cc89cb4acf5252a2520515d47bcc9d
   self_account_id char(5) [ref: > public.ledger_account_detail.ledger_account_id]
-
-  // ? utility field for developer purpose and have no other usage
-  created_on timestamp [not null, default: 'timezone(utc, now())']
-  updated_at timestamp
-}
-
-
-table private.user_points_transaction {
-  pts_transaction_idkey bigint [pk]
-
-  // a points transaction table must be associated with a ledger account
-  // ? todo check feasibility on this, and create a account w/o constraint
-  account_id char(5) [not null, ref: > public.ledger_account_detail.ledger_account_id]
-
-  // trx:: transaction short hand, created to reduce column name
-  // all the below columns are important and is fetched/kept as available from the passbook
-  trx_date   date                         [not null]
-  trx_type   meta.points_transaction_type [not null]
-  trx_desc   varchar(512)                 [not null]
-  trx_amount numeric(12, 2)               [not null]
 
   // ? utility field for developer purpose and have no other usage
   created_on timestamp [not null, default: 'timezone(utc, now())']
