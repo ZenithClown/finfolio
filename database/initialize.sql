@@ -66,6 +66,9 @@ from respective schema namespaces according to the schema name.
 \i database/schema/private/triggers/user_transaction.sql
 \i database/schema/private/triggers/user_points_transaction.sql
 
+-- ! populate the api endpoints using the initialize.sql
+\i database/api/initialize.sql
+
 -- ? populate all the tables with the seed data, only allow when all
 -- the above table creation succeds then proceed for constraint checks
 \i database/schema/meta/seed.sql
