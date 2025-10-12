@@ -1,0 +1,55 @@
+name: Validate PostgreSQL Schema
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate-schema:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up PostgreSQL
+      - name: Set up PostgreSQL
+        uses: docker://postgres:latest
+        env:
+          POSTGRES_DB: testdb
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        with:
+          entrypoint: "/bin/bash -c 'docker-entrypoint.sh postgres'"
+
+      # Step 3: Wait for PostgreSQL to start
+      - name: Wait for PostgreSQL to start
+        run: |
+          until pg_isready -h localhost -p 5432; do
+            echo "Waiting for PostgreSQL to start..."
+            sleep 2
+          done
+
+      # Step 4: Run the initialization SQL script to create schemas
+      - name: Run initialization SQL
+        run: |
+          psql -h localhost -U postgres -d testdb -f database/initialize.sql
+
+      # Step 5: Validate that the schemas were created
+      - name: Validate schemas
+        run: |
+          psql -h localhost -U postgres -d testdb -c "SELECT schema_name FROM information_schema.schemata WHERE schema_name IN ('meta', 'private');"
+      
+      # Step 6: Check for success in schema validation
+      - name: Check schema creation output
+        run: |
+          if [[ $(psql -h localhost -U postgres -d testdb -t -c "SELECT schema_name FROM information_schema.schemata WHERE schema_name IN ('meta', 'private');") == *"meta"* && $(psql -h localhost -U postgres -d testdb -t -c "SELECT schema_name FROM information_schema.schemata WHERE schema_name IN ('meta', 'private');") == *"private"* ]]; then
+            echo "Schemas are validated successfully."
+          else
+            echo "Schema validation failed."
+            exit 1
+          fi
