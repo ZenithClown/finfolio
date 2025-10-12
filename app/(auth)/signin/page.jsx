@@ -1,37 +1,51 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 const SigninPage = () => {
   const router = useRouter();
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({ usernameOrEmail: "", password: "" });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  // Preload a mock user for testing
-  useEffect(() => {
-    if (!sessionStorage.getItem("user")) {
-      const mockUser = {
-        fullName: "John Doe",
-        username: "johndoe",
-        email: "john@example.com",
-        dateOfBirth: "1990-01-01",
-        password: "Password123", // plaintext for mock only
-      };
-      sessionStorage.setItem("user", JSON.stringify(mockUser));
-    }
-  }, []);
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
-    if (storedUser && (storedUser.email === form.email || storedUser.username === form.email) && storedUser.password === form.password) {
-      sessionStorage.setItem("isLoggedIn", "true");
-      router.push("/dashboard");
-    } else {
-      alert("Invalid credentials");
+    setLoading(true);
+    setError(""); // Reset any previous error before submitting
+
+    try {
+      // Send credentials (username/email and password) to the backend API
+      const response = await fetch("http://localhost:3100/rpc/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          p_login_by: form.usernameOrEmail,
+          p_password: form.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data) {
+        // If login is successful, store user data in session
+        sessionStorage.setItem("isLoggedIn", "true");
+        sessionStorage.setItem("user", JSON.stringify(data));
+        router.push("/dashboard");
+      } else {
+        // Handle invalid credentials
+        setError("Invalid credentials");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      setError("An error occurred while logging in. Please try again later.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -40,11 +54,18 @@ const SigninPage = () => {
       <form onSubmit={handleSubmit} className="w-full max-w-md bg-white shadow-lg rounded-xl p-6 space-y-4">
         <h1 className="text-2xl font-semibold text-center">Sign In</h1>
 
-        <Input type="text" placeholder="Email or Username" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+        <Input
+          type="text"
+          placeholder="Email or Username"
+          value={form.usernameOrEmail}
+          onChange={(e) => setForm({ ...form, usernameOrEmail: e.target.value })}
+        />
         <Input type="password" placeholder="Password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
 
-        <Button type="submit" className="w-full">
-          Sign In
+        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading ? "Signing In..." : "Sign In"}
         </Button>
 
         <p className="text-sm text-center text-gray-600">
@@ -52,12 +73,6 @@ const SigninPage = () => {
           <a href="/signup" className="text-blue-600 hover:underline">
             Sign Up
           </a>
-        </p>
-
-        <p className="mt-2 text-center text-gray-500 text-sm">
-          <strong>Test Credentials:</strong> <br />
-          Email/Username: <code>john@example.com</code> OR <code>johndoe</code> <br />
-          Password: <code>Password123</code>
         </p>
       </form>
     </div>

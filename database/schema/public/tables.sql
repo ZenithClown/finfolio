@@ -44,7 +44,14 @@ CREATE TABLE IF NOT EXISTS public.user_account_detail (
     CONSTRAINT fk_self_managed_by_user REFERENCES
       public.user_account_detail (username)
       ON DELETE SET NULL
-      ON UPDATE SET NULL
+      ON UPDATE SET NULL,
+
+  -- ..versionadded:: 2025-10-12 added password field for user login
+  -- ! Uses PgCrypto Extension to stored hased salted password (default)
+  -- ? INSERT ... VALUES (..., CRYPT('password', GEN_SALT('bf', 12)));
+  -- ? SELECT ... WHERE ..., password = CRYPT('password', password);
+  password
+    TEXT NOT NULL
 );
 
 
