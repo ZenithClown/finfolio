@@ -13,3 +13,19 @@ CREATE VIEW api.account_type_master_json AS (
     ORDER BY account_type_id, account_subtype_id
   ) t
 );
+
+
+CREATE VIEW api.expense_category_master_json AS (
+  SELECT ROW_TO_JSON(t) FROM (
+    SELECT * FROM meta.expense_category_master
+    ORDER BY expense_category_name, expense_subcategory_name
+  ) t
+);
+
+
+CREATE VIEW api.income_category_master_json AS (
+  SELECT ROW_TO_JSON(t) FROM (
+    SELECT * FROM meta.income_category_master
+    ORDER BY income_category_name, income_subcategory_name
+  ) t
+);
