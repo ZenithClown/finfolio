@@ -38,33 +38,26 @@ configuration file for more details and usages.
 CREATE SCHEMA api; -- default endpoints for rest api
 
 /********************************************************************
-  Optional Schema Namespace(s) - Create and/not Initialize Schema
-
-Optional schemas can be initialized and tables added into the database
-if the extension is required by the end user. This must be provided
-in a dropdown to take necessary actions during setup.
-
-  -- ..versionadded:: 2025-09-17 add the ``stocks`` schema for market
-
-The stocks schema represents stocks market data (mutual funds, shares,
-etc.) which can be tracked and analyzed.
-********************************************************************/
-
-CREATE SCHEMA stocks;
-
-/********************************************************************
   Order of Initialization of the Schema Objects
+
+The initialization script calls for the scripts under each of the
+schema derectory in the correct order. The database objects are called
+from respective schema namespaces according to the schema name.
 ********************************************************************/
 
 -- ? create master tables, typically under the ``meta`` schema
 \i database/schema/meta/types.sql
 \i database/schema/meta/tables.sql
 
+\i database/schema/meta/functions/root_user_exists.sql
+
 -- ? create public tables, typically under the ``public`` schema
 \i database/schema/public/tables.sql
 
 \i database/schema/public/functions/fiscalyear.sql
 \i database/schema/public/functions/onupdate.sql
+
+\i database/schema/public/triggers/ledger_account_detail.sql
 
 -- ? create private tables, typically under the ``private`` schema
 \i database/schema/private/tables.sql
