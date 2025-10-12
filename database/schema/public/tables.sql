@@ -32,7 +32,19 @@ CREATE TABLE IF NOT EXISTS public.user_account_detail (
     DATE,
 
   user_role
-    meta.user_role NOT NULL DEFAULT 'USER'
+    meta.user_role NOT NULL DEFAULT 'USER',
+
+  -- ..versionadded:: 2025-10-12 added managed by user to set relation
+  -- this can return the list of users who can manage this user and
+  -- thus establish a relationship - self table foreign key is used
+  -- ! if none, then user with the root privilege is assigned - and
+  -- one table can have only one root user; others can be sudo (*nix)
+  managed_by
+    VARCHAR(16)
+    CONSTRAINT fk_self_managed_by_user REFERENCES
+      public.user_account_detail (username)
+      ON DELETE SET NULL
+      ON UPDATE SET NULL
 );
 
 
