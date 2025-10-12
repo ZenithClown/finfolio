@@ -180,6 +180,9 @@ table public.user_account_detail {
   // patch for 5695350108a29424d2f6b5660c57c85dc836f29a
   managed_by varchar(16) [ref: > public.user_account_detail.username]
 
+  // patch for a100a43a21fd57ce20056690a81efae9484e1a37
+  password text [not null]
+
   note: '''
     Table Schema for an User Account
 
