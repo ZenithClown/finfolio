@@ -175,7 +175,10 @@ table public.user_account_detail {
 
   // ..versionchanged:: d747086d28cfb562936618fd6df7f7df91d10b44
   // get user role from custom enum data type, this is present in db
-  user_role     meta.user_role [not null, default: "USER"]
+  user_role meta.user_role [not null, default: "USER"]
+
+  // patch for 5695350108a29424d2f6b5660c57c85dc836f29a
+  managed_by varchar(16) [ref: > public.user_account_detail.username]
 
   note: '''
     Table Schema for an User Account
