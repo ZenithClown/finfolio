@@ -186,12 +186,12 @@ export default function DashboardPage() {
               {loading ? (
                 <p className="text-gray-500 text-center py-8 text-sm sm:text-base md:text-lg">Loading Chart...</p>
               ) : (
-                <div className="w-[110%] h-[95%]">
+                <div className="w-[100%] h-[95%]">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                       layout="vertical"
                       data={chartData}
-                      margin={{ top: 10, right: 20, left: 0, bottom: 10 }} // removed left padding
+                      margin={{ top: 10, right: 20, left: -75, bottom: 10 }} // removed left padding
                     >
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis
