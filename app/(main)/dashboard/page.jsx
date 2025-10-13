@@ -1,12 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+
 import { ChevronDown } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList } from "recharts";
+
+import { getSessionUser } from "@/lib/services/session/user";
+import { getAccounts, getNetWorth, getChartData } from "@/lib/services/security/accounts";
 
 export default function DashboardPage() {
   const [user, setUser] = useState(null);
@@ -19,64 +24,48 @@ export default function DashboardPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const storedUser = sessionStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    const sessionUser = getSessionUser();
+    if (sessionUser) {
+      setUser(sessionUser);
     } else {
       window.location.href = "/signin";
     }
   }, []);
 
   useEffect(() => {
-    const fetchAccounts = async () => {
+    const fetchInitialData = async () => {
       try {
-        const res = await fetch("http://localhost:3100/ledger_account_json");
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const result = await res.json();
-        const jsonAgg = result[0]?.json_agg || [];
-        const accountList = jsonAgg.map((obj) => {
-          const [id, name] = Object.entries(obj)[0];
-          return { id, name };
-        });
+        const accountList = await getAccounts();
+
+        // If the accounts are successfully fetched, set them in the state
         setAccounts(accountList);
-        setSelectedAccounts(accountList.map((a) => a.id));
+
+        // Extract `id`s for selected accounts
+        const ids = accountList.map((account) => account.id);
+        setSelectedAccounts(ids);
       } catch (err) {
-        console.error("Account fetch error:", err);
-        setError(err.message);
+        // Handle the error gracefully by updating the error state
+        setError(`Failed to fetch accounts: ${err.message}`);
       }
     };
-    fetchAccounts();
+
+    fetchInitialData();
   }, []);
 
   useEffect(() => {
-    if (selectedAccounts.length === 0) return;
+    if (selectedAccounts.length === 0) {
+      setNetWorth(null);
+      setChartData([]);
+      return;
+    }
 
     const fetchData = async () => {
       setLoading(true);
       setError(null);
       try {
-        const resKpi = await fetch("http://localhost:3100/rpc/net_worth", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ p_account_id: selectedAccounts }),
-        });
-        if (!resKpi.ok) throw new Error("Failed to fetch net worth");
-        const kpiData = await resKpi.json();
-        setNetWorth(kpiData);
-
-        const resChart = await fetch("http://localhost:3100/rpc/net_value_by_account", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ p_account_id: selectedAccounts }),
-        });
-        if (!resChart.ok) throw new Error("Failed to fetch chart data");
-        const chart = await resChart.json();
-
-        const formattedChart = chart.map((d) => ({
-          name: d.account_name || d.account_id,
-          value: d.net_value,
-        }));
-        setChartData(formattedChart);
+        const [netWorthData, chartDataResult] = await Promise.all([getNetWorth(selectedAccounts), getChartData(selectedAccounts)]);
+        setNetWorth(netWorthData);
+        setChartData(chartDataResult);
       } catch (err) {
         console.error(err);
         setError(err.message);
@@ -84,18 +73,16 @@ export default function DashboardPage() {
         setLoading(false);
       }
     };
+
     fetchData();
   }, [selectedAccounts]);
 
   const toggleAccount = (id) => {
-    if (selectedAccounts.includes(id)) {
-      setSelectedAccounts(selectedAccounts.filter((x) => x !== id));
-    } else {
-      setSelectedAccounts([...selectedAccounts, id]);
-    }
+    setSelectedAccounts((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   };
 
-  const allSelected = selectedAccounts.length === accounts.length;
+  const allSelected = accounts.length > 0 && selectedAccounts.length === accounts.length;
+
   const toggleSelectAll = () => {
     if (allSelected) {
       setSelectedAccounts([]);
@@ -112,11 +99,8 @@ export default function DashboardPage() {
       <p className="mt-2 text-gray-600 text-sm sm:text-base md:text-lg">
         Welcome back, <span className="font-medium">{user.fullName || user.username}</span> 🎉
       </p>
-
       <div className="mt-8 flex gap-4">
-        {/* Left Column: Account Selector + KPI Cards */}
         <div className="flex flex-col w-[30%] h-[300px] gap-4">
-          {/* Account Selector (10% height) */}
           <div className="flex-1" style={{ flex: 0.1 }}>
             <Popover open={dropdownOpen} onOpenChange={setDropdownOpen}>
               <PopoverTrigger asChild>
@@ -143,8 +127,6 @@ export default function DashboardPage() {
               </PopoverContent>
             </Popover>
           </div>
-
-          {/* Net Worth KPI Card (remaining 90% height) */}
           <div className="flex-1" style={{ flex: 0.9 }}>
             <Card className="h-full text-center shadow-md border border-gray-300 flex flex-col">
               <CardHeader className="pb-2">
@@ -175,8 +157,6 @@ export default function DashboardPage() {
             </Card>
           </div>
         </div>
-
-        {/* Right Column: Bar Chart */}
         <div className="w-[70%] h-[300px]">
           <Card className="h-full shadow-md border border-gray-300 flex flex-col">
             <CardHeader className="pb-2">
@@ -188,11 +168,7 @@ export default function DashboardPage() {
               ) : (
                 <div className="w-[100%] h-[95%]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      layout="vertical"
-                      data={chartData}
-                      margin={{ top: 10, right: 20, left: -75, bottom: 10 }} // removed left padding
-                    >
+                    <BarChart layout="vertical" data={chartData} margin={{ top: 10, right: 20, left: -75, bottom: 10 }}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis
                         type="number"
