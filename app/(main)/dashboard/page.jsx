@@ -11,6 +11,7 @@ import { ChevronDown } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList } from "recharts";
 
 import { getSessionUser } from "@/lib/services/session/user";
+import { getAccounts, getNetWorth, getChartData } from "@/lib/services/security/accounts";
 
 export default function DashboardPage() {
   const [user, setUser] = useState(null);
@@ -35,13 +36,19 @@ export default function DashboardPage() {
     const fetchInitialData = async () => {
       try {
         const accountList = await getAccounts();
+
+        // If the accounts are successfully fetched, set them in the state
         setAccounts(accountList);
-        setSelectedAccounts(accountList.map((a) => a.id));
+
+        // Extract `id`s for selected accounts
+        const ids = accountList.map((account) => account.id);
+        setSelectedAccounts(ids);
       } catch (err) {
-        console.error("Account fetch error:", err);
-        setError(err.message);
+        // Handle the error gracefully by updating the error state
+        setError(`Failed to fetch accounts: ${err.message}`);
       }
     };
+
     fetchInitialData();
   }, []);
 
