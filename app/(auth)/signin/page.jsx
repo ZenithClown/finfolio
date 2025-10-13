@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+import { API_RPC_BASE } from "@/app/config/constants";
+
 const SigninPage = () => {
   const router = useRouter();
   const [form, setForm] = useState({ usernameOrEmail: "", password: "" });
@@ -19,7 +21,7 @@ const SigninPage = () => {
 
     try {
       // Send credentials (username/email and password) to the backend API
-      const response = await fetch("http://localhost:3100/rpc/login", {
+      const response = await fetch(`${API_RPC_BASE}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
