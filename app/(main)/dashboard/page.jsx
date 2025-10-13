@@ -1,12 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+
 import { ChevronDown } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList } from "recharts";
+
+import { getSessionUser } from "@/lib/services/session/user";
 
 export default function DashboardPage() {
   const [user, setUser] = useState(null);
@@ -19,9 +23,9 @@ export default function DashboardPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const storedUser = sessionStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    const sessionUser = getSessionUser();
+    if (sessionUser) {
+      setUser(sessionUser);
     } else {
       window.location.href = "/signin";
     }
@@ -50,7 +54,6 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (selectedAccounts.length === 0) return;
-
     const fetchData = async () => {
       setLoading(true);
       setError(null);
@@ -71,7 +74,6 @@ export default function DashboardPage() {
         });
         if (!resChart.ok) throw new Error("Failed to fetch chart data");
         const chart = await resChart.json();
-
         const formattedChart = chart.map((d) => ({
           name: d.account_name || d.account_id,
           value: d.net_value,
@@ -96,6 +98,7 @@ export default function DashboardPage() {
   };
 
   const allSelected = selectedAccounts.length === accounts.length;
+
   const toggleSelectAll = () => {
     if (allSelected) {
       setSelectedAccounts([]);
@@ -112,7 +115,6 @@ export default function DashboardPage() {
       <p className="mt-2 text-gray-600 text-sm sm:text-base md:text-lg">
         Welcome back, <span className="font-medium">{user.fullName || user.username}</span> 🎉
       </p>
-
       <div className="mt-8 flex gap-4">
         {/* Left Column: Account Selector + KPI Cards */}
         <div className="flex flex-col w-[30%] h-[300px] gap-4">
@@ -143,7 +145,6 @@ export default function DashboardPage() {
               </PopoverContent>
             </Popover>
           </div>
-
           {/* Net Worth KPI Card (remaining 90% height) */}
           <div className="flex-1" style={{ flex: 0.9 }}>
             <Card className="h-full text-center shadow-md border border-gray-300 flex flex-col">
@@ -175,7 +176,6 @@ export default function DashboardPage() {
             </Card>
           </div>
         </div>
-
         {/* Right Column: Bar Chart */}
         <div className="w-[70%] h-[300px]">
           <Card className="h-full shadow-md border border-gray-300 flex flex-col">
