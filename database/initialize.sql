@@ -38,6 +38,19 @@ configuration file for more details and usages.
 CREATE SCHEMA api; -- default endpoints for rest api
 
 /********************************************************************
+  BASE Schema Namespace for API Configuration using PostgREST
+
+The PostgREST exposes all tables, views, functions and other objects
+by default under the exposed schema. The same can be restricted by
+using - (I) role base login systems, (II) creating different users
+with different permissions, etc. The ``base`` schema namespace is
+defined to expose functions/objects which is used by the API but is
+not directly required or should not be exposed to the user.
+********************************************************************/
+
+CREATE SCHEMA base;
+
+/********************************************************************
   Order of Initialization of the Schema Objects
 
 The initialization script calls for the scripts under each of the
