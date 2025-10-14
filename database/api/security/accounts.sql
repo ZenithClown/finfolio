@@ -79,7 +79,7 @@ CREATE OR REPLACE FUNCTION api.get_account_count_json (
   -- ! use like clause to search, with equal functionality
   -- by either passing % wild character search, or values directly
   -- returns all debit account types by default for querying
-  , p_account_type_key VARCHAR(7) = 'DBT/%'
+  , p_account_type_key VARCHAR(7) = NULL
 )
 RETURNS JSON AS $$
 BEGIN
