@@ -36,6 +36,23 @@ SELECT * FROM api.get_ledger_account_json('username'); -- default
 SELECT * FROM api.get_ledger_account_json('username', NULL); -- all
 ```
 
+Get Ledger Account Count JSON : /rpc/get_account_count_json
+============================================================
+
+Get a list of account by primary account type (name) for a given user
+based on the dynamic query with additional optional parameter to fetch
+the count by account type key.
+
+```json
+[
+  {'Credit Account' : 3},
+  ...
+]
+```
+
+The function accepts the same parameters as above, be default returns
+the count of all accounts by types.
+
 Copyright © [2025] Debmalya Pramanik (ZenithClow)
 ********************************************************************/
 
