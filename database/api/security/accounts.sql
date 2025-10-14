@@ -55,25 +55,14 @@ BEGIN
         , t.account_name
       ))
     FROM (
-      WITH user_role_cte AS (
-        SELECT user_role FROM public.user_account_detail
-        WHERE username = p_username
-      ), usernames_cte AS (
-        SELECT DISTINCT username
-        FROM public.user_account_detail
-        WHERE
-          CASE
-            WHEN (SELECT user_role FROM user_role_cte) = 'ROOT' THEN TRUE
-          ELSE username = p_username OR managed_by = p_username
-          END
-      )
-
       SELECT
         ledger_account_id
         , account_name
       FROM public.ledger_account_detail
       WHERE
-        account_owner IN (SELECT username FROM usernames_cte)
+        account_owner IN (
+          SELECT managed_username FROM base.get_managed_users(p_username)
+        )
         AND CASE
           WHEN p_account_type_key IS NULL THEN TRUE
           ELSE account_type_key LIKE p_account_type_key
@@ -100,19 +89,6 @@ BEGIN
         , t.account_count
       ))
     FROM (
-      WITH user_role_cte AS (
-        SELECT user_role FROM public.user_account_detail
-        WHERE username = p_username
-      ), usernames_cte AS (
-        SELECT DISTINCT username
-        FROM public.user_account_detail
-        WHERE
-          CASE
-            WHEN (SELECT user_role FROM user_role_cte) = 'ROOT' THEN TRUE
-          ELSE username = p_username OR managed_by = p_username
-          END
-      )
-
       SELECT
         accounts.account_type_name
         , COUNT(*) AS account_count
@@ -120,7 +96,9 @@ BEGIN
       LEFT JOIN meta.account_type_master accounts ON
         ledgers.account_type_key = accounts.account_type_key
       WHERE
-        account_owner IN (SELECT username FROM usernames_cte)
+        account_owner IN (
+          SELECT managed_username FROM base.get_managed_users(p_username)
+        )
         AND CASE
           WHEN p_account_type_key IS NULL THEN TRUE
           ELSE ledgers.account_type_key LIKE p_account_type_key
