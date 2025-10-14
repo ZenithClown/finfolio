@@ -8,8 +8,8 @@ under the ROOT/SUDO list while a USER can view only their account.
 Documentation for the function with changelog (if any) is documented
 as below:
 
-Get Ledger Account JSON : /rpc/get_ledger_account_json
-======================================================
+-- #region Get Ledger Account JSON : /rpc/get_ledger_account_json
+=================================================================
 
 Get the list of ledger accounts for an already logged in user based
 on the function that returns the value in a JSON format like below:
@@ -36,8 +36,10 @@ SELECT * FROM api.get_ledger_account_json('username'); -- default
 SELECT * FROM api.get_ledger_account_json('username', NULL); -- all
 ```
 
-Get Ledger Account Count JSON : /rpc/get_account_count_json
-============================================================
+-- #endregion
+
+-- #region Get Ledger Account Count JSON : /rpc/get_account_count_json
+======================================================================
 
 Get a list of account by primary account type (name) for a given user
 based on the dynamic query with additional optional parameter to fetch
@@ -52,6 +54,8 @@ the count by account type key.
 
 The function accepts the same parameters as above, be default returns
 the count of all accounts by types.
+
+-- #endregion
 
 Copyright © [2025] Debmalya Pramanik (ZenithClow)
 ********************************************************************/
