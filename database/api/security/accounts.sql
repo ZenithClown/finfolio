@@ -83,3 +83,50 @@ BEGIN
   );
 END
 $$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION api.get_account_count_json (
+  p_username VARCHAR(16)
+  -- ! use like clause to search, with equal functionality
+  -- by either passing % wild character search, or values directly
+  -- returns all debit account types by default for querying
+  , p_account_type_key VARCHAR(7) = 'DBT/%'
+)
+RETURNS JSON AS $$
+BEGIN
+  RETURN (
+    SELECT JSON_AGG(JSON_BUILD_OBJECT(
+        t.account_type_name
+        , t.account_count
+      ))
+    FROM (
+      WITH user_role_cte AS (
+        SELECT user_role FROM public.user_account_detail
+        WHERE username = p_username
+      ), usernames_cte AS (
+        SELECT DISTINCT username
+        FROM public.user_account_detail
+        WHERE
+          CASE
+            WHEN (SELECT user_role FROM user_role_cte) = 'ROOT' THEN TRUE
+          ELSE username = p_username OR managed_by = p_username
+          END
+      )
+
+      SELECT
+        accounts.account_type_name
+        , COUNT(*) AS account_count
+      FROM public.ledger_account_detail ledgers
+      LEFT JOIN meta.account_type_master accounts ON
+        ledgers.account_type_key = accounts.account_type_key
+      WHERE
+        account_owner IN (SELECT username FROM usernames_cte)
+        AND CASE
+          WHEN p_account_type_key IS NULL THEN TRUE
+          ELSE ledgers.account_type_key LIKE p_account_type_key
+          END
+      GROUP BY accounts.account_type_name
+    ) t
+  );
+END
+$$ LANGUAGE plpgsql;
