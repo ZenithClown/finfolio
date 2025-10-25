@@ -4,12 +4,18 @@ Personal Finance DB (finfolio) Initialization Statement (PostgreSQL)
 The initialize statement for getting started with the personal finance
 management application. The table structure are defined under the
 ``database/schema`` directory, while the initial seed data are defined
-under the ``database/seed`` directory.
+under respective schemas ``database/schema/<name>/seed.sql`` files.
 
+-- #region:: Legal Disclaimer
 The system is so defined that it is upto an end user to maintain the
-security of the tables and data. The owner/maintainer of the project
+security of the tables and data. The owner/maintainer of this project
 is not responsible for any data loss or data corruption and should not
 be held liable for any data leakage.
+-- #endregion
+
+-- #region:: DB Init Script
+The initialization script creates the database ``finfolio`` and the
+underlying required schemas is as below.
 
 .. code-block:: sql
 
@@ -17,6 +23,16 @@ be held liable for any data leakage.
     OWNER = postgres
     ENCODING = 'UTF8'
     CONNECTION LIMIT = -1;
+
+Once the database is created, the initialization script can be
+executed from the command line to initialize the database, underlying
+tables and seed data.
+
+.. code-block:: bash
+
+  $ psql -U postgres -d finfolio -f database/initialize.sql
+
+-- #endregion
 
 Author  : Debmalya Pramanik
 Contact : dpramanik.official@gmail.com
@@ -30,9 +46,11 @@ CREATE SCHEMA private; -- schema to hold user transaction values
 /********************************************************************
   API Schema Namespace for PostgREST Configuration - RESTful API
 
+-- #region:: Add. Details
 PostgREST configuration is set on the default schema namespace `api`
 for all types of queries, stored procedures, functions, etc. Check the
 configuration file for more details and usages.
+-- #endregion
 ********************************************************************/
 
 CREATE SCHEMA api; -- default endpoints for rest api
@@ -40,12 +58,14 @@ CREATE SCHEMA api; -- default endpoints for rest api
 /********************************************************************
   BASE Schema Namespace for API Configuration using PostgREST
 
+-- #region:: Add. Details
 The PostgREST exposes all tables, views, functions and other objects
 by default under the exposed schema. The same can be restricted by
 using - (I) role base login systems, (II) creating different users
 with different permissions, etc. The ``base`` schema namespace is
 defined to expose functions/objects which is used by the API but is
 not directly required or should not be exposed to the user.
+-- #endregion
 ********************************************************************/
 
 CREATE SCHEMA base;
@@ -53,9 +73,11 @@ CREATE SCHEMA base;
 /********************************************************************
   Order of Initialization of the Schema Objects
 
+-- #region:: Add. Details
 The initialization script calls for the scripts under each of the
 schema derectory in the correct order. The database objects are called
 from respective schema namespaces according to the schema name.
+-- #endregion
 ********************************************************************/
 
 -- ? create master tables, typically under the ``meta`` schema
