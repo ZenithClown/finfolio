@@ -8,7 +8,7 @@
 <div align = "justify">
 
 **Project `finfolio`** is a personal finance management and analysis system that helps individuals track income, expenses, savings, and
-investments with **Python**, **PostgreSQL**, and interactive **Power BI dashboards**.
+investments with **Python**, **PostgreSQL**, and interactive **NextJS Admin Dashboard**.
 
 ## 📜 Project Objective
 
@@ -42,7 +42,7 @@ are as follows:
 ## 📜 Getting Started
 
 This is now a [NextJS](https://nextjs.org) project using [PostgREST](https://docs.postgrest.org/en/v13/) that automatically
-provides REST API for the underlying tables and data. Since the data is hosted in a secured cloud of choice by the end user,
+provides RESTful API for the underlying tables and data. Since the data is hosted in a secured cloud of choice by the end user,
 so any new changes in the database can automatically reflect in the RESTful API design without updating the underlying ORM
 models giving the felxibility and reducing coding dependency when the underying is updated.
 
