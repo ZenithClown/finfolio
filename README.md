@@ -33,9 +33,9 @@ are as follows:
 | MVP Feature | Feature Note | Development Status |
 | --- | --- | :---: |
 | ✅ **Fully Offline Operation** | Data is Stored and Managed by End-User. | 🚧 |
-| ✅ **Zero Third-Party Data Sharing** | No Data Sharing/Third-Party Integration. | 🚧 |
+| ✅ **Zero Third-Party Data Sharing** | No Data Sharing/Third-Party Integration. | ✅ |
 | ✅ **Flexible Data Entry** | Manual/Import Flat Files | 🚧 |
-| ✅ **Essential Financial Dashboards** | Intercative PowerBI Dashboard | 🚧 |
+| ✅ **Essential Financial Dashboards** | Intercative NextJS Admin Dashboard | 🚧 |
 
 </div>
 
