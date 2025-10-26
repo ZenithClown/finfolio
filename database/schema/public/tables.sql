@@ -78,9 +78,6 @@ CREATE TABLE IF NOT EXISTS public.ledger_account_detail (
       ON DELETE CASCADE
       ON UPDATE CASCADE,
 
-  account_subtype_id
-    CHAR(3),
-
   account_opened_on
     DATE NOT NULL,
 
