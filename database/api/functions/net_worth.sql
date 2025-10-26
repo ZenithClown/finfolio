@@ -90,3 +90,55 @@ BEGIN
   );
 END
 $$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION api.net_value_by_account_type(
+  p_username VARCHAR(16)
+  -- ! use like clause to search, with equal functionality
+  -- by either passing % wild character search, or values directly
+  -- returns all debit account types by default for querying
+  , p_account_type_key VARCHAR(7) = NULL
+)
+RETURNS TABLE (
+  account_type_id CHAR(3)
+  , account_type_name VARCHAR(32)
+  , account_subtype_id CHAR(3)
+  , account_subtype_name VARCHAR(34)
+  , net_value NUMERIC(12, 2)
+  , last_updated DATE
+) AS $$
+BEGIN
+  RETURN QUERY (
+    SELECT
+      accounts.account_type_id
+      , accounts.account_type_name
+      , accounts.account_subtype_id
+      , accounts.account_subtype_name
+      , SUM(
+        CASE
+          WHEN tbl.trx_type = 'DEPOSIT' THEN tbl.trx_amount
+          WHEN tbl.trx_type = 'WITHDRAW' THEN tbl.trx_amount * -1
+          ELSE 0 END
+      ) AS net_value
+      , MAX(tbl.trx_date) AS last_updated
+    FROM private.user_transaction tbl
+    LEFT JOIN public.ledger_account_detail ledgers
+      ON tbl.account_id = ledgers.ledger_account_id
+    LEFT JOIN meta.account_type_master accounts
+      ON ledgers.account_type_key = accounts.account_type_key
+    WHERE
+      ledgers.account_owner IN (
+        SELECT managed_username FROM base.get_managed_users(p_username)
+      )
+      AND CASE
+        WHEN p_account_type_key IS NULL THEN TRUE
+        ELSE ledgers.account_type_key LIKE p_account_type_key
+        END
+    GROUP BY
+      accounts.account_type_id
+      , accounts.account_type_name
+      , accounts.account_subtype_id
+      , accounts.account_subtype_name
+  );
+END
+$$ LANGUAGE plpgsql;
