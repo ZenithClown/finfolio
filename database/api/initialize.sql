@@ -22,3 +22,6 @@ Copywright © [2024] Debmalya Pramanik (ZenithClown)
 \i database/api/functions/net_worth.sql
 \i database/api/security/accounts.sql
 \i database/api/security/login.sql
+
+-- ..versionadded:: 2026-06-07 [docs] surface descriptions via OpenAPI.
+\i database/api/comments.sql
