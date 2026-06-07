@@ -261,16 +261,16 @@ Status legend: ✅ fixed on `refactor/database`, ⏳ planned, 🕓 deferred.
 | 🟠 **F2**  | ✅ | (no existing RLS) | Owner-scoped tables wide-open. | `database/security/rls.sql` enables + FORCEs RLS on `user_account_detail` / `ledger_account_detail` / `points_account_detail` / `private.user_transaction` / `private.user_points_transaction`; policies use `base.current_username()` → `base.get_managed_users()`. |
 | 🟠 **B15** | 🕓 | `database/api/functions/net_worth.sql` | Self-transfers via `self_account_id` cause one-leg miss in net-worth. | Resolved by §4.1 (every event balanced) — Phase 3. |
 | 🟡 **B12** | ✅ | `schema.dbml` vs SQL | DBML drift: `account_type_key char(3)` (real: VARCHAR(7)); category keys `varchar(16)` (real: 65); `updated_at` (real: `updated_on`); missing `points_account_detail`; missing audit columns; outdated note. | Resynced in this phase. |
-| 🟡 **B13** | ⏳ | `meta.account_type_master.account_type_key VARCHAR(7)` | Tight: a 4-char subtype overflows. | Phase 2. |
-| 🟡 **B14** | ⏳ | `database/schema/meta/seed.sql` L73, L77 | Uses `''` instead of `NULL` for missing subcategory. | Phase 2. |
-| 🟡 **B16** | ⏳ | `public/tables.sql` L20 | `uq_user_fullname UNIQUE` contradicts the comment. | Phase 2. |
+| 🟡 **B13** | ✅ | `meta.account_type_master.account_type_key VARCHAR(7)` | Tight: a 4-char subtype overflows. | Widened to VARCHAR(16) on master + ledger/points FK columns + 3 RPC param signatures (Phase 2). |
+| 🟡 **B14** | ✅ | `database/schema/meta/seed.sql` L73, L77 | Uses `''` instead of `NULL` for missing subcategory. | Seed rows now use NULL + idempotent UPDATE backfill (Phase 2). |
+| 🟡 **B16** | ✅ | `public/tables.sql` L20 | `uq_user_fullname UNIQUE` contradicts the comment. | UNIQUE dropped; replaced with case-insensitive index `ix_user_account_detail_fullname_lower` (Phase 2). |
 | 🟡 **B17** | 🕓 | `public.fiscalyear` | Result not stored anywhere. | After §4.1 refactor (Phase 3). |
-| 🟡 **B18** | ⏳ | Multiple tables | Missing CHECKs. | Phase 2. |
-| 🟡 **B20** | ⏳ | `public/tables.sql` L29 | Phone regex allows empty string. | Phase 2. |
-| 🟡 **B21** | ⏳ | All FK columns | No covering B-tree indexes. | Phase 2. |
-| 🟡 **B22** | ⏳ | `stocks.historic_public_offering` PK = `isin_code` | One asset cannot have IPO + later FPO. | Phase 2. |
-| 🟡 **B23** | ⏳ | `stocks.user_transaction.trade_quantity NUMERIC(12,2)` | MF units have 3-4 decimals. | Phase 2. |
-| 🟡 **B24** | ⏳ | `stocks.asset_symbol_master` | Missing `UNIQUE (isin_code, stock_exchange)`. | Phase 2. |
+| 🟡 **B18** | ✅ | Multiple tables | Missing CHECKs. | 12 domain CHECKs in new `schema/constraints.sql` (idempotent ADD/DROP); covers date ordering, positive amounts, IPO price floor/ceiling (Phase 2). |
+| 🟡 **B20** | ✅ | `public/tables.sql` L29 | Phone regex allows empty string. | Tightened to `phone IS NULL OR phone ~ '^[0-9+\- ]+$'` (Phase 2). |
+| 🟡 **B21** | ✅ | All FK columns | No covering B-tree indexes. | 16 indexes in new `schema/indexes.sql` + composite `(account_id, trx_date)` for dashboards (Phase 2). |
+| 🟡 **B22** | ✅ | `stocks.historic_public_offering` PK = `isin_code` | One asset cannot have IPO + later FPO. | Composite PK `(isin_code, po_type, opening_date)` with upgrade DO block (Phase 2). |
+| 🟡 **B23** | ✅ | `stocks.user_transaction.trade_quantity NUMERIC(12,2)` | MF units have 3-4 decimals. | Widened to NUMERIC(18,6) with idempotent ALTER COLUMN (Phase 2). |
+| 🟡 **B24** | ✅ | `stocks.asset_symbol_master` | Missing `UNIQUE (isin_code, stock_exchange)`. | Added inline + idempotent ALTER for upgrades (Phase 2). |
 | 🟡 **B25** | ✅ | `public.user_account_detail`, `public.ledger_account_detail` | No `updated_on`; `onupdate()` not bound. | TIMESTAMPTZ `created_on`/`updated_on` added (idempotent ALTER); triggers bound; `onupdate()` switched `CURRENT_TIMESTAMP` → `clock_timestamp()` so updates within the same txn still advance. |
 
 ### 6.3 Quality / Convention
@@ -296,8 +296,9 @@ Status legend: ✅ fixed on `refactor/database`, ⏳ planned, 🕓 deferred.
 **Deferred:** Q3 (sqitch migration tooling) — large scope; promoted to its own phase before Phase 2.
 **Verification:** full init exits 0 on first run AND on re-run against populated DB; JWT signature verified via independent HMAC recompute; RLS verified by three claims (ROOT/managed/orphan) → three distinct row sets + `web_anon` `permission denied`; net_worth E2E reproduces Phase 0 baseline ₹43,500.
 
-### Phase 2 — Schema Correctness (≈2 days)
-B13, B14, B16, B18, B20, B21, B22, B23, B24, E11 (surrogate keys for category masters), E12 (richer `transaction_method` — convert ENUM to lookup table for extensibility).
+### Phase 2 — Schema Correctness ✅ COMPLETE
+B13, B14, B16, B18, B20, B21, B22, B23, B24 — all delivered on `refactor/database` in 5 atomic commits (data-quality nits → CHECKs → FK indexes → stocks fixes → account_type_key widening). E11 (surrogate keys for category masters) and E12 (richer `transaction_method` lookup table) **deferred to Phase 3** because both are entangled with the §4.1 double-entry refactor and require data migration that is cleaner to do once.
+**Verification:** twice-run idempotency holds; all CHECK constraints verified via negative-case smoke tests; `api.net_worth` continues to return the Phase 0 baseline (₹43,500); composite PO PK accepts IPO + later FPO; mutual-fund unit precision retained as 123.456700.
 
 ### Phase 3 — Free-Tier Domain Features (≈2 weeks)
 * §4.1 Double-entry refactor (Q5) — biggest change; full data migration of existing `private.user_transaction` → `transaction_header` + `transaction_line`.
