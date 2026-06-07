@@ -26,8 +26,13 @@ CREATE TABLE IF NOT EXISTS stocks.user_transaction (
   trade_type
     stocks.trade_type NOT NULL,
 
+  -- ..versionchanged:: 2026-06-07 [B23] widen trade_quantity. Mutual
+  -- fund units (and fractional ETF holdings) routinely carry 3-4
+  -- decimals; NUMERIC(12,2) silently truncated. Bumped to (18,6) to
+  -- match AMFI NAV precision (4 dp) with headroom for crypto-style
+  -- assets later.
   trade_quantity
-    NUMERIC(12, 2) NOT NULL,
+    NUMERIC(18, 6) NOT NULL,
 
   trade_price
     NUMERIC(12, 2) NOT NULL,
@@ -41,3 +46,8 @@ CREATE TABLE IF NOT EXISTS stocks.user_transaction (
   trade_special_flag
     stocks.trade_special_flag
 );
+
+-- ..versionadded:: 2026-06-07 [B23] idempotent widening for upgrades.
+-- Lossless on PG (just rewrites pg_attribute).
+ALTER TABLE stocks.user_transaction
+  ALTER COLUMN trade_quantity TYPE NUMERIC(18, 6);
