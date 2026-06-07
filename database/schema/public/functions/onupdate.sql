@@ -34,7 +34,12 @@ CREATE OR REPLACE FUNCTION public.onupdate() RETURNS TRIGGER
 LANGUAGE plpgsql AS
 $$
 BEGIN
-    NEW.updated_on = CURRENT_TIMESTAMP;
+    -- ..versionchanged:: 2026-06-07 [B25] use clock_timestamp() so the
+    -- value reflects the actual UPDATE moment rather than the
+    -- enclosing transaction's start (CURRENT_TIMESTAMP). Matters when
+    -- INSERT + UPDATE happen in the same transaction (test fixtures,
+    -- bulk imports) and for accurate "last modified" auditing.
+    NEW.updated_on = clock_timestamp();
     RETURN NEW;
 END;
 $$;

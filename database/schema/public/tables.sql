@@ -51,8 +51,27 @@ CREATE TABLE IF NOT EXISTS public.user_account_detail (
   -- ? INSERT ... VALUES (..., CRYPT('password', GEN_SALT('bf', 12)));
   -- ? SELECT ... WHERE ..., password = CRYPT('password', password);
   password
-    TEXT NOT NULL
+    TEXT NOT NULL,
+
+  -- ..versionadded:: 2026-06-07 [B25] audit columns. `created_on` is
+  -- immutable insertion timestamp; `updated_on` is maintained by the
+  -- public.onupdate() BEFORE UPDATE trigger (bound in
+  -- public/triggers/user_account_detail.sql).
+  created_on
+    TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_on
+    TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+
+-- ..versionadded:: 2026-06-07 [B25] idempotent ALTER for clusters
+-- created before audit columns existed. Re-running initialize.sql on
+-- an existing DB without these guards would still leave old tables
+-- column-less because CREATE TABLE IF NOT EXISTS is a no-op.
+ALTER TABLE public.user_account_detail
+  ADD COLUMN IF NOT EXISTS created_on TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE public.user_account_detail
+  ADD COLUMN IF NOT EXISTS updated_on TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP;
 
 
 CREATE TABLE IF NOT EXISTS public.ledger_account_detail (
@@ -93,8 +112,19 @@ CREATE TABLE IF NOT EXISTS public.ledger_account_detail (
   -- ? field is useful if you do not have complete historical data
   -- default should be `account_opened_on` date
   opening_balance_recorded_on
-    DATE NOT NULL
+    DATE NOT NULL,
+
+  -- ..versionadded:: 2026-06-07 [B25] audit columns for ledger accounts
+  created_on
+    TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_on
+    TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE public.ledger_account_detail
+  ADD COLUMN IF NOT EXISTS created_on TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE public.ledger_account_detail
+  ADD COLUMN IF NOT EXISTS updated_on TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP;
 
 
 CREATE TABLE IF NOT EXISTS public.points_account_detail (
