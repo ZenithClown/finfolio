@@ -44,6 +44,22 @@ CREATE SCHEMA meta; -- schema for configuration values
 CREATE SCHEMA private; -- schema to hold user transaction values
 
 /********************************************************************
+  Required Extensions
+
+-- ..versionadded:: 2026-06-07 [B9] declare required PostgreSQL extensions
+explicitly. Without `pgcrypto` the cluster lacks `crypt()` and
+`gen_salt()`, which are used by user creation and `api.login` for
+bcrypt password hashing. Without it those calls fail at runtime with
+"function crypt(text, text) does not exist".
+
+`gen_random_uuid()` used by `public.ledger_account_detail` is a builtin
+since PostgreSQL 13 and does not require an extension. We still declare
+`pgcrypto` first so older clusters degrade gracefully.
+********************************************************************/
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+/********************************************************************
   API Schema Namespace for PostgREST Configuration - RESTful API
 
 -- #region:: Add. Details
