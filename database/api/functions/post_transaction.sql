@@ -104,8 +104,10 @@ BEGIN
     v_counter := p_counter_account_id;
   ELSIF p_trx_type = 'DEPOSIT' THEN
     v_counter := 'SYSIN';
+    PERFORM meta.ensure_system_accounts(v_owner);
   ELSIF p_trx_type = 'WITHDRAW' THEN
     v_counter := 'SYSEX';
+    PERFORM meta.ensure_system_accounts(v_owner);
   ELSE
     RAISE EXCEPTION 'post_transaction: trx_type % requires p_counter_account_id', p_trx_type;
   END IF;

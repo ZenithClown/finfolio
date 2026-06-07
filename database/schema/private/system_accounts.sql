@@ -62,31 +62,11 @@ ON CONFLICT (account_type_key) DO NOTHING;
 
 -- Seed the two system accounts. They MUST be owned by a real user
 -- (account_owner FK), so we attach them to the first ROOT-role user
--- found at boot. If no ROOT user exists yet (greenfield install before
--- the dashboard wizard), we skip the insert; the dashboard's first-run
--- seeder is expected to re-run this script after creating root.
+-- found at boot. If no ROOT user exists yet (greenfield install) the
+-- helper returns FALSE and a deferred trigger on user_account_detail
+-- will retry the seed the moment the first ROOT user is created.
+-- See database/schema/meta/functions/ensure_system_accounts.sql.
 DO $$
-DECLARE
-  v_root  VARCHAR(16);
 BEGIN
-  SELECT username INTO v_root
-    FROM public.user_account_detail
-   WHERE user_role = 'ROOT'
-   ORDER BY created_on
-   LIMIT 1;
-
-  IF v_root IS NULL THEN
-    RAISE NOTICE 'system_accounts: no ROOT user yet, skipping SYSIN/SYSEX seed';
-    RETURN;
-  END IF;
-
-  INSERT INTO public.ledger_account_detail (
-    ledger_account_id, account_name, account_owner, account_type_key,
-    account_opened_on, opening_balance, opening_balance_recorded_on, is_system
-  ) VALUES
-    ('SYSIN', 'System: External Income Source', v_root, 'SYS/INC',
-     CURRENT_DATE, 0, CURRENT_DATE, TRUE),
-    ('SYSEX', 'System: External Expense Sink', v_root, 'SYS/EXP',
-     CURRENT_DATE, 0, CURRENT_DATE, TRUE)
-  ON CONFLICT (ledger_account_id) DO NOTHING;
+  PERFORM meta.ensure_system_accounts();
 END $$;

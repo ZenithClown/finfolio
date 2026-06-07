@@ -123,6 +123,13 @@ from respective schema namespaces according to the schema name.
 
 \i database/schema/meta/functions/root_user_exists.sql
 
+-- ..versionadded:: 2026-06-08 [Phase 5 hotfix] system-accounts seeder.
+-- Must exist BEFORE public/triggers/user_account_detail.sql (its
+-- AFTER-INSERT trigger calls this function) and BEFORE
+-- private/system_accounts.sql (which calls it for the boot-time
+-- best-effort seed).
+\i database/schema/meta/functions/ensure_system_accounts.sql
+
 -- ? create public tables, typically under the ``public`` schema
 \i database/schema/public/tables.sql
 

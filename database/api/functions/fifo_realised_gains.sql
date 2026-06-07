@@ -52,7 +52,7 @@ RETURNS TABLE (
     is_long_term    BOOLEAN
 )
 LANGUAGE plpgsql
-STABLE
+VOLATILE
 SECURITY DEFINER
 AS $$
 DECLARE
@@ -101,11 +101,11 @@ BEGIN
             -- Walk open lots oldest-first for the same instrument.
             FOR v_lot IN
                 SELECT *
-                  FROM _fifo_lots
-                 WHERE isin_code     = r_trade.isin_code
-                   AND exchange_name = r_trade.exchange_name
-                   AND qty_remaining > 0
-                 ORDER BY trade_date, ord
+                  FROM _fifo_lots fl
+                 WHERE fl.isin_code     = r_trade.isin_code
+                   AND fl.exchange_name = r_trade.exchange_name
+                   AND fl.qty_remaining > 0
+                 ORDER BY fl.trade_date, fl.ord
             LOOP
                 EXIT WHEN v_remaining <= 0;
 

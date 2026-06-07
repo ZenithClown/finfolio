@@ -249,7 +249,10 @@ Status legend: ✅ fixed on `refactor/database`, ⏳ planned, 🕓 deferred.
 | 🔴 **B10** | ✅ | `database/schema/meta/functions/root_user_exists.sql` | UPDATE of the existing root user re-fires the EXISTS check against itself → exception on every change. | Added `AND username <> NEW.username` to the EXISTS subquery. Verified with 5-case behavioural test. |
 | 🔴 **B11** | ⏳ | `database/initialize.sql` (whole) | Not idempotent. | Deferred to Phase 1 (sqitch adoption makes this moot). |
 | 🔴 **B26** | ✅ | `database/initialize.sql` L95 | References non-existent file `database/schema/public/triggers/ledger_account_detail.sql` (real file: `user_account_detail.sql`). | *Newly discovered during Phase 0 baseline run.* Path corrected. |
-| 🔴 **B27** | ✅ | `database/initialize.sql` + `database/api/initialize.sql` | `base/get_managed_users.sql`, `api/functions/*.sql`, `api/security/*.sql` never sourced — every documented RPC absent after init. | *Newly discovered during Phase 0 E2E run.* Added `\i` directives in correct dependency order. |
+| 🔴 **B27** | ✅ | `database/initialize.sql` + `database/api/initialize.sql` | `base/get_managed_users.sql`, `api/functions/*.sql`, `api/security/*.sql` never sourced - every documented RPC absent after init. | *Newly discovered during Phase 0 E2E run.* Added `\i` directives in correct dependency order. |
+| 🔴 **B28** | ✅ | `database/schema/private/system_accounts.sql` | SYSIN/SYSEX system contras only seeded if a ROOT user exists *at init time*; on greenfield installs `api.post_transaction` later 500s with `fk_tl_account_id` violation. | *Newly discovered during Phase 5 critical audit.* Extracted seed into `meta.ensure_system_accounts(p_owner)` helper + AFTER-INSERT trigger `trg_seed_system_accounts` on `public.user_account_detail` that auto-fires the first time a ROOT user appears. `api.post_transaction` also calls the helper defensively. |
+| 🔴 **B29** | ✅ | `database/api/functions/fifo_realised_gains.sql` | Function marked `STABLE` while it issues `CREATE TEMP TABLE` (write op) → `ERROR: CREATE TABLE is not allowed in a non-volatile function` on every invocation. | *Newly discovered during Phase 5 critical audit.* Switched to `VOLATILE`. |
+| 🔴 **B30** | ✅ | `database/api/functions/fifo_realised_gains.sql` | Ambiguous `isin_code` reference inside the per-trade lots SELECT (clashes with `RETURNS TABLE` OUT param) → `ERROR: column reference "isin_code" is ambiguous`. | *Newly discovered during Phase 5 critical audit.* Aliased `_fifo_lots fl` and qualified every column. |
 
 ### 6.2 P1 — Security & Correctness
 
@@ -324,12 +327,21 @@ B13, B14, B16, B18, B20, B21, B22, B23, B24 — all delivered on `refactor/datab
 
 **Deferred to Phase 4.5+ (need external code / API keys):** live FX/NAV fetchers, LLM summary RPC, alerts evaluator job, Tally/GnuCash/ITR exporters. Corporate-action application onto FIFO lots and `mv_holdings_vw` (the SPLIT 1:2 → quantity-doubling rule) is also deferred — the metadata is captured but not yet replayed.
 
-### Phase 5 — Documentation & Release ✅ COMPLETE (RC1)
-* `database/MIGRATION.md` — provisioning paths (one-shot psql + sqitch), upgrade scripts from pre-refactor / `@v0.2-phase2` baselines, breaking-change catalog, post-migration verification SQL.
-* `database/SECURITY.md` — trust boundary, the three-role triad (`web_anon`/`web_user`/`web_pro`), JWT lifecycle, RLS surface, `meta.audit_log` semantics, soft-delete pattern, idempotency, paid-tier gating, pen-test crib sheet.
-* `database/API.md` — narrative companion to PostgREST's OpenAPI: every `api.*` and `api_pro.*` RPC documented with params, return shape, SQLSTATE error catalogue, and `@v0.4-phase4` stability guarantees.
-* `VERSION` bumped to `v1.0.0-rc.1`. `CHANGELOG.md` filled with the Phase 0 → Phase 4 ledger.
-* dbdocs regeneration is left to the operator (`dbdocs build schema.dbml`) — the source DBML is the single source of truth and stays in lock-step with the schema on every phase.
+### Phase 5 - Documentation & Release ✅ COMPLETE (RC1)
+* `database/MIGRATION.md` - provisioning paths (one-shot psql + sqitch), upgrade scripts from pre-refactor / `@v0.2-phase2` baselines, breaking-change catalog, post-migration verification SQL.
+* `database/SECURITY.md` - trust boundary, the three-role triad (`web_anon`/`web_user`/`web_pro`), JWT lifecycle, RLS surface, `meta.audit_log` semantics, soft-delete pattern, idempotency, paid-tier gating, pen-test crib sheet.
+* `database/API.md` - narrative companion to PostgREST's OpenAPI: every `api.*` and `api_pro.*` RPC documented with params, return shape, SQLSTATE error catalogue, and `@v0.4-phase4` stability guarantees.
+* `VERSION` bumped to `v1.0.0-rc.1`. `CHANGELOG.md` filled with the Phase 0 -> Phase 4 ledger.
+* dbdocs regeneration is left to the operator (`dbdocs build schema.dbml`) - the source DBML is the single source of truth and stays in lock-step with the schema on every phase.
+
+### Phase 5 hotfix (2026-06-08) - critical audit
+Three latent bugs caught by the Phase 5 end-to-end greenfield audit:
+
+* **B28** SYSIN/SYSEX never auto-seeded on a greenfield install. Fix: extracted seed into `meta.ensure_system_accounts(p_owner)`; bound an `AFTER INSERT` trigger on `public.user_account_detail` (`trg_seed_system_accounts`) that auto-fires on the first ROOT user; `api.post_transaction` also calls the helper defensively before resolving SYSIN/SYSEX. Verified end-to-end: `sysin_before=0` -> create root -> `sysin_after=1` (owner=rootu, is_system=true) -> `api.post_transaction` returns UUID, `net_worth=1000`.
+* **B29** `api.fifo_realised_gains` marked `STABLE` but writes a TEMP TABLE -> always errored. Fix: `VOLATILE`.
+* **B30** `api.fifo_realised_gains` had an ambiguous `isin_code` (RETURNS TABLE OUT param vs `_fifo_lots` column). Fix: aliased `_fifo_lots fl` and qualified.
+
+DBML resync (`schema.dbml`) added the five missing Phase 4 tables: `stocks.daily_nav`, `stocks.corporate_action`, `stocks.dividend`, `stocks.price_alert`, `private.attachment`, and `meta.feature_flag`. After the hotfix, the smoke pack returns: `net_worth=43500` (Phase 0 baseline preserved), `idempotency uuid match`, `balance trigger rejected`, `audit_log=12`, `mv_holdings: 70 units, avg 53.33, unrealised 1866.67`, `FIFO: 80 sold, gain 2000, 465 days = long_term`, feature flag `false` by default, sqitch deploy/verify both green.
 
 ---
 

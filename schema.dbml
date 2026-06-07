@@ -454,3 +454,118 @@ table stocks.user_transaction {
   // check special flag enum type for more details
   trade_special_flag stocks.trade_special_flag
 }
+
+
+/********************************************************************
+  // ! Phase 4 §4.4 - Stocks v2 Market Data
+  -- ..versionadded:: 2026-06-08 [Phase 4]
+********************************************************************/
+
+table stocks.daily_nav {
+  // composite PK on (isin_code, exchange_name, nav_date); closing NAV + optional OHLC for one instrument-day.
+  isin_code     char(12)              [not null, ref: > stocks.assets_master.isin_code]
+  exchange_name stocks.stock_exchange [not null]
+  nav_date      date                  [not null]
+  nav_value     numeric(18, 6)        [not null, note: '> 0']
+
+  open_value    numeric(18, 6)
+  high_value    numeric(18, 6)
+  low_value     numeric(18, 6)
+  volume        bigint
+
+  source        varchar(32) [not null, default: 'manual']
+  created_on    timestamp   [not null, default: 'CURRENT_TIMESTAMP']
+
+  indexes {
+    (isin_code, exchange_name, nav_date) [pk]
+    (nav_date)
+  }
+}
+
+table stocks.corporate_action {
+  // SPLIT / BONUS / RIGHTS / MERGER / DEMERGER / BUYBACK / CONSOLIDATION / NAME_CHANGE / ISIN_CHANGE.
+  // payload JSONB carries action-specific fields (ratio, target_isin, price, etc.).
+  corporate_action_id bigint [pk, increment]
+  isin_code           char(12) [not null, ref: > stocks.assets_master.isin_code]
+  action_type         stocks.corporate_action_type [not null]
+  ex_date             date [not null]
+  record_date         date
+  effective_date      date
+  payload             json [not null, default: '{}']
+  notes               varchar(512)
+  created_on          timestamp [not null, default: 'CURRENT_TIMESTAMP']
+  created_by          varchar(16)
+
+  indexes {
+    (isin_code, action_type, ex_date) [unique]
+    (isin_code)
+    (ex_date)
+  }
+}
+
+table stocks.dividend {
+  dividend_id      bigint [pk, increment]
+  isin_code        char(12) [not null, ref: > stocks.assets_master.isin_code]
+  declaration_date date [not null]
+  ex_date          date [not null]
+  record_date      date
+  payment_date     date
+  amount_per_unit  numeric(18, 6) [not null, note: '> 0']
+  currency_code    char(3) [not null, default: 'INR']
+  dividend_type    varchar(16) [not null, default: 'FINAL']
+  created_on       timestamp [not null, default: 'CURRENT_TIMESTAMP']
+
+  indexes {
+    (isin_code, ex_date, dividend_type) [unique]
+  }
+}
+
+table stocks.price_alert {
+  // User-defined price triggers; evaluator (paid tier) gated by meta.feature_flag.alerts_engine.
+  alert_id         bigint [pk, increment]
+  username         varchar(16) [not null, ref: > public.user_account_detail.username]
+  isin_code        char(12)    [not null, ref: > stocks.assets_master.isin_code]
+  exchange_name    stocks.stock_exchange [not null]
+  trigger_type     stocks.alert_trigger_type [not null]
+  threshold_value  numeric(18, 6) [not null, note: '> 0']
+  is_active        boolean [not null, default: true]
+  auto_disable     boolean [not null, default: true]
+  last_fired_on    timestamp
+  last_fired_value numeric(18, 6)
+  created_on       timestamp [not null, default: 'CURRENT_TIMESTAMP']
+  updated_on       timestamp [not null, default: 'CURRENT_TIMESTAMP']
+}
+
+/********************************************************************
+  // ! Phase 4 §4.6 - Transaction Attachments (receipt blobs)
+********************************************************************/
+
+table private.attachment {
+  // Blob lives outside Postgres; we only store the pointer + SHA-256 for tamper-detection.
+  attachment_id     bigint [pk, increment]
+  transaction_uid   uuid [not null, ref: > private.transaction_header.transaction_uid]
+  original_filename varchar(255)  [not null]
+  content_type      varchar(128)  [not null]
+  size_bytes        bigint        [not null, note: '> 0']
+  content_sha256    char(64)      [not null, note: 'lower-case hex SHA-256']
+  storage_uri       varchar(1024) [not null]
+  created_on        timestamp     [not null, default: 'CURRENT_TIMESTAMP']
+  created_by        varchar(16)
+  deleted_on        timestamp
+  deleted_by        varchar(16)
+}
+
+/********************************************************************
+  // ! Phase 4 - Paid-tier feature flag registry
+********************************************************************/
+
+table meta.feature_flag {
+  // Toggled by paid-tier installers; free-tier ships with every flag = false.
+  feature_key   varchar(64) [pk]
+  description   varchar(512) [not null]
+  is_enabled    boolean [not null, default: false]
+  enabled_until timestamp
+  created_on    timestamp [not null, default: 'CURRENT_TIMESTAMP']
+  updated_on    timestamp [not null, default: 'CURRENT_TIMESTAMP']
+  updated_by    varchar(16)
+}
