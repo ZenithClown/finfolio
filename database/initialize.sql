@@ -86,6 +86,19 @@ not directly required or should not be exposed to the user.
 
 CREATE SCHEMA base;
 
+-- ..versionadded:: 2026-06-07 [B27] wire previously-orphaned base/api
+-- functions into the initializer. Prior to this fix:
+--   - base/get_managed_users.sql was never loaded
+--   - api/functions/*.sql were never loaded
+--   - api/security/*.sql were never loaded
+-- ...so all RPC endpoints (api.login, api.net_worth,
+-- api.get_ledger_account_json, api.get_account_count_json,
+-- api.net_value_by_account, api.net_value_by_account_type) were
+-- absent from a fresh database despite being shipped in the repo.
+-- Order matters: base.get_managed_users is consumed by several api.*
+-- functions so it must be created before the api initialization runs.
+\i database/base/get_managed_users.sql
+
 /********************************************************************
   Order of Initialization of the Schema Objects
 

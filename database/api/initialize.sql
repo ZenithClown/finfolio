@@ -15,3 +15,10 @@ Copywright © [2024] Debmalya Pramanik (ZenithClown)
 ********************************************************************/
 
 \i database/api/views/meta.sql
+
+-- ..versionadded:: 2026-06-07 [B27] include the RPC layer. Without
+-- these, PostgREST would expose only the three master views and none
+-- of the documented endpoints would resolve over HTTP.
+\i database/api/functions/net_worth.sql
+\i database/api/security/accounts.sql
+\i database/api/security/login.sql
