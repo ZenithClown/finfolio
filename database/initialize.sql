@@ -154,6 +154,10 @@ from respective schema namespaces according to the schema name.
 -- after every protected table exists (incl. stocks).
 \i database/schema/constraints.sql
 
+-- ..versionadded:: 2026-06-07 [B21] FK covering indexes + dashboard
+-- composites. Idempotent (CREATE INDEX IF NOT EXISTS).
+\i database/schema/indexes.sql
+
 -- ..versionadded:: 2026-06-07 [B7] include the optional stocks extension.
 -- The README and CLAUDE.md both advertise stocks tracking; the schema and
 -- master/transaction tables exist but were never wired into the master
