@@ -19,7 +19,7 @@ If you are an AI agent making changes inside `./database/**`, read this checklis
 6. Money columns are **`NUMERIC(18, 6)`** (not `(12,2)`) to support multi-currency, FX, and mutual-fund unit fractions. Every monetary row carries a `currency_code CHAR(3)` referencing `meta.currency_master`.
 7. Run `psql -f database/initialize.sql` against a clean DB and confirm exit code 0 before pushing.
 8. Update `../schema.dbml` in the same commit as any DDL change (DBML is the public-facing contract via dbdocs.io).
-9. Migrations live under `database/migrations/` and are managed by **sqitch** (decision Q3). Do not hand-edit applied migrations — add a new one.
+9. Migrations are managed by **sqitch** (decision Q3) under `database/{deploy,revert,verify}/`, tracked by `database/sqitch.plan`. Do not hand-edit applied migrations — add a new one. See `database/sqitch/README.md` for the full workflow.
 10. Open the §6 bug ledger before adding new features — many planned features depend on Phase 0/1 fixes.
 
 ---
@@ -43,7 +43,7 @@ Premium-only RPC lives in a separate schema **`api_pro`** (not yet created). Fea
 |---|----------|-------------|
 | Q1 | Double-entry is **free-tier**. | Header/lines schema split (E1) lands in Phase 3, not paid. |
 | Q2 | **PostgREST-native JWT** via `pgjwt`. | `api.login` returns a signed token; RLS policies read `request.jwt.claims`. |
-| Q3 | **sqitch** for migrations. | Plain SQL, PG-native, no JVM. New folder: `database/migrations/`. |
+| Q3 | **sqitch** for migrations. ✅ landed on `tooling/sqitch`. | Plain SQL, PG-native, no JVM. Layout: `database/sqitch.{conf,plan}` + `deploy/`, `revert/`, `verify/`. Baseline change `baseline_v02 @v0.2-phase2` wraps the post-Phase-2 `initialize.sql`; future changes ship one feature per change. See `database/sqitch/README.md`. |
 | Q4 | **Multi-currency from day one.** | Every monetary row carries `currency_code`; `meta.currency_master` + `meta.fx_rate` from v1. |
 | Q5 | **Double-entry storage, single-entry UX.** | One UI row → server expands to a header + 2 balanced lines. Reporting reads lines. |
 | Q6 | **Unified ledger** (points = ledger account with `currency='PTS'`). | Drops `public.points_account_detail` & `private.user_points_transaction`; deprecate gracefully. |
@@ -293,7 +293,7 @@ Status legend: ✅ fixed on `refactor/database`, ⏳ planned, 🕓 deferred.
 
 ### Phase 1 — Security & Hygiene (≈3 days)  ✅ COMPLETE (2026-06-07)
 **Shipped on `refactor/database`:** B11 (idempotent init), B8 (`web_anon`/`web_user`/`authenticator` roles + `postgrest.conf` rewrite + `db-max-rows`), B25 (audit columns + `clock_timestamp()` fix), B19 + Q2 (HMAC-SHA256 JWT in inline plpgsql — no `pgjwt` extension dependency), F2 (RLS policies on all owner-scoped tables driven by `request.jwt.claim.username`), CVE-2018-1058 search_path hardening across `api.*` / `base.*` / `meta.*` SECURITY DEFINER functions, COMMENT ON pass for Swagger, B12 DBML resync.
-**Deferred:** Q3 (sqitch migration tooling) — large scope; promoted to its own phase before Phase 2.
+**Deferred:** Q3 (sqitch migration tooling) — landed on `tooling/sqitch` after Phase 2; merged into `refactor/database` ahead of Phase 3 so every Phase 3 change ships as a sqitch migration.
 **Verification:** full init exits 0 on first run AND on re-run against populated DB; JWT signature verified via independent HMAC recompute; RLS verified by three claims (ROOT/managed/orphan) → three distinct row sets + `web_anon` `permission denied`; net_worth E2E reproduces Phase 0 baseline ₹43,500.
 
 ### Phase 2 — Schema Correctness ✅ COMPLETE

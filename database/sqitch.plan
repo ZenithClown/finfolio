@@ -1,0 +1,7 @@
+%syntax-version=1.0.0
+%project=finfolio
+%uri=https://github.com/ZenithClown/finfolio
+
+baseline_v02 2026-06-07T18:00:00Z finfolio dev <noreply@finfolio.local> # Phase 0+1+2 baseline: idempotent init, JWT, RLS, audit cols, CHECK constraints, FK indexes, stocks fixes, account_type_key VARCHAR(16).
+
+@v0.2-phase2 2026-06-07T18:00:00Z finfolio dev <noreply@finfolio.local> # Tag: post-Phase-2 baseline (refactor/database HEAD 5b86126).

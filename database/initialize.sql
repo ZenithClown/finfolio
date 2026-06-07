@@ -150,6 +150,19 @@ from respective schema namespaces according to the schema name.
 -- owner-scoped tables. Must run after roles + tables exist.
 \i database/security/rls.sql
 
+-- ..versionadded:: 2026-06-07 [B7] include the optional stocks extension.
+-- The README and CLAUDE.md both advertise stocks tracking; the schema and
+-- master/transaction tables exist but were never wired into the master
+-- initializer. Stocks tracking is an optional extension - if you do not
+-- want it, comment the line below. Future work: gate via \set var.
+--
+-- ..versionchanged:: 2026-06-07 [P3-ORDER-FIX] moved BEFORE constraints.sql
+-- and indexes.sql so they can ALTER stocks.* tables. Plain `psql -f` on a
+-- clean DB previously failed at constraints.sql:89 with "schema stocks
+-- does not exist"; the bug went unnoticed because earlier dev sessions
+-- always ran against a database that had been seeded once already.
+\i database/schema/stocks/initialize.sql
+
 -- ..versionadded:: 2026-06-07 [B18] domain CHECK constraints. Must run
 -- after every protected table exists (incl. stocks).
 \i database/schema/constraints.sql
@@ -157,13 +170,6 @@ from respective schema namespaces according to the schema name.
 -- ..versionadded:: 2026-06-07 [B21] FK covering indexes + dashboard
 -- composites. Idempotent (CREATE INDEX IF NOT EXISTS).
 \i database/schema/indexes.sql
-
--- ..versionadded:: 2026-06-07 [B7] include the optional stocks extension.
--- The README and CLAUDE.md both advertise stocks tracking; the schema and
--- master/transaction tables exist but were never wired into the master
--- initializer. Stocks tracking is an optional extension - if you do not
--- want it, comment the line below. Future work: gate via \set var.
-\i database/schema/stocks/initialize.sql
 
 -- ? populate all the tables with the seed data, only allow when all
 -- the above table creation succeds then proceed for constraint checks
