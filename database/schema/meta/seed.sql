@@ -28,7 +28,8 @@ VALUES
   ('RET/VPF', 'RET', 'Retirement Account', 'An account dedicated for savings for retirements, like PPF, VPF, NPS, etc.', 'VPF', 'Voluntary Providend Funds Account', NULL),
   ('TDA/FDS', 'TDA', 'Term Deposit Account', 'Term deposit accounts like FD/RD/etc. can be tracked here.', 'FDS', 'Fixed Deposit Account', NULL),
   ('TDA/RDS', 'TDA', 'Term Deposit Account', 'Term deposit accounts like FD/RD/etc. can be tracked here.', 'RDS', 'Recurring Deposit Account', NULL),
-  ('WLT', 'WLT', 'Wallet Account', 'A type of account for storing gift cards, points, cashbacks, rewards etc. informations.', NULL, NULL, NULL);
+  ('WLT', 'WLT', 'Wallet Account', 'A type of account for storing gift cards, points, cashbacks, rewards etc. informations.', NULL, NULL, NULL)
+ON CONFLICT (account_type_key) DO NOTHING;
 
 
 INSERT INTO meta.expense_category_master
@@ -67,8 +68,10 @@ VALUES
   ('ENTERTAINMENT/EVENT TICKET', 'ENTERTAINMENT', 'Entertainments like subscriptions, movies, etc.', 'EVENT TICKET', 'Events like sports, concert tickets, etc.'),
   ('ENTERTAINMENT/VIDEO GAMES', 'ENTERTAINMENT', 'Entertainments like subscriptions, movies, etc.', 'VIDEO GAMES', 'Spends on video games and other in-app game purchases.'),
   ('ENTERTAINMENT/MOVIES', 'ENTERTAINMENT', 'Entertainments like subscriptions, movies, etc.', 'MOVIES', 'Movie outing expenses.'),
-  ('ENTERTAINMENT/OTT SUBSCRIPTION', 'ENTERTAINMENT', 'Entertainments like subscriptions, movies, etc.', 'OTT SUBSCRIPTION', 'OTT subscription charges like Netflix/Prime/etc.');
+  ('ENTERTAINMENT/OTT SUBSCRIPTION', 'ENTERTAINMENT', 'Entertainments like subscriptions, movies, etc.', 'OTT SUBSCRIPTION', 'OTT subscription charges like Netflix/Prime/etc.')
+ON CONFLICT (expense_category_key) DO NOTHING;
 -- ..versionchanged:: 2026-06-07 [B3] removed stray comma before terminating semicolon
+-- ..versionchanged:: 2026-06-07 [B11] added ON CONFLICT DO NOTHING for idempotency
 
 
 INSERT INTO meta.income_category_master
@@ -78,4 +81,5 @@ VALUES
   ('BUSINESS/CONSULTING', 'BUSINESS', 'Income from self-employment or business', 'CONSULTING', 'Income from self-consulting, moonlighting, part-time jobs, etc.'),
   ('INVENTMENT/DIVIDEND', 'INVENTMENT', 'Income from investments like stocks, bonds, etc.', 'DIVIDEND', 'Dividend income from stocks, bonds, etc.'),
   ('INVENTMENT/INTEREST', 'INVENTMENT', 'Income from investments like stocks, bonds, etc.', 'INTEREST', 'Interest income from savings, fixed deposits, etc.'),
-  ('RENTAL INCOME', 'RENTAL INCOME', 'Income from rental property.', '', '');
+  ('RENTAL INCOME', 'RENTAL INCOME', 'Income from rental property.', '', '')
+ON CONFLICT (income_category_key) DO NOTHING;

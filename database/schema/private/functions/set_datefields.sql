@@ -1,4 +1,4 @@
-CREATE FUNCTION private.set_datefields()
+CREATE OR REPLACE FUNCTION private.set_datefields()
   RETURNS TRIGGER AS $$
   BEGIN
     NEW.trx_fiscalyear := public.fiscalyear(NEW.trx_date);

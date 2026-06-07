@@ -17,7 +17,7 @@ etc.) which can be tracked and analyzed.
 Copywright © [2025] Debmalya Pramanik (ZenithClown)
 ********************************************************************/
 
-CREATE SCHEMA stocks;
+CREATE SCHEMA IF NOT EXISTS stocks;
 
 -- ? create tables and seed data in below sequence
 \i database/schema/stocks/types.sql

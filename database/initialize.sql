@@ -40,8 +40,8 @@ Contact : dpramanik.official@gmail.com
 Copywright © [2024] Debmalya Pramanik (ZenithClown)
 ********************************************************************/
 
-CREATE SCHEMA meta; -- schema for configuration values
-CREATE SCHEMA private; -- schema to hold user transaction values
+CREATE SCHEMA IF NOT EXISTS meta;
+CREATE SCHEMA IF NOT EXISTS private;
 
 /********************************************************************
   Required Extensions
@@ -69,7 +69,7 @@ configuration file for more details and usages.
 -- #endregion
 ********************************************************************/
 
-CREATE SCHEMA api; -- default endpoints for rest api
+CREATE SCHEMA IF NOT EXISTS api;
 
 /********************************************************************
   BASE Schema Namespace for API Configuration using PostgREST
@@ -84,7 +84,7 @@ not directly required or should not be exposed to the user.
 -- #endregion
 ********************************************************************/
 
-CREATE SCHEMA base;
+CREATE SCHEMA IF NOT EXISTS base;
 
 -- ..versionadded:: 2026-06-07 [B27] wire previously-orphaned base/api
 -- functions into the initializer. Prior to this fix:

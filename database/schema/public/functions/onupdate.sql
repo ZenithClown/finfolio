@@ -30,7 +30,7 @@ whenever the row is updated, for any underlying table with a trigger.
 Copywright © [2025] Debmalya Pramanik (ZenithClown)
 ********************************************************************/
 
-CREATE FUNCTION public.onupdate() RETURNS TRIGGER
+CREATE OR REPLACE FUNCTION public.onupdate() RETURNS TRIGGER
 LANGUAGE plpgsql AS
 $$
 BEGIN

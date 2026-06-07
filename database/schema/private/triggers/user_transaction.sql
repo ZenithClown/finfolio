@@ -1,3 +1,4 @@
+DROP TRIGGER IF EXISTS trg_user_transaction_onupdate ON private.user_transaction;
 CREATE TRIGGER trg_user_transaction_onupdate
   BEFORE UPDATE
   ON private.user_transaction

@@ -17,7 +17,7 @@ exists - check trigger on table for more details
 Copyright © [2025] Debmalya Pramanik (ZenithClown)
 ********************************************************************/
 
-CREATE FUNCTION meta.root_user_exists() RETURNS TRIGGER
+CREATE OR REPLACE FUNCTION meta.root_user_exists() RETURNS TRIGGER
 LANGUAGE plpgsql AS
 $$
 BEGIN

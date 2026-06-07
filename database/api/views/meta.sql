@@ -18,19 +18,19 @@ suffix to identify the table views.
 Copyright © [2025] Debmalya Pramanik (ZenithClown)
 ********************************************************************/
 
-CREATE VIEW api.account_type_master_vw AS (
+CREATE OR REPLACE VIEW api.account_type_master_vw AS (
   SELECT * FROM meta.account_type_master
   ORDER BY account_type_id, account_subtype_id
 );
 
 
-CREATE VIEW api.expense_category_master_vw AS (
+CREATE OR REPLACE VIEW api.expense_category_master_vw AS (
   SELECT * FROM meta.expense_category_master
   ORDER BY expense_category_name, expense_subcategory_name
 );
 
 
-CREATE VIEW api.income_category_master_vw AS (
+CREATE OR REPLACE VIEW api.income_category_master_vw AS (
   SELECT * FROM meta.income_category_master
   ORDER BY income_category_name, income_subcategory_name
 );

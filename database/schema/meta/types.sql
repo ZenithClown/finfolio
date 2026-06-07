@@ -6,21 +6,29 @@ is unlikely to change and the values are finite. The enum provides
 data integrity and readibility and the name(s) defined are self
 explanatory and are index friendly.
 
+-- ..versionchanged:: 2026-06-07 [B11] wrap ENUM creation in DO blocks
+so that re-running the initializer does not abort with
+"type ... already exists". PostgreSQL has no CREATE TYPE IF NOT EXISTS.
+
 Copywright © [2024] Debmalya Pramanik
 ********************************************************************/
 
--- ? User Role:: Table for User Access Controls
-CREATE TYPE meta.user_role AS ENUM ('ROOT', 'SUDO', 'USER');
+DO $$ BEGIN
+  CREATE TYPE meta.user_role AS ENUM ('ROOT', 'SUDO', 'USER');
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
--- ? Transaction Types:: Deposit or Withdraw
-CREATE TYPE meta.transaction_type AS ENUM ('DEPOSIT', 'WITHDRAW');
+DO $$ BEGIN
+  CREATE TYPE meta.transaction_type AS ENUM ('DEPOSIT', 'WITHDRAW');
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
--- ? Points Transaction Types:: Points Earned, Spent, or. etc.
-CREATE TYPE meta.points_transaction_type AS ENUM (
-  'EARNED', 'SPENT', 'ADJUSTED', 'LAPSED'
-);
+DO $$ BEGIN
+  CREATE TYPE meta.points_transaction_type AS ENUM (
+    'EARNED', 'SPENT', 'ADJUSTED', 'LAPSED'
+  );
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
--- ? Transaction Method:: Cash, Card, Online, etc.
-CREATE TYPE meta.transaction_method AS ENUM (
-  'NEFT', 'IMPS', 'RTGS', 'UPI', 'MANDATE', 'CASH', 'CREDIT', 'NACH'
-);
+DO $$ BEGIN
+  CREATE TYPE meta.transaction_method AS ENUM (
+    'NEFT', 'IMPS', 'RTGS', 'UPI', 'MANDATE', 'CASH', 'CREDIT', 'NACH'
+  );
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
