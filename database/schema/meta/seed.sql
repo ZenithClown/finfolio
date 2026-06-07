@@ -8,8 +8,11 @@ defined here, and in order the tables are defined.
 Copywright © [2024] Debmalya Pramanik (ZenithClown)
 ********************************************************************/
 
+-- ..versionchanged:: 2026-06-07 [B2] add the three missing subtype columns
+-- to the INSERT column list (rows already supply 7 values per tuple).
 INSERT INTO meta.account_type_master
-  (account_type_key, account_type_id, account_type_name, account_type_desc)
+  (account_type_key, account_type_id, account_type_name, account_type_desc,
+   account_subtype_id, account_subtype_name, account_subtype_desc)
 VALUES
   ('CDT/BRW', 'CDT', 'Credit Account', 'Use this to store transactions related to loans, credit cards, etc.', 'BRW', 'Personal Borrowed Account', 'Amount borrwed from a person based on terms and conditions.'),
   ('CDT/CCD', 'CDT', 'Credit Account', 'Use this to store transactions related to loans, credit cards, etc.', 'CCD', 'Credit Card Account', NULL),
@@ -64,7 +67,8 @@ VALUES
   ('ENTERTAINMENT/EVENT TICKET', 'ENTERTAINMENT', 'Entertainments like subscriptions, movies, etc.', 'EVENT TICKET', 'Events like sports, concert tickets, etc.'),
   ('ENTERTAINMENT/VIDEO GAMES', 'ENTERTAINMENT', 'Entertainments like subscriptions, movies, etc.', 'VIDEO GAMES', 'Spends on video games and other in-app game purchases.'),
   ('ENTERTAINMENT/MOVIES', 'ENTERTAINMENT', 'Entertainments like subscriptions, movies, etc.', 'MOVIES', 'Movie outing expenses.'),
-  ('ENTERTAINMENT/OTT SUBSCRIPTION', 'ENTERTAINMENT', 'Entertainments like subscriptions, movies, etc.', 'OTT SUBSCRIPTION', 'OTT subscription charges like Netflix/Prime/etc.'),;
+  ('ENTERTAINMENT/OTT SUBSCRIPTION', 'ENTERTAINMENT', 'Entertainments like subscriptions, movies, etc.', 'OTT SUBSCRIPTION', 'OTT subscription charges like Netflix/Prime/etc.');
+-- ..versionchanged:: 2026-06-07 [B3] removed stray comma before terminating semicolon
 
 
 INSERT INTO meta.income_category_master
