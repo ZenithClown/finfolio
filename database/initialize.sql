@@ -71,6 +71,14 @@ configuration file for more details and usages.
 
 CREATE SCHEMA IF NOT EXISTS api;
 
+-- ..versionadded:: 2026-06-07 [B8] roles must exist before any GRANT
+-- in subsequent schema files (e.g. jwt.sql, login.sql) names them.
+\i database/security/roles.sql
+
+-- ..versionadded:: 2026-06-07 [B19/Q2] JWT signer must exist before
+-- api.login (which calls base.jwt_sign).
+\i database/security/jwt.sql
+
 /********************************************************************
   BASE Schema Namespace for API Configuration using PostgREST
 
@@ -133,11 +141,10 @@ from respective schema namespaces according to the schema name.
 -- ! populate the api endpoints using the initialize.sql
 \i database/api/initialize.sql
 
--- ..versionadded:: 2026-06-07 [B8] create least-privilege PostgREST
--- roles AFTER the api views/functions exist (so grants can reference
--- them). Without this, postgrest.conf must keep `db-anon-role =
--- "postgres"`, which exposes the cluster superuser over HTTP.
-\i database/security/roles.sql
+-- ..versionadded:: 2026-06-07 [B8] grant object privileges to the
+-- least-privilege PostgREST roles. Must run AFTER api/initialize.sql
+-- so every grant target exists.
+\i database/security/grants.sql
 
 -- ..versionadded:: 2026-06-07 [B7] include the optional stocks extension.
 -- The README and CLAUDE.md both advertise stocks tracking; the schema and
