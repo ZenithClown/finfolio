@@ -138,6 +138,27 @@ from respective schema namespaces according to the schema name.
 \i database/schema/private/triggers/user_transaction.sql
 \i database/schema/private/triggers/user_points_transaction.sql
 
+-- ..versionadded:: 2026-06-07 [Phase 3 §4.1] double-entry header + lines
+-- + balance trigger. Must run after meta.transaction_method type exists
+-- (meta/types.sql) and before any RPC that reads private.transaction_*.
+\i database/schema/private/transaction_double_entry.sql
+
+-- ..versionadded:: 2026-06-07 [Phase 3 §4.7] audit log table + generic
+-- row-change trigger function. Triggers bind to private.transaction_*
+-- and public.ledger_account_detail.
+\i database/schema/meta/audit.sql
+
+-- ..versionadded:: 2026-06-07 [Phase 3] add is_system + soft-delete to
+-- public.ledger_account_detail and seed SYS/IN, SYS/EX system contras.
+-- Idempotent: ALTER ... ADD COLUMN IF NOT EXISTS + ON CONFLICT DO NOTHING.
+\i database/schema/private/system_accounts.sql
+
+-- ..versionadded:: 2026-06-07 [Phase 3] one-shot backfill of legacy
+-- private.user_transaction rows into the new header+lines structure.
+-- Idempotent (deterministic UUID per legacy idkey); no-op on fresh DBs
+-- and on already-migrated DBs.
+\i database/schema/private/transaction_backfill.sql
+
 -- ! populate the api endpoints using the initialize.sql
 \i database/api/initialize.sql
 
@@ -150,6 +171,19 @@ from respective schema namespaces according to the schema name.
 -- owner-scoped tables. Must run after roles + tables exist.
 \i database/security/rls.sql
 
+-- ..versionadded:: 2026-06-07 [B7] include the optional stocks extension.
+-- The README and CLAUDE.md both advertise stocks tracking; the schema and
+-- master/transaction tables exist but were never wired into the master
+-- initializer. Stocks tracking is an optional extension - if you do not
+-- want it, comment the line below. Future work: gate via \set var.
+--
+-- ..versionchanged:: 2026-06-07 [P3-ORDER-FIX] moved BEFORE constraints.sql
+-- and indexes.sql so they can ALTER stocks.* tables. Plain `psql -f` on a
+-- clean DB previously failed at constraints.sql:89 with "schema stocks
+-- does not exist"; the bug went unnoticed because earlier dev sessions
+-- always ran against a database that had been seeded once already.
+\i database/schema/stocks/initialize.sql
+
 -- ..versionadded:: 2026-06-07 [B18] domain CHECK constraints. Must run
 -- after every protected table exists (incl. stocks).
 \i database/schema/constraints.sql
@@ -157,13 +191,6 @@ from respective schema namespaces according to the schema name.
 -- ..versionadded:: 2026-06-07 [B21] FK covering indexes + dashboard
 -- composites. Idempotent (CREATE INDEX IF NOT EXISTS).
 \i database/schema/indexes.sql
-
--- ..versionadded:: 2026-06-07 [B7] include the optional stocks extension.
--- The README and CLAUDE.md both advertise stocks tracking; the schema and
--- master/transaction tables exist but were never wired into the master
--- initializer. Stocks tracking is an optional extension - if you do not
--- want it, comment the line below. Future work: gate via \set var.
-\i database/schema/stocks/initialize.sql
 
 -- ? populate all the tables with the seed data, only allow when all
 -- the above table creation succeds then proceed for constraint checks
