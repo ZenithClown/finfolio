@@ -232,21 +232,24 @@ Each stock transaction must auto-generate the cash-leg posting against the linke
 ## 6. Bug Ledger (line-cited; address in Phase 0/1)
 
 Severity legend: 🔴 P0 (blocks init / runtime crash), 🟠 P1 (security or data corruption), 🟡 P2 (correctness / hygiene).
+Status legend: ✅ fixed on `refactor/database`, ⏳ planned, 🕓 deferred.
 
 ### 6.1 P0 — `psql -f initialize.sql` will not succeed today
 
-| ID | File:Line | Bug | Fix |
-|----|-----------|-----|-----|
-| 🔴 **B1** | `database/schema/private/tables.sql` L62-65 | CHECK references `income_category_head` / `expense_category_head` — actual columns end in `_key`. Also semantically wrong (OR allows both NULL). | After §4.1 refactor, this CHECK moves to `transaction_header` as XOR: `CHECK ((income_category_id IS NULL) <> (expense_category_id IS NULL) OR is_transfer)`. |
-| 🔴 **B2** | `database/schema/meta/seed.sql` L11-28 | INSERT lists 4 columns but supplies 7 values per row. | Add `account_subtype_id, account_subtype_name, account_subtype_desc` to the column list. |
-| 🔴 **B3** | `database/schema/meta/seed.sql` L67 | Trailing `,;` syntax error after the OTT subscription row. | Remove the stray comma. |
-| 🔴 **B4** | `database/schema/private/functions/set_datefields.sql` | Trigger writes to `trx_fiscalyear` / `trx_month` columns that don't exist on `private.user_transaction`. | After §4.1 refactor, make these `GENERATED ALWAYS AS (...) STORED` columns on `transaction_header`; drop the trigger. |
-| 🔴 **B5** | `database/schema/public/template/new_ledger.sql` L14-15 | INSERTs into `account_type_id, account_subtype_id` — table actually has `account_type_key`. | Update template to match `public.ledger_account_detail`. |
-| 🔴 **B6** | `database/schema/public/template/new_points_account.sql` | INSERTs into non-existent columns `points_account_owner, account_type_id, account_subtype_id`. Also: `points_account_detail` itself has no owner column. | Resolved by §4.3 (drop the table; points become a ledger account). Delete the template after migration. |
-| 🔴 **B7** | `database/initialize.sql` | Never `\i database/schema/stocks/initialize.sql` — stocks schema silently absent. | Add the include behind a flag `\set stocks_enabled true`. |
-| 🔴 **B9** | `database/initialize.sql` | `pgcrypto` never created — `crypt()`, `gen_salt()`, `gen_random_uuid()` (PG<13) all break. | New first-line migration `0001_extensions.sql`: `CREATE EXTENSION IF NOT EXISTS pgcrypto;` (also `pgjwt`, `pg_trgm`). |
-| 🔴 **B10** | `database/schema/meta/functions/root_user_exists.sql` | UPDATE of the existing root user re-fires the `EXISTS` check against itself → exception on every change. | Guard with `TG_OP`: only check on INSERT, or on UPDATE when `OLD.user_role <> 'ROOT'`. |
-| 🔴 **B11** | `database/initialize.sql` (whole) | Not idempotent: `CREATE SCHEMA`, `CREATE TYPE`, `CREATE FUNCTION` (no `OR REPLACE`), `CREATE TRIGGER` all fail on re-run. | Add `IF NOT EXISTS` / `OR REPLACE` everywhere; once sqitch is in (Q3), this becomes moot. |
+| ID | Status | File:Line | Bug | Fix |
+|----|:------:|-----------|-----|-----|
+| 🔴 **B1**  | ✅ | `database/schema/private/tables.sql` L62-65 | CHECK references `income_category_head` / `expense_category_head` — actual columns end in `_key`. | Relaxed to original XOR intent: `CHECK (NOT (income_category_key IS NOT NULL AND expense_category_key IS NOT NULL))` — allows uncategorised rows (bulk-import workflow) but blocks dual-category rows. Phase 3 will move this onto `transaction_header`. |
+| 🔴 **B2**  | ✅ | `database/schema/meta/seed.sql` L11-28 | INSERT lists 4 columns but supplies 7 values per row. | Added the 3 subtype columns to the INSERT column list. |
+| 🔴 **B3**  | ✅ | `database/schema/meta/seed.sql` L67 | Trailing `,;` syntax error after the OTT subscription row. | Removed the stray comma. *(Bundled into the B2 commit due to a working-tree race; visible in the B2 diff.)* |
+| 🔴 **B4**  | ✅ | `database/schema/private/functions/set_datefields.sql` | Trigger writes to `trx_fiscalyear` / `trx_month` columns that don't exist on `private.user_transaction`. | Phase 0 interim: trigger binding commented out in `private/triggers/user_transaction.sql`. Function definition retained for Phase 3 rework as GENERATED columns. |
+| 🔴 **B5**  | ✅ | `database/schema/public/template/new_ledger.sql` L14-15 | INSERTs into `account_type_id, account_subtype_id` — table actually has `account_type_key`. | Template now matches `public.ledger_account_detail` shape. |
+| 🔴 **B6**  | ✅ | `database/schema/public/template/new_points_account.sql` | INSERTs into non-existent columns. | Template aligned to current `public.points_account_detail` schema; will be deleted in Phase 3 when the points table is unified into the ledger. |
+| 🔴 **B7**  | ✅ | `database/initialize.sql` | Never `\i database/schema/stocks/initialize.sql` — stocks schema silently absent. | Added the include after `api/initialize.sql`. |
+| 🔴 **B9**  | ✅ | `database/initialize.sql` | `pgcrypto` never created — `crypt()`, `gen_salt()` break at runtime. | `CREATE EXTENSION IF NOT EXISTS pgcrypto;` added immediately after schema creation. |
+| 🔴 **B10** | ✅ | `database/schema/meta/functions/root_user_exists.sql` | UPDATE of the existing root user re-fires the EXISTS check against itself → exception on every change. | Added `AND username <> NEW.username` to the EXISTS subquery. Verified with 5-case behavioural test. |
+| 🔴 **B11** | ⏳ | `database/initialize.sql` (whole) | Not idempotent. | Deferred to Phase 1 (sqitch adoption makes this moot). |
+| 🔴 **B26** | ✅ | `database/initialize.sql` L95 | References non-existent file `database/schema/public/triggers/ledger_account_detail.sql` (real file: `user_account_detail.sql`). | *Newly discovered during Phase 0 baseline run.* Path corrected. |
+| 🔴 **B27** | ✅ | `database/initialize.sql` + `database/api/initialize.sql` | `base/get_managed_users.sql`, `api/functions/*.sql`, `api/security/*.sql` never sourced — every documented RPC absent after init. | *Newly discovered during Phase 0 E2E run.* Added `\i` directives in correct dependency order. |
 
 ### 6.2 P1 — Security & Correctness
 
@@ -280,9 +283,11 @@ Severity legend: 🔴 P0 (blocks init / runtime crash), 🟠 P1 (security or dat
 
 ## 7. Roadmap
 
-### Phase 0 — Stop the Bleeding (≈1 day)
+### Phase 0 — Stop the Bleeding (≈1 day)  ✅ COMPLETE (2026-06-07)
 **Goal:** `psql -f database/initialize.sql` returns 0 on a clean DB; `api.login` works.
-**Tickets:** B1, B2, B3, B4 (interim: drop the trigger, defer fiscalyear to Phase 3), B5, B6 (delete templates), B7, B9, B10.
+**Tickets shipped on `refactor/database`:** B26, B1, B2, B3, B9, B7, B10, B4, B5, B6, B27 (+ a B1 relaxation amendment).
+**Discovered during the phase:** B26 and B27 were not in the original 25-bug audit.
+**Verification:** end-to-end smoke test in commit history; net-worth aggregation, login, managed-users RLS pattern, stocks tables, and points wallet creation all green against a fresh `postgres:16-alpine` container.
 
 ### Phase 1 — Security & Hygiene (≈3 days)
 B8 (`web_anon`), B11 (idempotency), B19 + Q2 (JWT via `pgjwt`), §3.3 RLS template applied, B25 (audit cols), B12 (DBML resync), Q3 (sqitch bootstrap, all existing files become migration `0001_…`–`0010_…`), `COMMENT ON` pass, `db-max-rows`, `search_path` hardening.
@@ -385,3 +390,4 @@ CREATE INDEX ix_stocks_trx_isin           ON stocks.user_transaction(isin_code);
 | Date       | Author        | Change |
 |------------|---------------|--------|
 | 2026-06-07 | DB audit pass | Initial authoritative version. Captured 25 bugs, confirmed product decisions Q1-Q7, defined 5-phase roadmap. |
+| 2026-06-07 | Phase 0 implementation | Marked B1, B2, B3, B4, B5, B6, B7, B9, B10 fixed. Added B26 (broken include path) and B27 (orphaned api/base includes) discovered during baseline + E2E runs. Updated B6/B11 status, refined B1 to a less-strict CHECK. |
