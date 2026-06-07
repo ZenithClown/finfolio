@@ -5,3 +5,7 @@
 baseline_v02 2026-06-07T18:00:00Z finfolio dev <noreply@finfolio.local> # Phase 0+1+2 baseline: idempotent init, JWT, RLS, audit cols, CHECK constraints, FK indexes, stocks fixes, account_type_key VARCHAR(16).
 
 @v0.2-phase2 2026-06-07T18:00:00Z finfolio dev <noreply@finfolio.local> # Tag: post-Phase-2 baseline (refactor/database HEAD 5b86126).
+
+phase4_stocks_paid [baseline_v02] 2026-06-08T00:00:00Z finfolio dev <noreply@finfolio.local> # Phase 4 schema-only core: stocks v2 (daily_nav, corporate_action, dividend), api_pro + meta.feature_flag, private.attachment, stocks.price_alert, api.fifo_realised_gains, api.mv_holdings_vw.
+
+@v0.4-phase4 2026-06-08T00:00:00Z finfolio dev <noreply@finfolio.local> # Tag: post-Phase-4 schema-only release.
