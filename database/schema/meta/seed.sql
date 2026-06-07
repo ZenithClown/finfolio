@@ -77,9 +77,20 @@ ON CONFLICT (expense_category_key) DO NOTHING;
 INSERT INTO meta.income_category_master
   (income_category_key, income_category_name, income_category_desc, income_subcategory_name, income_subcategory_desc)
 VALUES
-  ('SALARY', 'SALARY', 'Regular compensation from employer.', '', ''),
+  ('SALARY', 'SALARY', 'Regular compensation from employer.', NULL, NULL),
   ('BUSINESS/CONSULTING', 'BUSINESS', 'Income from self-employment or business', 'CONSULTING', 'Income from self-consulting, moonlighting, part-time jobs, etc.'),
   ('INVENTMENT/DIVIDEND', 'INVENTMENT', 'Income from investments like stocks, bonds, etc.', 'DIVIDEND', 'Dividend income from stocks, bonds, etc.'),
   ('INVENTMENT/INTEREST', 'INVENTMENT', 'Income from investments like stocks, bonds, etc.', 'INTEREST', 'Interest income from savings, fixed deposits, etc.'),
-  ('RENTAL INCOME', 'RENTAL INCOME', 'Income from rental property.', '', '')
+  ('RENTAL INCOME', 'RENTAL INCOME', 'Income from rental property.', NULL, NULL)
 ON CONFLICT (income_category_key) DO NOTHING;
+-- ..versionchanged:: 2026-06-07 [B14] use NULL (not '') for absent subcategory
+-- so future UNIQUE constraints on (category, subcategory) won't collide on the
+-- empty-string sentinel.
+
+-- Backfill: convert any pre-existing '' rows to NULL on upgrade paths.
+UPDATE meta.income_category_master
+   SET income_subcategory_name = NULL, income_subcategory_desc = NULL
+ WHERE income_subcategory_name = '';
+UPDATE meta.expense_category_master
+   SET expense_subcategory_name = NULL, expense_subcategory_desc = NULL
+ WHERE expense_subcategory_name = '';

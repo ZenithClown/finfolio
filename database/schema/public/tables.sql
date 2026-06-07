@@ -13,20 +13,22 @@ CREATE TABLE IF NOT EXISTS public.user_account_detail (
     CONSTRAINT pk_username PRIMARY KEY
     CONSTRAINT ck_username_length CHECK (LENGTH(username) > 3),
 
-  -- ? typically users can share names, but since this is a decentralized
-  -- it is highly unlikely; if you need to share names, remove constraint
+  -- ..versionchanged:: 2026-06-07 [B16] families with same fullname are valid
+  -- (a parent and child can both be "Pramanik"); drop UNIQUE. A non-unique
+  -- index on lower(fullname) supports dashboard search; defined below.
   fullname
-    VARCHAR(128) NOT NULL
-    CONSTRAINT uq_user_fullname UNIQUE,
+    VARCHAR(128) NOT NULL,
 
   email
     VARCHAR(128)
     CONSTRAINT uq_user_email_address UNIQUE,
 
+  -- ..versionchanged:: 2026-06-07 [B20] phone regex required at least one
+  -- character (was `*` which accepted '' as valid, bypassing NULL semantics)
   phone
     VARCHAR(16)
     CONSTRAINT uq_user_phone_number UNIQUE
-    CONSTRAINT ck_phone_number CHECK (phone ~ '^[0-9+\- ]*$'),
+    CONSTRAINT ck_phone_number CHECK (phone IS NULL OR phone ~ '^[0-9+\- ]+$'),
 
   date_of_birth
     DATE,
@@ -72,6 +74,23 @@ ALTER TABLE public.user_account_detail
   ADD COLUMN IF NOT EXISTS created_on TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP;
 ALTER TABLE public.user_account_detail
   ADD COLUMN IF NOT EXISTS updated_on TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+-- ..versionadded:: 2026-06-07 [B16] for upgrades from clusters that already
+-- carried the legacy UNIQUE constraint on fullname.
+ALTER TABLE public.user_account_detail
+  DROP CONSTRAINT IF EXISTS uq_user_fullname;
+
+-- ..versionadded:: 2026-06-07 [B16] case-insensitive search index on
+-- fullname for the user-picker dropdown in the dashboard.
+CREATE INDEX IF NOT EXISTS ix_user_account_detail_fullname_lower
+  ON public.user_account_detail (lower(fullname));
+
+-- ..versionadded:: 2026-06-07 [B20] reinstate the strengthened phone check
+-- on upgrade paths (the constraint name is reused so DROP+ADD is safe).
+ALTER TABLE public.user_account_detail
+  DROP CONSTRAINT IF EXISTS ck_phone_number;
+ALTER TABLE public.user_account_detail
+  ADD  CONSTRAINT ck_phone_number CHECK (phone IS NULL OR phone ~ '^[0-9+\- ]+$');
 
 
 CREATE TABLE IF NOT EXISTS public.ledger_account_detail (
