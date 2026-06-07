@@ -67,7 +67,12 @@ CREATE OR REPLACE FUNCTION api.get_ledger_account_json (
   -- returns all debit account types by default for querying
   , p_account_type_key VARCHAR(7) = 'DBT/%'
 )
-RETURNS JSON AS $$
+RETURNS JSON
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path = pg_catalog, public
+AS $$
 BEGIN
   RETURN (
     SELECT
@@ -92,7 +97,7 @@ BEGIN
     ) t
   );
 END
-$$ LANGUAGE plpgsql;
+$$;
 
 
 CREATE OR REPLACE FUNCTION api.get_account_count_json (
@@ -102,7 +107,12 @@ CREATE OR REPLACE FUNCTION api.get_account_count_json (
   -- returns all debit account types by default for querying
   , p_account_type_key VARCHAR(7) = NULL
 )
-RETURNS JSON AS $$
+RETURNS JSON
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path = pg_catalog, public
+AS $$
 BEGIN
   RETURN (
     SELECT JSON_AGG(JSON_BUILD_OBJECT(
@@ -128,4 +138,4 @@ BEGIN
     ) t
   );
 END
-$$ LANGUAGE plpgsql;
+$$;

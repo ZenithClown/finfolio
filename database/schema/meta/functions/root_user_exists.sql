@@ -18,7 +18,10 @@ Copyright © [2025] Debmalya Pramanik (ZenithClown)
 ********************************************************************/
 
 CREATE OR REPLACE FUNCTION meta.root_user_exists() RETURNS TRIGGER
-LANGUAGE plpgsql AS
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = pg_catalog, public
+AS
 $$
 BEGIN
   -- ..versionchanged:: 2026-06-07 [B10] exclude self when checking for

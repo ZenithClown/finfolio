@@ -34,7 +34,12 @@ Copyright © [2025] Debmalya Pramanik, DigitPhilia INC.
 CREATE OR REPLACE FUNCTION api.net_worth(
   p_account_id CHAR(5)[]
 )
-RETURNS JSON AS $$
+RETURNS JSON
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path = pg_catalog, public
+AS $$
 BEGIN
   RETURN (
       SELECT ROW_TO_JSON(t) FROM
@@ -57,7 +62,7 @@ BEGIN
       ) t
   );
 END
-$$ LANGUAGE plpgsql;
+$$;
 
 
 CREATE OR REPLACE FUNCTION api.net_value_by_account(
@@ -67,7 +72,12 @@ RETURNS TABLE (
   account_id CHAR(5)
   , net_value NUMERIC(12, 2)
   , last_updated DATE
-) AS $$
+)
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path = pg_catalog, public
+AS $$
 BEGIN
   RETURN QUERY (
     SELECT
@@ -89,7 +99,7 @@ BEGIN
     GROUP BY tbl.account_id
   );
 END
-$$ LANGUAGE plpgsql;
+$$;
 
 
 CREATE OR REPLACE FUNCTION api.net_value_by_account_type(
@@ -106,7 +116,12 @@ RETURNS TABLE (
   , account_subtype_name VARCHAR(34)
   , net_value NUMERIC(12, 2)
   , last_updated DATE
-) AS $$
+)
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path = pg_catalog, public
+AS $$
 BEGIN
   RETURN QUERY (
     SELECT
@@ -141,4 +156,4 @@ BEGIN
       , accounts.account_subtype_name
   );
 END
-$$ LANGUAGE plpgsql;
+$$;
