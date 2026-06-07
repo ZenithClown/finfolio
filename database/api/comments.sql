@@ -40,17 +40,17 @@ COMMENT ON FUNCTION api.net_value_by_account(CHAR(5)[]) IS
   'Per-account breakdown of net value (deposits - withdrawals) with '
   'last transaction date. Pass an empty array for all visible accounts.';
 
-COMMENT ON FUNCTION api.net_value_by_account_type(VARCHAR, VARCHAR) IS
+COMMENT ON FUNCTION api.net_value_by_account_type(VARCHAR, VARCHAR(16)) IS
   'Net value grouped by account type and subtype for the given '
   'username. Optional account_type_key LIKE pattern (e.g. ''DBT/%'') '
   'narrows the rollup.';
 
-COMMENT ON FUNCTION api.get_ledger_account_json(VARCHAR, VARCHAR) IS
+COMMENT ON FUNCTION api.get_ledger_account_json(VARCHAR, VARCHAR(16)) IS
   'Returns [{ledger_account_id: account_name}, ...] for ledger '
   'accounts visible to the caller. Defaults to debit accounts (key '
   'matching ''DBT/%''); pass NULL to get every account type.';
 
-COMMENT ON FUNCTION api.get_account_count_json(VARCHAR, VARCHAR) IS
+COMMENT ON FUNCTION api.get_account_count_json(VARCHAR, VARCHAR(16)) IS
   'Returns [{account_type_name: count}, ...] grouped by primary '
   'account type. Optional LIKE pattern restricts to a type family.';
 

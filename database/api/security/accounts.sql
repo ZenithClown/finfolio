@@ -60,12 +60,18 @@ the count of all accounts by types.
 Copyright © [2025] Debmalya Pramanik (ZenithClow)
 ********************************************************************/
 
+-- ..versionchanged:: 2026-06-07 [B13] p_account_type_key VARCHAR(7) -> (16).
+-- CREATE OR REPLACE cannot change a parameter type, so drop the old
+-- signatures first. IF EXISTS keeps the script idempotent.
+DROP FUNCTION IF EXISTS api.get_ledger_account_json(VARCHAR(16), VARCHAR(7));
+DROP FUNCTION IF EXISTS api.get_account_count_json (VARCHAR(16), VARCHAR(7));
+
 CREATE OR REPLACE FUNCTION api.get_ledger_account_json (
   p_username VARCHAR(16)
   -- ! use like clause to search, with equal functionality
   -- by either passing % wild character search, or values directly
   -- returns all debit account types by default for querying
-  , p_account_type_key VARCHAR(7) = 'DBT/%'
+  , p_account_type_key VARCHAR(16) = 'DBT/%'
 )
 RETURNS JSON
 LANGUAGE plpgsql
@@ -105,7 +111,7 @@ CREATE OR REPLACE FUNCTION api.get_account_count_json (
   -- ! use like clause to search, with equal functionality
   -- by either passing % wild character search, or values directly
   -- returns all debit account types by default for querying
-  , p_account_type_key VARCHAR(7) = NULL
+  , p_account_type_key VARCHAR(16) = NULL
 )
 RETURNS JSON
 LANGUAGE plpgsql

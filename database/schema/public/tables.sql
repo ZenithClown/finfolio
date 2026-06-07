@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS public.ledger_account_detail (
       ON UPDATE CASCADE,
 
   account_type_key
-    VARCHAR(7) NOT NULL
+    VARCHAR(16) NOT NULL
     CONSTRAINT fk_ledger_account_type_key
       REFERENCES meta.account_type_master  (account_type_key)
       ON DELETE CASCADE
@@ -163,7 +163,7 @@ CREATE TABLE IF NOT EXISTS public.points_account_detail (
       ON UPDATE CASCADE,
 
   account_type_key
-    VARCHAR(7) NOT NULL
+    VARCHAR(16) NOT NULL
     CONSTRAINT fk_ledger_account_type_key
       REFERENCES meta.account_type_master  (account_type_key)
       ON DELETE CASCADE

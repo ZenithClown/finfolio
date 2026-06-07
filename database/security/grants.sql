@@ -24,7 +24,7 @@ GRANT SELECT ON api.income_category_master_vw  TO web_anon, web_user;
 -- definition file because it needs web_anon as well.)
 GRANT EXECUTE ON FUNCTION api.net_worth(CHAR(5)[])                              TO web_user;
 GRANT EXECUTE ON FUNCTION api.net_value_by_account(CHAR(5)[])                   TO web_user;
-GRANT EXECUTE ON FUNCTION api.net_value_by_account_type(VARCHAR, VARCHAR)       TO web_user;
-GRANT EXECUTE ON FUNCTION api.get_ledger_account_json(VARCHAR, VARCHAR)         TO web_user;
-GRANT EXECUTE ON FUNCTION api.get_account_count_json(VARCHAR, VARCHAR)          TO web_user;
+GRANT EXECUTE ON FUNCTION api.net_value_by_account_type(VARCHAR, VARCHAR(16))   TO web_user;
+GRANT EXECUTE ON FUNCTION api.get_ledger_account_json(VARCHAR, VARCHAR(16))     TO web_user;
+GRANT EXECUTE ON FUNCTION api.get_account_count_json(VARCHAR, VARCHAR(16))      TO web_user;
 GRANT EXECUTE ON FUNCTION base.get_managed_users(VARCHAR)                       TO web_user;

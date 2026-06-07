@@ -12,6 +12,27 @@ Constraints live in one file (instead of being inlined per table) so
 the rules stay together for review and audit.
 ********************************************************************/
 
+-- ..versionadded:: 2026-06-07 [B13] widen account_type_key on upgrade
+-- paths. CREATE TABLE IF NOT EXISTS will not modify pre-existing
+-- columns, so on a cluster that started life with VARCHAR(7) we must
+-- ALTER explicitly. PG widens VARCHAR losslessly. The dependent api
+-- view is dropped and recreated below since CREATE OR REPLACE VIEW
+-- cannot change a column type, only append columns.
+DROP VIEW IF EXISTS api.account_type_master_vw;
+
+ALTER TABLE meta.account_type_master
+  ALTER COLUMN account_type_key TYPE VARCHAR(16);
+ALTER TABLE public.ledger_account_detail
+  ALTER COLUMN account_type_key TYPE VARCHAR(16);
+ALTER TABLE public.points_account_detail
+  ALTER COLUMN account_type_key TYPE VARCHAR(16);
+
+CREATE OR REPLACE VIEW api.account_type_master_vw AS (
+  SELECT * FROM meta.account_type_master
+  ORDER BY account_type_id, account_subtype_id
+);
+GRANT SELECT ON api.account_type_master_vw TO web_anon, web_user;
+
 -- =====================================================================
 -- public.ledger_account_detail
 -- =====================================================================

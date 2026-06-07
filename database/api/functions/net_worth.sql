@@ -31,6 +31,11 @@ the default currency and the last updated date in database.
 Copyright © [2025] Debmalya Pramanik, DigitPhilia INC.
 ********************************************************************/
 
+-- ..versionchanged:: 2026-06-07 [B13] p_account_type_key VARCHAR(7) -> (16).
+-- Drop the legacy signature before recreating (CREATE OR REPLACE cannot
+-- change a parameter type).
+DROP FUNCTION IF EXISTS api.net_value_by_account_type(VARCHAR(16), VARCHAR(7));
+
 CREATE OR REPLACE FUNCTION api.net_worth(
   p_account_id CHAR(5)[]
 )
@@ -107,7 +112,7 @@ CREATE OR REPLACE FUNCTION api.net_value_by_account_type(
   -- ! use like clause to search, with equal functionality
   -- by either passing % wild character search, or values directly
   -- returns all debit account types by default for querying
-  , p_account_type_key VARCHAR(7) = NULL
+  , p_account_type_key VARCHAR(16) = NULL
 )
 RETURNS TABLE (
   account_type_id CHAR(3)

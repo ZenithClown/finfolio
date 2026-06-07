@@ -10,8 +10,15 @@ Copywright © [2024] Debmalya Pramanik
 ********************************************************************/
 
 CREATE TABLE IF NOT EXISTS meta.account_type_master (
+  -- ..versionchanged:: 2026-06-07 [B13] widen account_type_key from
+  -- VARCHAR(7) to VARCHAR(16). The natural-key encoding is
+  -- "TYPE/SUBTYPE" where SUBTYPE is up to 4 chars today (RDS, SAV, ...)
+  -- but new categories (e.g. brokerage-style "BRK/EQTY", crypto
+  -- "CRY/STBL") would silently overflow 7. 16 leaves headroom without
+  -- changing the conceptual key. Composite uniqueness on
+  -- (type_id, subtype_id) still encoded as the natural PK below.
   account_type_key
-    VARCHAR(7)
+    VARCHAR(16)
     CONSTRAINT pk_account_type_key PRIMARY KEY,
 
   account_type_id
