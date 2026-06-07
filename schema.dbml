@@ -164,7 +164,7 @@ table meta.income_category_master {
 
 table public.user_account_detail {
   username varchar(16) [pk]
-  fullname varchar(64) [unique, not null]
+  fullname varchar(128) [unique, not null]
 
   // good to have features, but not required to be maintained
   email varchar(128) [unique]
@@ -183,6 +183,10 @@ table public.user_account_detail {
   // patch for a100a43a21fd57ce20056690a81efae9484e1a37
   password text [not null]
 
+  // ..versionadded:: 2026-06-07 [B25] audit columns
+  created_on timestamptz [not null, default: 'CURRENT_TIMESTAMP']
+  updated_on timestamptz [not null, default: 'CURRENT_TIMESTAMP']
+
   note: '''
     Table Schema for an User Account
 
@@ -190,9 +194,10 @@ table public.user_account_detail {
     finance management application, where, the head of the \
     family may add more members account details.
 
-    A model scope is under development to provide row level security \
-    based on a user role. A super administrator (`sudo` or `admin`) \
-    has all the access follows by others as in a *nix based system.
+    Row level security is enforced through `request.jwt.claim.username` \
+    and `base.get_managed_users()` so a managed user sees only \
+    themselves and their managed sub-tree; ROOT sees all. \
+    See `database/security/rls.sql`.
   '''
 }
 
@@ -207,7 +212,7 @@ table public.ledger_account_detail {
 
   // the type of account has a significant impact on end calculation
   // a single account key is used to identify the type of account and calculation
-  account_type_key char(3) [not null, ref: > meta.account_type_master.account_type_key]
+  account_type_key varchar(7) [not null, ref: > meta.account_type_master.account_type_key]
 
   // ? account opening and closing information for future reference
   account_opened_on date [not null]
@@ -219,6 +224,25 @@ table public.ledger_account_detail {
   // ? we may not have all the transactions, thus we can set an opening balance
   opening_balance             numeric(12, 2) [not null, default: 0.00]
   opening_balance_recorded_on date           [not null] // default `account_opened_on`
+
+  // ..versionadded:: 2026-06-07 [B25] audit columns
+  created_on timestamptz [not null, default: 'CURRENT_TIMESTAMP']
+  updated_on timestamptz [not null, default: 'CURRENT_TIMESTAMP']
+}
+
+table public.points_account_detail {
+  // points / rewards / cashback wallet linked to a parent ledger account
+  points_account_id char(5) [pk]
+  points_account_name varchar(64) [unique, not null]
+
+  ledger_account_id char(5) [ref: > public.ledger_account_detail.ledger_account_id]
+  account_type_key  varchar(7) [not null, ref: > meta.account_type_master.account_type_key]
+
+  // multiplier used when rolling points into the unified ledger currency
+  conversion_factor numeric(9, 5) [not null, default: 1.00000]
+
+  opening_balance             numeric(12, 2) [not null, default: 0.00]
+  opening_balance_recorded_on date           [not null]
 }
 
 /********************************************************************
@@ -242,17 +266,18 @@ table private.user_transaction {
   transfer_method meta.transaction_method
 
   // categorization of income based on different categories and sub-categories
-  income_category_key varchar(16) [ref: > meta.income_category_master.income_category_key]
+  income_category_key varchar(65) [ref: > meta.income_category_master.income_category_key]
 
   // categorization of transactions based on different categories and sub categories
-  expense_category_key varchar(16) [ref: > meta.expense_category_master.expense_category_key]
+  expense_category_key varchar(65) [ref: > meta.expense_category_master.expense_category_key]
 
   // self account id, check 5e08526ef2cc89cb4acf5252a2520515d47bcc9d
   self_account_id char(5) [ref: > public.ledger_account_detail.ledger_account_id]
 
   // ? utility field for developer purpose and have no other usage
-  created_on timestamp [not null, default: 'timezone(utc, now())']
-  updated_at timestamp
+  // ..versionchanged:: 2026-06-07 [B12] rename updated_at -> updated_on to match SQL
+  created_on timestamptz [not null, default: 'CURRENT_TIMESTAMP']
+  updated_on timestamptz
 }
 
 /********************************************************************

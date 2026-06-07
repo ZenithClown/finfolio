@@ -253,31 +253,33 @@ Status legend: ✅ fixed on `refactor/database`, ⏳ planned, 🕓 deferred.
 
 ### 6.2 P1 — Security & Correctness
 
-| ID | Source | Issue | Fix |
-|----|--------|-------|-----|
-| 🟠 **B8**  | `postgrest.conf` L4 | `db-anon-role = "postgres"` → unauthenticated HTTP runs as superuser. | Switch to `web_anon` role (§3.1). |
-| 🟠 **B19** | `database/api/security/login.sql` | Returns user JSON not JWT; not `SECURITY DEFINER`; case-sensitive email; no rate-limit. | Rewrite per §3.2 once Q2 is implemented. |
-| 🟠 **B15** | `database/api/functions/net_worth.sql` | Self-transfers via `self_account_id` cause one-leg miss in net-worth. | Resolved by §4.1 (every event is balanced lines). |
-| 🟡 **B12** | `schema.dbml` vs SQL | DBML drift: `account_type_key char(3)` (real: VARCHAR(7)); category keys `varchar(16)` (real: 65); `updated_at` (real: `updated_on`); missing `points_account_detail`. | Resync DBML in same commit as any DDL change. Long-term: generate one from the other. |
-| 🟡 **B13** | `meta.account_type_master.account_type_key VARCHAR(7)` | Tight: a 4-char subtype overflows. | Bump to `VARCHAR(16)` once §4 surrogate keys (E11) land — the natural key becomes display-only. |
-| 🟡 **B14** | `database/schema/meta/seed.sql` L73, L77 | Uses `''` instead of `NULL` for missing subcategory; collides with future single-level inserts under unique constraint. | Replace `''` with `NULL` consistently. |
-| 🟡 **B16** | `public/tables.sql` L20 | `uq_user_fullname UNIQUE` contradicts the comment ("users can share names"). | Drop UNIQUE; add a non-unique index for search. |
-| 🟡 **B17** | `public.fiscalyear` | Result not stored anywhere. | After §4.1 refactor, store as a generated column on `transaction_header`. |
-| 🟡 **B18** | Multiple tables | Missing CHECKs: `account_closed_on >= account_opened_on`, `account_marked_inactive_on >= account_opened_on`, `trx_amount > 0`, `opening_balance_recorded_on >= account_opened_on`, `closing_date >= opening_date` and `listing_date >= closing_date` and `ceiling_price >= floor_price` on `historic_public_offering`. | Add in Phase 2. |
-| 🟡 **B20** | `public/tables.sql` L29 | Phone regex `'^[0-9+\- ]*$'` allows empty string. | Use `+` quantifier and combine with `phone IS NULL OR phone ~ '^[0-9+\- ]+$'`. |
-| 🟡 **B21** | All FK columns | No covering B-tree indexes → slow CASCADE and dashboard joins. | Add indexes per §8.1. |
-| 🟡 **B22** | `stocks.historic_public_offering` PK = `isin_code` | One asset cannot have IPO + later FPO. | PK becomes `(isin_code, po_type, opening_date)`. |
-| 🟡 **B23** | `stocks.user_transaction.trade_quantity NUMERIC(12,2)` | Mutual fund units have 3-4 decimals. | Change to `NUMERIC(18,6)`. |
-| 🟡 **B24** | `stocks.asset_symbol_master` | Missing `UNIQUE (isin_code, stock_exchange)`. | Add the constraint. |
-| 🟡 **B25** | `public.user_account_detail`, `public.ledger_account_detail` | No `updated_on` columns; `onupdate()` trigger not bound. | Add columns + bind trigger. |
+| ID | Status | Source | Issue | Fix |
+|----|--------|--------|-------|-----|
+| 🟠 **B8**  | ✅ | `postgrest.conf` L4 | `db-anon-role = "postgres"` → unauthenticated HTTP runs as superuser. | `database/security/roles.sql` creates `web_anon`/`web_user`/`authenticator`; `postgrest.conf` switched to `web_anon` + `db-max-rows = 1000`. |
+| 🟠 **B11** | ✅ | `database/initialize.sql` (whole) | Re-running aborts on first object collision. | `CREATE SCHEMA IF NOT EXISTS`, `DO $$ ... EXCEPTION WHEN duplicate_object` for ENUMs, `CREATE OR REPLACE FUNCTION`, `DROP TRIGGER IF EXISTS` + recreate, `CREATE OR REPLACE VIEW`, `INSERT ... ON CONFLICT DO NOTHING`. Verified twice-run exits 0. |
+| 🟠 **B19** | ✅ | `database/api/security/login.sql` | Returns user JSON not JWT; not `SECURITY DEFINER`; case-sensitive email. | Rewritten: `SECURITY DEFINER`, `SET search_path=pg_catalog,public`, lowercased email; returns `{token,exp,role,username}` signed via `base.jwt_sign` (inline plpgsql HMAC-SHA256). |
+| 🟠 **F2**  | ✅ | (no existing RLS) | Owner-scoped tables wide-open. | `database/security/rls.sql` enables + FORCEs RLS on `user_account_detail` / `ledger_account_detail` / `points_account_detail` / `private.user_transaction` / `private.user_points_transaction`; policies use `base.current_username()` → `base.get_managed_users()`. |
+| 🟠 **B15** | 🕓 | `database/api/functions/net_worth.sql` | Self-transfers via `self_account_id` cause one-leg miss in net-worth. | Resolved by §4.1 (every event balanced) — Phase 3. |
+| 🟡 **B12** | ✅ | `schema.dbml` vs SQL | DBML drift: `account_type_key char(3)` (real: VARCHAR(7)); category keys `varchar(16)` (real: 65); `updated_at` (real: `updated_on`); missing `points_account_detail`; missing audit columns; outdated note. | Resynced in this phase. |
+| 🟡 **B13** | ⏳ | `meta.account_type_master.account_type_key VARCHAR(7)` | Tight: a 4-char subtype overflows. | Phase 2. |
+| 🟡 **B14** | ⏳ | `database/schema/meta/seed.sql` L73, L77 | Uses `''` instead of `NULL` for missing subcategory. | Phase 2. |
+| 🟡 **B16** | ⏳ | `public/tables.sql` L20 | `uq_user_fullname UNIQUE` contradicts the comment. | Phase 2. |
+| 🟡 **B17** | 🕓 | `public.fiscalyear` | Result not stored anywhere. | After §4.1 refactor (Phase 3). |
+| 🟡 **B18** | ⏳ | Multiple tables | Missing CHECKs. | Phase 2. |
+| 🟡 **B20** | ⏳ | `public/tables.sql` L29 | Phone regex allows empty string. | Phase 2. |
+| 🟡 **B21** | ⏳ | All FK columns | No covering B-tree indexes. | Phase 2. |
+| 🟡 **B22** | ⏳ | `stocks.historic_public_offering` PK = `isin_code` | One asset cannot have IPO + later FPO. | Phase 2. |
+| 🟡 **B23** | ⏳ | `stocks.user_transaction.trade_quantity NUMERIC(12,2)` | MF units have 3-4 decimals. | Phase 2. |
+| 🟡 **B24** | ⏳ | `stocks.asset_symbol_master` | Missing `UNIQUE (isin_code, stock_exchange)`. | Phase 2. |
+| 🟡 **B25** | ✅ | `public.user_account_detail`, `public.ledger_account_detail` | No `updated_on`; `onupdate()` not bound. | TIMESTAMPTZ `created_on`/`updated_on` added (idempotent ALTER); triggers bound; `onupdate()` switched `CURRENT_TIMESTAMP` → `clock_timestamp()` so updates within the same txn still advance. |
 
 ### 6.3 Quality / Convention
 
-* No `COMMENT ON` annotations → empty Swagger UI. Add to every API-exposed object.
-* Functions don't `SET search_path` → CVE-2018-1058 surface. Add `SET search_path = pg_catalog, public` to every `SECURITY DEFINER` function.
-* No CI runs `psql -f initialize.sql` against a fresh PG container — would have caught B1-B7 immediately.
-* `db-max-rows` not configured in `postgrest.conf`.
-* Mixed `updated_on` vs `updated_at` naming (DBML uses `_at`, SQL uses `_on`). Pick `_on`.
+* ✅ `COMMENT ON` pass shipped (`database/api/comments.sql`) — Swagger now populated.
+* ✅ `search_path` hardened on every `SECURITY DEFINER` function (`api.*`, `base.*`, `meta.root_user_exists`, `public.fiscalyear`) per CVE-2018-1058 mitigation.
+* ⏳ No CI runs `psql -f initialize.sql` against a fresh PG container.
+* ✅ `db-max-rows = 1000` set in `postgrest.conf`.
+* ✅ Naming normalised to `updated_on` (DBML resynced).
 
 ---
 
@@ -289,8 +291,10 @@ Status legend: ✅ fixed on `refactor/database`, ⏳ planned, 🕓 deferred.
 **Discovered during the phase:** B26 and B27 were not in the original 25-bug audit.
 **Verification:** end-to-end smoke test in commit history; net-worth aggregation, login, managed-users RLS pattern, stocks tables, and points wallet creation all green against a fresh `postgres:16-alpine` container.
 
-### Phase 1 — Security & Hygiene (≈3 days)
-B8 (`web_anon`), B11 (idempotency), B19 + Q2 (JWT via `pgjwt`), §3.3 RLS template applied, B25 (audit cols), B12 (DBML resync), Q3 (sqitch bootstrap, all existing files become migration `0001_…`–`0010_…`), `COMMENT ON` pass, `db-max-rows`, `search_path` hardening.
+### Phase 1 — Security & Hygiene (≈3 days)  ✅ COMPLETE (2026-06-07)
+**Shipped on `refactor/database`:** B11 (idempotent init), B8 (`web_anon`/`web_user`/`authenticator` roles + `postgrest.conf` rewrite + `db-max-rows`), B25 (audit columns + `clock_timestamp()` fix), B19 + Q2 (HMAC-SHA256 JWT in inline plpgsql — no `pgjwt` extension dependency), F2 (RLS policies on all owner-scoped tables driven by `request.jwt.claim.username`), CVE-2018-1058 search_path hardening across `api.*` / `base.*` / `meta.*` SECURITY DEFINER functions, COMMENT ON pass for Swagger, B12 DBML resync.
+**Deferred:** Q3 (sqitch migration tooling) — large scope; promoted to its own phase before Phase 2.
+**Verification:** full init exits 0 on first run AND on re-run against populated DB; JWT signature verified via independent HMAC recompute; RLS verified by three claims (ROOT/managed/orphan) → three distinct row sets + `web_anon` `permission denied`; net_worth E2E reproduces Phase 0 baseline ₹43,500.
 
 ### Phase 2 — Schema Correctness (≈2 days)
 B13, B14, B16, B18, B20, B21, B22, B23, B24, E11 (surrogate keys for category masters), E12 (richer `transaction_method` — convert ENUM to lookup table for extensibility).
