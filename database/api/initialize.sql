@@ -32,6 +32,10 @@ DROP FUNCTION IF EXISTS api.net_value_by_account_type(VARCHAR(16), VARCHAR(16));
 -- ..versionadded:: 2026-06-07 [Phase 3 §4.1] UX-friendly write RPC.
 \i database/api/functions/post_transaction.sql
 
+-- NOTE: Phase 4 RPCs that depend on the `stocks` schema (fifo_realised_gains,
+-- mv_holdings_vw) are intentionally NOT included here. They are wired into
+-- database/initialize.sql AFTER stocks/initialize.sql.
+
 \i database/api/security/accounts.sql
 \i database/api/security/login.sql
 

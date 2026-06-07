@@ -49,5 +49,24 @@ CREATE TABLE IF NOT EXISTS stocks.user_transaction (
 
 -- ..versionadded:: 2026-06-07 [B23] idempotent widening for upgrades.
 -- Lossless on PG (just rewrites pg_attribute).
-ALTER TABLE stocks.user_transaction
-  ALTER COLUMN trade_quantity TYPE NUMERIC(18, 6);
+-- ..versionchanged:: 2026-06-08 [Phase 4] skip the ALTER when the column
+-- is already NUMERIC(18,6) — otherwise Postgres refuses with
+-- "cannot alter type of a column used by a view or rule" because
+-- api.mv_holdings_vw (Phase 4) references this column on second init.
+DO $$
+DECLARE
+    v_precision INTEGER;
+    v_scale     INTEGER;
+BEGIN
+    SELECT numeric_precision, numeric_scale
+      INTO v_precision, v_scale
+      FROM information_schema.columns
+     WHERE table_schema = 'stocks'
+       AND table_name   = 'user_transaction'
+       AND column_name  = 'trade_quantity';
+
+    IF v_precision <> 18 OR v_scale <> 6 THEN
+        ALTER TABLE stocks.user_transaction
+          ALTER COLUMN trade_quantity TYPE NUMERIC(18, 6);
+    END IF;
+END $$;

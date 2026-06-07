@@ -33,3 +33,11 @@ GRANT EXECUTE ON FUNCTION api.post_transaction(
   CHAR(5), NUMERIC, meta.transaction_type, DATE, VARCHAR,
   meta.transaction_method, VARCHAR, VARCHAR, CHAR(5), VARCHAR
 )                                                                              TO web_user;
+
+-- ..versionadded:: 2026-06-08 [Phase 4 §4.4] FIFO realised gains RPC.
+GRANT EXECUTE ON FUNCTION api.fifo_realised_gains(CHAR(5), CHAR(12))            TO web_user;
+
+-- ..versionadded:: 2026-06-08 [Phase 4 §8.3] holdings matview is owner-scoped
+-- (filtered by ledger_account_detail RLS via the underlying tables). Read for
+-- web_user; refresh privilege deliberately withheld (admin/cron only).
+GRANT SELECT ON api.mv_holdings_vw                                              TO web_user;

@@ -311,15 +311,18 @@ B13, B14, B16, B18, B20, B21, B22, B23, B24 — all delivered on `refactor/datab
 
 **Deferred to Phase 3.5+:** §4.2 Currency & FX (currency_code/fx_rate_to_base columns already in place as stubs default INR/1, but no `meta.currency_master` or `fx_rate_history` yet), §4.3 Unified points ledger, §4.5 Recurring/Budgets/Goals. The double-entry foundation makes all three additive.
 
-### Phase 4 — Stocks v2 + Paid Tier (≈3 weeks)
-* §4.4 Stocks Indian-market scope (Q7): NAV, corporate actions, dividends, IPO PK fix.
-* `api_pro` schema bootstrap, `meta.feature_flag`.
-* Attachments (§4.6).
-* Live FX & NAV fetchers (paid).
-* FIFO realised-gains UDF.
-* Alerts engine schema.
-* LLM summary RPC.
-* Exporters (Tally, GnuCash, ITR-prefill).
+### Phase 4 — Stocks v2 + Paid Tier ✅ COMPLETE (schema-only core; live fetchers/LLM/exporters deferred)
+**Delivered on `feature/phase-4-stocks-paid`:**
+* §4.4 Stocks v2 schema: `stocks.daily_nav` ((isin, exchange, date) PK + OHLC), `stocks.corporate_action` (SPLIT/BONUS/RIGHTS/MERGER/etc. with JSONB payload), `stocks.dividend`. IPO PK fix (B22) was already landed in Phase 2.
+* `meta.feature_flag` + `meta.is_feature_enabled(key)` STABLE helper. Seeded with the 8 canonical paid-tier flags (all FALSE on free-tier).
+* `api_pro` schema + `web_pro` NOLOGIN role inheriting from `web_user`. PostgREST only mounts it when the operator opts in via `db-schemas = "api, api_pro"`.
+* §4.6 Attachments: `private.attachment` with `content_sha256` integrity check + soft-delete, blob pointer stored as opaque `storage_uri` (file://, s3://, minio://).
+* §4 alerts: `stocks.price_alert` with ABOVE/BELOW/CROSSES_UP/CROSSES_DOWN trigger types + auto-disable semantics.
+* `api.fifo_realised_gains(account, isin)` — FIFO cost-basis matching for Indian-equity capital gains; emits one row per SELL with holding_days + is_long_term.
+* `api.mv_holdings_vw` materialised view — net qty + avg cost + last NAV + market value + unrealised gain per (account, isin, exchange). UNIQUE index supports `REFRESH ... CONCURRENTLY`.
+* Sqitch change `phase4_stocks_paid` (tag `@v0.4-phase4`) with full deploy/revert/verify scripts.
+
+**Deferred to Phase 4.5+ (need external code / API keys):** live FX/NAV fetchers, LLM summary RPC, alerts evaluator job, Tally/GnuCash/ITR exporters. Corporate-action application onto FIFO lots and `mv_holdings_vw` (the SPLIT 1:2 → quantity-doubling rule) is also deferred — the metadata is captured but not yet replayed.
 
 ### Phase 5 — Documentation & Release
 * Regenerate dbdocs.

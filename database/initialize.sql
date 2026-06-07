@@ -162,11 +162,6 @@ from respective schema namespaces according to the schema name.
 -- ! populate the api endpoints using the initialize.sql
 \i database/api/initialize.sql
 
--- ..versionadded:: 2026-06-07 [B8] grant object privileges to the
--- least-privilege PostgREST roles. Must run AFTER api/initialize.sql
--- so every grant target exists.
-\i database/security/grants.sql
-
 -- ..versionadded:: 2026-06-07 [F2] enable row-level security on
 -- owner-scoped tables. Must run after roles + tables exist.
 \i database/security/rls.sql
@@ -183,6 +178,39 @@ from respective schema namespaces according to the schema name.
 -- does not exist"; the bug went unnoticed because earlier dev sessions
 -- always ran against a database that had been seeded once already.
 \i database/schema/stocks/initialize.sql
+
+-- ..versionadded:: 2026-06-08 [Phase 4 §4.4] stocks v2 market data:
+-- daily_nav, corporate_action, dividend. Additive; must run AFTER
+-- stocks/initialize.sql (FKs to stocks.assets_master).
+\i database/schema/stocks/market_data.sql
+
+-- ..versionadded:: 2026-06-08 [Phase 4] price alerts schema.
+\i database/schema/stocks/alerts.sql
+
+-- ..versionadded:: 2026-06-08 [Phase 4 §4.6] transaction attachments.
+-- Lives in `private` (per-user data); FKs to private.transaction_header.
+\i database/schema/private/attachments.sql
+
+-- ..versionadded:: 2026-06-08 [Phase 4] meta.feature_flag — paid-tier gating.
+\i database/schema/meta/feature_flag.sql
+
+-- ..versionadded:: 2026-06-08 [Phase 4] api_pro schema (paid-tier endpoints).
+\i database/schema/api_pro/initialize.sql
+
+-- ..versionadded:: 2026-06-08 [Phase 4 §8.3] holdings materialised view.
+-- Built here (after stocks.daily_nav exists) rather than from
+-- api/initialize.sql which runs before stocks/initialize.sql.
+\i database/api/views/mv_holdings_vw.sql
+
+-- ..versionadded:: 2026-06-08 [Phase 4 §4.4] FIFO realised gains RPC.
+-- Also deferred to here so that stocks.user_transaction (referenced in
+-- the RETURNS TABLE signature) exists at function-create time.
+\i database/api/functions/fifo_realised_gains.sql
+
+-- ..versionchanged:: 2026-06-08 [Phase 4] grants moved here (was earlier
+-- in the file) so that Phase 4 paid-tier objects (api.fifo_realised_gains,
+-- api.mv_holdings_vw, api_pro.*) are also covered in a single pass.
+\i database/security/grants.sql
 
 -- ..versionadded:: 2026-06-07 [B18] domain CHECK constraints. Must run
 -- after every protected table exists (incl. stocks).
