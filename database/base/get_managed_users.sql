@@ -15,7 +15,12 @@ CREATE OR REPLACE FUNCTION base.get_managed_users (
 RETURNS TABLE (
   managed_username VARCHAR(16)
   , managed_fullname VARCHAR(128)
-) AS $$
+)
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path = pg_catalog, public
+AS $$
 BEGIN RETURN QUERY
   WITH user_role_cte AS (
     SELECT user_role FROM public.user_account_detail
@@ -31,5 +36,5 @@ BEGIN RETURN QUERY
     OR username = p_username
     OR managed_by = p_username
   ORDER BY fullname;
-END
-$$ LANGUAGE plpgsql;
+END;
+$$;

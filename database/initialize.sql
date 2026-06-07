@@ -146,6 +146,10 @@ from respective schema namespaces according to the schema name.
 -- so every grant target exists.
 \i database/security/grants.sql
 
+-- ..versionadded:: 2026-06-07 [F2] enable row-level security on
+-- owner-scoped tables. Must run after roles + tables exist.
+\i database/security/rls.sql
+
 -- ..versionadded:: 2026-06-07 [B7] include the optional stocks extension.
 -- The README and CLAUDE.md both advertise stocks tracking; the schema and
 -- master/transaction tables exist but were never wired into the master
