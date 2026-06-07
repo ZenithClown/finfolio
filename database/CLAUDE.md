@@ -321,10 +321,12 @@ B13, B14, B16, B18, B20, B21, B22, B23, B24 — all delivered on `refactor/datab
 * LLM summary RPC.
 * Exporters (Tally, GnuCash, ITR-prefill).
 
-### Phase 5 — Documentation & Release
-* Regenerate dbdocs.
-* `database/MIGRATION.md`, `database/SECURITY.md`, `database/API.md` (auto from PostgREST swagger).
-* Versioned `1.0.0` tag.
+### Phase 5 — Documentation & Release ✅ COMPLETE (RC1)
+* `database/MIGRATION.md` — provisioning paths (one-shot psql + sqitch), upgrade scripts from pre-refactor / `@v0.2-phase2` baselines, breaking-change catalog, post-migration verification SQL.
+* `database/SECURITY.md` — trust boundary, the three-role triad (`web_anon`/`web_user`/`web_pro`), JWT lifecycle, RLS surface, `meta.audit_log` semantics, soft-delete pattern, idempotency, paid-tier gating, pen-test crib sheet.
+* `database/API.md` — narrative companion to PostgREST's OpenAPI: every `api.*` and `api_pro.*` RPC documented with params, return shape, SQLSTATE error catalogue, and `@v0.4-phase4` stability guarantees.
+* `VERSION` bumped to `v1.0.0-rc.1`. `CHANGELOG.md` filled with the Phase 0 → Phase 4 ledger.
+* dbdocs regeneration is left to the operator (`dbdocs build schema.dbml`) — the source DBML is the single source of truth and stays in lock-step with the schema on every phase.
 
 ---
 
