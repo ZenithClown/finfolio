@@ -138,6 +138,27 @@ from respective schema namespaces according to the schema name.
 \i database/schema/private/triggers/user_transaction.sql
 \i database/schema/private/triggers/user_points_transaction.sql
 
+-- ..versionadded:: 2026-06-07 [Phase 3 §4.1] double-entry header + lines
+-- + balance trigger. Must run after meta.transaction_method type exists
+-- (meta/types.sql) and before any RPC that reads private.transaction_*.
+\i database/schema/private/transaction_double_entry.sql
+
+-- ..versionadded:: 2026-06-07 [Phase 3 §4.7] audit log table + generic
+-- row-change trigger function. Triggers bind to private.transaction_*
+-- and public.ledger_account_detail.
+\i database/schema/meta/audit.sql
+
+-- ..versionadded:: 2026-06-07 [Phase 3] add is_system + soft-delete to
+-- public.ledger_account_detail and seed SYS/IN, SYS/EX system contras.
+-- Idempotent: ALTER ... ADD COLUMN IF NOT EXISTS + ON CONFLICT DO NOTHING.
+\i database/schema/private/system_accounts.sql
+
+-- ..versionadded:: 2026-06-07 [Phase 3] one-shot backfill of legacy
+-- private.user_transaction rows into the new header+lines structure.
+-- Idempotent (deterministic UUID per legacy idkey); no-op on fresh DBs
+-- and on already-migrated DBs.
+\i database/schema/private/transaction_backfill.sql
+
 -- ! populate the api endpoints using the initialize.sql
 \i database/api/initialize.sql
 

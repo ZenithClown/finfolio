@@ -36,6 +36,14 @@ Copyright © [2025] Debmalya Pramanik, DigitPhilia INC.
 -- change a parameter type).
 DROP FUNCTION IF EXISTS api.net_value_by_account_type(VARCHAR(16), VARCHAR(7));
 
+-- ..versionchanged:: 2026-06-07 [Phase 3 §4.1] swap underlying storage
+-- from private.user_transaction (single-row) to private.transaction_line
+-- (double-entry). Balance = SUM over lines, signed by the account's
+-- normal side: DBT-prefixed accounts are debit-normal (asset/expense),
+-- CDT-prefixed are credit-normal (liability/equity/income). System
+-- accounts (is_system = true) are filtered out so user-facing net
+-- worth never includes the SYSIN/SYSEX contras.
+
 CREATE OR REPLACE FUNCTION api.net_worth(
   p_account_id CHAR(5)[]
 )
@@ -47,24 +55,35 @@ SET search_path = pg_catalog, public
 AS $$
 BEGIN
   RETURN (
-      SELECT ROW_TO_JSON(t) FROM
-      (
-        SELECT
-          SUM(
-            CASE
-              WHEN tbl.trx_type = 'DEPOSIT' THEN tbl.trx_amount
-              WHEN tbl.trx_type = 'WITHDRAW' THEN tbl.trx_amount * -1
-              ELSE 0 END
-          ) AS net_value
-          , MAX(tbl.trx_date) AS last_updated
-        FROM private.user_transaction tbl
-        WHERE CASE
-          WHEN
-            ARRAY_LENGTH(p_account_id, 1) IS NULL
-            OR ARRAY_LENGTH(p_account_id, 1) = 0 THEN TRUE
-          ELSE tbl.account_id = ANY(p_account_id)
+    SELECT ROW_TO_JSON(t) FROM
+    (
+      SELECT
+        SUM(
+          CASE
+            WHEN atm.account_type_id = 'DBT' AND tl.side = 'DEBIT'  THEN  tl.amount * tl.fx_rate_to_base
+            WHEN atm.account_type_id = 'DBT' AND tl.side = 'CREDIT' THEN -tl.amount * tl.fx_rate_to_base
+            WHEN atm.account_type_id = 'CDT' AND tl.side = 'CREDIT' THEN  tl.amount * tl.fx_rate_to_base
+            WHEN atm.account_type_id = 'CDT' AND tl.side = 'DEBIT'  THEN -tl.amount * tl.fx_rate_to_base
+            ELSE 0
           END
-      ) t
+        )::NUMERIC(18, 2) AS net_value
+        , MAX(th.trx_date) AS last_updated
+      FROM private.transaction_line tl
+      JOIN private.transaction_header th
+        ON th.transaction_uid = tl.transaction_uid
+       AND th.deleted_on IS NULL
+      JOIN public.ledger_account_detail lad
+        ON lad.ledger_account_id = tl.account_id
+       AND lad.is_system = FALSE
+       AND lad.deleted_on IS NULL
+      JOIN meta.account_type_master atm
+        ON atm.account_type_key = lad.account_type_key
+      WHERE CASE
+        WHEN ARRAY_LENGTH(p_account_id, 1) IS NULL
+          OR ARRAY_LENGTH(p_account_id, 1) = 0 THEN TRUE
+        ELSE tl.account_id = ANY(p_account_id)
+        END
+    ) t
   );
 END
 $$;
@@ -75,7 +94,7 @@ CREATE OR REPLACE FUNCTION api.net_value_by_account(
 )
 RETURNS TABLE (
   account_id CHAR(5)
-  , net_value NUMERIC(12, 2)
+  , net_value NUMERIC(18, 2)
   , last_updated DATE
 )
 LANGUAGE plpgsql
@@ -86,22 +105,33 @@ AS $$
 BEGIN
   RETURN QUERY (
     SELECT
-      tbl.account_id
+      tl.account_id
       , SUM(
         CASE
-          WHEN tbl.trx_type = 'DEPOSIT' THEN tbl.trx_amount
-          WHEN tbl.trx_type = 'WITHDRAW' THEN tbl.trx_amount * -1
-          ELSE 0 END
-      ) AS net_value
-      , MAX(tbl.trx_date) AS last_updated
-    FROM private.user_transaction tbl
+          WHEN atm.account_type_id = 'DBT' AND tl.side = 'DEBIT'  THEN  tl.amount * tl.fx_rate_to_base
+          WHEN atm.account_type_id = 'DBT' AND tl.side = 'CREDIT' THEN -tl.amount * tl.fx_rate_to_base
+          WHEN atm.account_type_id = 'CDT' AND tl.side = 'CREDIT' THEN  tl.amount * tl.fx_rate_to_base
+          WHEN atm.account_type_id = 'CDT' AND tl.side = 'DEBIT'  THEN -tl.amount * tl.fx_rate_to_base
+          ELSE 0
+        END
+      )::NUMERIC(18, 2) AS net_value
+      , MAX(th.trx_date) AS last_updated
+    FROM private.transaction_line tl
+    JOIN private.transaction_header th
+      ON th.transaction_uid = tl.transaction_uid
+     AND th.deleted_on IS NULL
+    JOIN public.ledger_account_detail lad
+      ON lad.ledger_account_id = tl.account_id
+     AND lad.is_system = FALSE
+     AND lad.deleted_on IS NULL
+    JOIN meta.account_type_master atm
+      ON atm.account_type_key = lad.account_type_key
     WHERE CASE
-      WHEN
-        ARRAY_LENGTH(p_account_id, 1) IS NULL
+      WHEN ARRAY_LENGTH(p_account_id, 1) IS NULL
         OR ARRAY_LENGTH(p_account_id, 1) = 0 THEN TRUE
-      ELSE tbl.account_id = ANY(p_account_id)
+      ELSE tl.account_id = ANY(p_account_id)
       END
-    GROUP BY tbl.account_id
+    GROUP BY tl.account_id
   );
 END
 $$;
@@ -119,7 +149,7 @@ RETURNS TABLE (
   , account_type_name VARCHAR(32)
   , account_subtype_id CHAR(3)
   , account_subtype_name VARCHAR(34)
-  , net_value NUMERIC(12, 2)
+  , net_value NUMERIC(18, 2)
   , last_updated DATE
 )
 LANGUAGE plpgsql
@@ -130,35 +160,43 @@ AS $$
 BEGIN
   RETURN QUERY (
     SELECT
-      accounts.account_type_id
-      , accounts.account_type_name
-      , accounts.account_subtype_id
-      , accounts.account_subtype_name
+      atm.account_type_id
+      , atm.account_type_name
+      , atm.account_subtype_id
+      , atm.account_subtype_name
       , SUM(
         CASE
-          WHEN tbl.trx_type = 'DEPOSIT' THEN tbl.trx_amount
-          WHEN tbl.trx_type = 'WITHDRAW' THEN tbl.trx_amount * -1
-          ELSE 0 END
-      ) AS net_value
-      , MAX(tbl.trx_date) AS last_updated
-    FROM private.user_transaction tbl
-    LEFT JOIN public.ledger_account_detail ledgers
-      ON tbl.account_id = ledgers.ledger_account_id
-    LEFT JOIN meta.account_type_master accounts
-      ON ledgers.account_type_key = accounts.account_type_key
+          WHEN atm.account_type_id = 'DBT' AND tl.side = 'DEBIT'  THEN  tl.amount * tl.fx_rate_to_base
+          WHEN atm.account_type_id = 'DBT' AND tl.side = 'CREDIT' THEN -tl.amount * tl.fx_rate_to_base
+          WHEN atm.account_type_id = 'CDT' AND tl.side = 'CREDIT' THEN  tl.amount * tl.fx_rate_to_base
+          WHEN atm.account_type_id = 'CDT' AND tl.side = 'DEBIT'  THEN -tl.amount * tl.fx_rate_to_base
+          ELSE 0
+        END
+      )::NUMERIC(18, 2) AS net_value
+      , MAX(th.trx_date) AS last_updated
+    FROM private.transaction_line tl
+    JOIN private.transaction_header th
+      ON th.transaction_uid = tl.transaction_uid
+     AND th.deleted_on IS NULL
+    JOIN public.ledger_account_detail lad
+      ON lad.ledger_account_id = tl.account_id
+     AND lad.is_system = FALSE
+     AND lad.deleted_on IS NULL
+    JOIN meta.account_type_master atm
+      ON atm.account_type_key = lad.account_type_key
     WHERE
-      ledgers.account_owner IN (
+      lad.account_owner IN (
         SELECT managed_username FROM base.get_managed_users(p_username)
       )
       AND CASE
         WHEN p_account_type_key IS NULL THEN TRUE
-        ELSE ledgers.account_type_key LIKE p_account_type_key
+        ELSE lad.account_type_key LIKE p_account_type_key
         END
     GROUP BY
-      accounts.account_type_id
-      , accounts.account_type_name
-      , accounts.account_subtype_id
-      , accounts.account_subtype_name
+      atm.account_type_id
+      , atm.account_type_name
+      , atm.account_subtype_id
+      , atm.account_subtype_name
   );
 END
 $$;

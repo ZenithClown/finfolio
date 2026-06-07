@@ -229,6 +229,11 @@ table public.ledger_account_detail {
   opening_balance             numeric(12, 2) [not null, default: 0.00]
   opening_balance_recorded_on date           [not null] // default `account_opened_on`
 
+  // ..versionadded:: 2026-06-07 [Phase 3 §4.1] system contras + soft-delete
+  is_system  boolean     [not null, default: false]
+  deleted_on timestamptz
+  deleted_by varchar(16)
+
   // ..versionadded:: 2026-06-07 [B25] audit columns
   created_on timestamptz [not null, default: 'CURRENT_TIMESTAMP']
   updated_on timestamptz [not null, default: 'CURRENT_TIMESTAMP']
@@ -253,8 +258,86 @@ table public.points_account_detail {
   // ! PRIVATE Schema Table(s)
 ********************************************************************/
 
+// ..versionadded:: 2026-06-07 [Phase 3 §4.1] double-entry tables.
+// Every business event materialises as ONE header + TWO or more
+// balanced lines. A deferrable trigger enforces Σ debit × fx =
+// Σ credit × fx per transaction_uid at COMMIT time. The legacy
+// private.user_transaction table below is kept as a read-historical
+// fallback and is backfilled into the new model on init.
+table private.transaction_header {
+  transaction_uid uuid [pk, default: `gen_random_uuid()`]
+
+  trx_date date         [not null]
+  trx_desc varchar(512) [not null]
+
+  transfer_method meta.transaction_method
+
+  income_category_key  varchar(65) [ref: > meta.income_category_master.income_category_key]
+  expense_category_key varchar(65) [ref: > meta.expense_category_master.expense_category_key]
+
+  // F4: collapse duplicate client retries
+  idempotency_key varchar(64) [unique]
+
+  // §2.2 audit
+  created_on timestamptz [not null, default: 'CURRENT_TIMESTAMP']
+  created_by varchar(16)
+  updated_on timestamptz [not null, default: 'CURRENT_TIMESTAMP']
+  updated_by varchar(16)
+
+  // §4.7 soft-delete
+  deleted_on timestamptz
+  deleted_by varchar(16)
+
+  Note: 'income XOR expense category; soft-delete columns set together or neither.'
+}
+
+table private.transaction_line {
+  line_id bigint [pk, increment]
+
+  transaction_uid uuid [not null, ref: > private.transaction_header.transaction_uid]
+
+  // FK uses RESTRICT (never silently drop money rows)
+  account_id char(5) [not null, ref: > public.ledger_account_detail.ledger_account_id]
+
+  side   meta.entry_side [not null]                 // ENUM('DEBIT','CREDIT')
+  amount numeric(18, 6)  [not null]                 // > 0; sign lives in `side`
+
+  // Phase 3 stubs; Phase 3.5 will wire meta.currency_master + fx_rate_history.
+  currency_code   char(3)        [not null, default: 'INR']
+  fx_rate_to_base numeric(18, 8) [not null, default: 1]
+
+  created_on timestamptz [not null, default: 'CURRENT_TIMESTAMP']
+  created_by varchar(16)
+}
+
+// §4.7 generic audit log; one row per (table, pk, op) capturing
+// before/after as JSONB. Bound to transaction_header, transaction_line,
+// public.ledger_account_detail via private.audit_row_change() trigger.
+table meta.audit_log {
+  log_id bigint [pk, increment]
+
+  logged_at      timestamptz [not null, default: `clock_timestamp()`]
+  actor_username varchar(64) [not null]
+
+  schema_name name    [not null]
+  table_name  name    [not null]
+  op          char(1) [not null]  // I / U / D
+  pk_value    text
+
+  before_row jsonb
+  after_row  jsonb
+
+  indexes {
+    (schema_name, table_name, logged_at) [name: 'ix_audit_log_table']
+    (actor_username, logged_at)          [name: 'ix_audit_log_actor']
+    (schema_name, table_name, pk_value)  [name: 'ix_audit_log_pk_value']
+  }
+}
+
 table private.user_transaction {
-  // ? primary table containing all the transactions for all tracked accounts
+  // ..deprecated:: 2026-06-07 [Phase 3 §4.1] kept as read-historical
+  // fallback; new writes go to transaction_header + transaction_line
+  // via api.post_transaction(). Slated for removal in Phase 4.
   transaction_idkey bigint [pk]
 
   account_id char(5) [not null, ref: > public.ledger_account_detail.ledger_account_id]

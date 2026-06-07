@@ -28,3 +28,8 @@ GRANT EXECUTE ON FUNCTION api.net_value_by_account_type(VARCHAR, VARCHAR(16))   
 GRANT EXECUTE ON FUNCTION api.get_ledger_account_json(VARCHAR, VARCHAR(16))     TO web_user;
 GRANT EXECUTE ON FUNCTION api.get_account_count_json(VARCHAR, VARCHAR(16))      TO web_user;
 GRANT EXECUTE ON FUNCTION base.get_managed_users(VARCHAR)                       TO web_user;
+-- ..versionadded:: 2026-06-07 [Phase 3 §4.1] double-entry write RPC.
+GRANT EXECUTE ON FUNCTION api.post_transaction(
+  CHAR(5), NUMERIC, meta.transaction_type, DATE, VARCHAR,
+  meta.transaction_method, VARCHAR, VARCHAR, CHAR(5), VARCHAR
+)                                                                              TO web_user;

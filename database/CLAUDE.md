@@ -300,14 +300,16 @@ Status legend: ✅ fixed on `refactor/database`, ⏳ planned, 🕓 deferred.
 B13, B14, B16, B18, B20, B21, B22, B23, B24 — all delivered on `refactor/database` in 5 atomic commits (data-quality nits → CHECKs → FK indexes → stocks fixes → account_type_key widening). E11 (surrogate keys for category masters) and E12 (richer `transaction_method` lookup table) **deferred to Phase 3** because both are entangled with the §4.1 double-entry refactor and require data migration that is cleaner to do once.
 **Verification:** twice-run idempotency holds; all CHECK constraints verified via negative-case smoke tests; `api.net_worth` continues to return the Phase 0 baseline (₹43,500); composite PO PK accepts IPO + later FPO; mutual-fund unit precision retained as 123.456700.
 
-### Phase 3 — Free-Tier Domain Features (≈2 weeks)
-* §4.1 Double-entry refactor (Q5) — biggest change; full data migration of existing `private.user_transaction` → `transaction_header` + `transaction_line`.
-* §4.2 Currency & FX (Q4).
-* §4.3 Unified points ledger (Q6).
-* §4.5 Recurring, Budgets, Goals.
-* §4.7 Audit log + soft-delete pattern.
-* `api.post_transaction(...)` UX-friendly RPC.
-* Updated `api.net_worth*` to read from `transaction_line` + FX.
+### Phase 3 — Free-Tier Core ✅ COMPLETE (core scope; §4.2/§4.3/§4.5 deferred)
+**Delivered on `feature/phase-3-double-entry`:**
+* §4.1 Double-entry refactor: `private.transaction_header` (UUID PK + idempotency_key + audit + soft-delete) + `private.transaction_line` (RESTRICT FK, side ENUM, NUMERIC(18,6) amount, currency+fx stubs) + deferrable balance trigger (`Σ debit × fx = Σ credit × fx`, ≥ 2 lines per uid).
+* §4.7 Audit log: `meta.audit_log` + generic `private.audit_row_change()` SECURITY DEFINER trigger pulling actor from `request.jwt.claim.username`, before/after JSONB, dynamic PK extraction. Bound to transaction_header, transaction_line, ledger_account_detail.
+* System contra accounts (SYSIN/SYSEX) + `is_system` flag + soft-delete on `public.ledger_account_detail`. Filtered out of every net-worth RPC.
+* Idempotent one-shot backfill of legacy `private.user_transaction` → header+lines (deterministic UUIDs per legacy idkey).
+* RPCs: `api.post_transaction(...)` (UX-friendly, idempotency-key aware, ownership-checked) + rewritten `api.net_worth*` (sign derived from `account_type_id` DBT/CDT × `entry_side`).
+**Verified:** clean-DB init EXIT 0 + twice-run; net_worth(all)=net_worth(AAA01)=43500 preserved across the storage refactor; +1000 post lifts to 44500; same idempotency_key returns same UUID; balance trigger rejects debit=100/credit=99 with `check_violation`; audit_log captured 12 rows across all 3 protected tables; SYSIN/SYSEX explicitly excluded from net_worth.
+
+**Deferred to Phase 3.5+:** §4.2 Currency & FX (currency_code/fx_rate_to_base columns already in place as stubs default INR/1, but no `meta.currency_master` or `fx_rate_history` yet), §4.3 Unified points ledger, §4.5 Recurring/Budgets/Goals. The double-entry foundation makes all three additive.
 
 ### Phase 4 — Stocks v2 + Paid Tier (≈3 weeks)
 * §4.4 Stocks Indian-market scope (Q7): NAV, corporate actions, dividends, IPO PK fix.
