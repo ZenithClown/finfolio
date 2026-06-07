@@ -92,7 +92,7 @@ from respective schema namespaces according to the schema name.
 \i database/schema/public/functions/fiscalyear.sql
 \i database/schema/public/functions/onupdate.sql
 
-\i database/schema/public/triggers/ledger_account_detail.sql
+\i database/schema/public/triggers/user_account_detail.sql
 
 -- ? create private tables, typically under the ``private`` schema
 \i database/schema/private/tables.sql
