@@ -133,6 +133,12 @@ from respective schema namespaces according to the schema name.
 -- ! populate the api endpoints using the initialize.sql
 \i database/api/initialize.sql
 
+-- ..versionadded:: 2026-06-07 [B8] create least-privilege PostgREST
+-- roles AFTER the api views/functions exist (so grants can reference
+-- them). Without this, postgrest.conf must keep `db-anon-role =
+-- "postgres"`, which exposes the cluster superuser over HTTP.
+\i database/security/roles.sql
+
 -- ..versionadded:: 2026-06-07 [B7] include the optional stocks extension.
 -- The README and CLAUDE.md both advertise stocks tracking; the schema and
 -- master/transaction tables exist but were never wired into the master
