@@ -120,6 +120,13 @@ from respective schema namespaces according to the schema name.
 -- ! populate the api endpoints using the initialize.sql
 \i database/api/initialize.sql
 
+-- ..versionadded:: 2026-06-07 [B7] include the optional stocks extension.
+-- The README and CLAUDE.md both advertise stocks tracking; the schema and
+-- master/transaction tables exist but were never wired into the master
+-- initializer. Stocks tracking is an optional extension - if you do not
+-- want it, comment the line below. Future work: gate via \set var.
+\i database/schema/stocks/initialize.sql
+
 -- ? populate all the tables with the seed data, only allow when all
 -- the above table creation succeds then proceed for constraint checks
 \i database/schema/meta/seed.sql
