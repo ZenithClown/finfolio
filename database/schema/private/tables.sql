@@ -59,9 +59,14 @@ CREATE TABLE IF NOT EXISTS private.user_transaction (
   updated_on
     TIMESTAMPTZ,
 
+  -- ..versionchanged:: 2026-06-07 [B1] reference correct column names and
+  -- enforce XOR semantics: a transaction is income XOR expense, but for
+  -- pure inter-account transfers (self_account_id IS NOT NULL) both
+  -- category fields may be NULL. See CLAUDE.md §6 Bug Ledger.
   CONSTRAINT ck_either_income_or_expense CHECK (
-    income_category_head IS NULL
-    OR expense_category_head IS NULL
+    (income_category_key IS NULL AND expense_category_key IS NULL AND self_account_id IS NOT NULL)
+    OR (income_category_key IS NOT NULL AND expense_category_key IS NULL)
+    OR (income_category_key IS NULL AND expense_category_key IS NOT NULL)
   )
 );
 
