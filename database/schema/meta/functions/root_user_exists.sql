@@ -21,8 +21,17 @@ CREATE FUNCTION meta.root_user_exists() RETURNS TRIGGER
 LANGUAGE plpgsql AS
 $$
 BEGIN
+  -- ..versionchanged:: 2026-06-07 [B10] exclude self when checking for
+  -- existing ROOT. The previous version would raise on every UPDATE of
+  -- the existing root user (it found itself), making the root account
+  -- effectively read-only for trivial changes like email or password.
+  -- On INSERT the username is new so the self-exclusion is a no-op.
   IF NEW.user_role = 'ROOT' THEN
-    IF EXISTS (SELECT 1 FROM public.user_account_detail WHERE user_role = 'ROOT') THEN
+    IF EXISTS (
+      SELECT 1 FROM public.user_account_detail
+      WHERE user_role = 'ROOT'
+        AND username <> NEW.username
+    ) THEN
       RAISE EXCEPTION 'Root User Already Exists';
     END IF;
   END IF;
